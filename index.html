@@ -7,176 +7,46 @@
   <link rel="manifest" href="manifest.json" />
   <title>Responde Fácil</title>
   <style>
-    :root {
-      --bg: #f5f5f4;
-      --card: #ffffff;
-      --text: #1c1917;
-      --muted: #78716c;
-      --dark: #111111;
-      --soft: #f5f5f5;
-      --border: #e7e5e4;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 16px;
-    }
-    .app { max-width: 1100px; margin: 0 auto; }
-    header {
-      background: var(--dark);
-      color: white;
-      border-radius: 28px;
-      padding: 24px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
-    h1 { margin: 0; font-size: 32px; }
-    h2 { margin: 0; font-size: 22px; }
-    .badge {
-      background: rgba(255,255,255,.12);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 14px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 16px;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 28px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.04);
-    }
-    .space > * + * { margin-top: 16px; }
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    input, textarea {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 13px 15px;
-      font-size: 15px;
-      outline: none;
-      background: white;
-    }
-    textarea { resize: vertical; min-height: 120px; }
-    input:focus, textarea:focus { border-color: #111; }
-    .searchbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 0 12px;
-      background: white;
-    }
-    .searchbox input { border: 0; padding-left: 0; }
-    .list { display: flex; flex-direction: column; gap: 8px; }
-    .message-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 18px;
-      padding: 16px;
-      text-align: left;
-      background: var(--soft);
-      cursor: pointer;
-      color: var(--text);
-    }
-    .message-btn.active { background: var(--dark); color: white; }
-    .message-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .message-title { font-weight: 700; margin-bottom: 4px; }
-    .message-cat { color: var(--muted); font-size: 14px; }
-    .active .message-cat { color: #d6d3d1; }
-    .icons { display: flex; gap: 8px; }
-    .icon {
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      border-radius: 999px;
-    }
-    .preview {
-      min-height: 210px;
-      white-space: pre-wrap;
-      background: var(--soft);
-      border-radius: 24px;
-      padding: 20px;
-      line-height: 1.5;
-    }
-    .topline {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
-    .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
-    .btn {
-      border: 0;
-      background: var(--dark);
-      color: white;
-      padding: 13px 18px;
-      border-radius: 18px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 14px;
-    }
-    .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn.secondary {
-      background: #eeeeee;
-      color: var(--text);
-    }
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      border: 0;
-      background: #eeeeee;
-      color: var(--text);
-      padding: 9px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    @media (max-width: 850px) {
-      body { padding: 10px; }
-      .grid, .form-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 26px; }
-      header, .card { border-radius: 22px; }
-    }
+    :root { --bg:#f5f5f4; --card:#fff; --text:#1c1917; --muted:#78716c; --dark:#111; --soft:#f5f5f5; --border:#e7e5e4; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); padding:16px; }
+    .app { max-width:1100px; margin:0 auto; }
+    header { background:var(--dark); color:white; border-radius:28px; padding:24px; margin-bottom:16px; display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap; }
+    header p { margin:0 0 6px; color:#d6d3d1; font-size:14px; }
+    h1 { margin:0; font-size:32px; }
+    h2 { margin:0; font-size:22px; }
+    .badge { background:rgba(255,255,255,.12); border-radius:999px; padding:10px 14px; font-size:14px; }
+    .status { font-size:12px; color:#57534e; background:#eee; padding:8px 12px; border-radius:999px; display:inline-block; }
+    .grid { display:grid; grid-template-columns:1fr 1.2fr; gap:16px; }
+    .card { background:var(--card); border-radius:28px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
+    .space > * + * { margin-top:16px; }
+    label { display:block; font-size:14px; font-weight:700; margin-bottom:8px; }
+    input, textarea { width:100%; border:1px solid var(--border); border-radius:18px; padding:13px 15px; font-size:15px; outline:none; background:white; }
+    textarea { resize:vertical; min-height:120px; }
+    input:focus, textarea:focus { border-color:#111; }
+    .searchbox { display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:18px; padding:0 12px; background:white; }
+    .searchbox input { border:0; padding-left:0; }
+    .list { display:flex; flex-direction:column; gap:8px; }
+    .message-btn { width:100%; border:0; border-radius:18px; padding:16px; text-align:left; background:var(--soft); cursor:pointer; color:var(--text); }
+    .message-btn.active { background:var(--dark); color:white; }
+    .message-row { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .message-title { font-weight:700; margin-bottom:4px; }
+    .message-cat { color:var(--muted); font-size:14px; }
+    .active .message-cat { color:#d6d3d1; }
+    .icons { display:flex; gap:8px; }
+    .icon { border:0; background:transparent; cursor:pointer; font-size:16px; padding:4px; border-radius:999px; }
+    .preview { min-height:210px; white-space:pre-wrap; background:var(--soft); border-radius:24px; padding:20px; line-height:1.5; }
+    .topline { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
+    .muted { color:var(--muted); font-size:14px; margin:0 0 4px; }
+    .hint { color:var(--muted); font-size:12px; margin:6px 0 0; }
+    .btn { border:0; background:var(--dark); color:white; padding:13px 18px; border-radius:18px; cursor:pointer; font-weight:700; font-size:14px; }
+    .btn:disabled { opacity:.45; cursor:not-allowed; }
+    .btn.secondary { background:#eee; color:var(--text); }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { border:0; background:#eee; color:var(--text); padding:9px 12px; border-radius:999px; cursor:pointer; font-size:13px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    @media (max-width:850px) { body{padding:10px;} .grid,.form-grid{grid-template-columns:1fr;} h1{font-size:26px;} header,.card{border-radius:22px;} }
   </style>
 </head>
 <body>
@@ -186,7 +56,11 @@
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil</h1>
       </div>
-      <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
+      <div>
+        <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
+        <div style="height:8px"></div>
+        <span class="status" id="syncStatus">Conectando ao Firebase...</span>
+      </div>
     </header>
 
     <main class="grid">
@@ -195,7 +69,6 @@
           <label>Nome do cliente</label>
           <input id="clientName" placeholder="Ex: Danilo" />
         </div>
-
         <div>
           <label>Buscar resposta</label>
           <div class="searchbox">
@@ -203,7 +76,6 @@
             <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
           </div>
         </div>
-
         <div class="list" id="messageList"></div>
       </section>
 
@@ -225,20 +97,16 @@
             <h2 id="formTitle">Cadastrar mensagem</h2>
             <p class="hint">Dica: use os botões abaixo para inserir os campos automáticos na mensagem.</p>
           </div>
-
           <div class="form-grid">
             <input id="newTitle" placeholder="Título" />
             <input id="newCategory" placeholder="Categoria" />
           </div>
-
           <div class="chips">
             <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
             <button class="chip" data-insert="{nome}">Inserir nome</button>
             <button class="chip" data-insert="{saudacao}, {nome}! Tudo bem?">Inserir abertura completa</button>
           </div>
-
           <textarea id="newText" placeholder="Digite a mensagem. Use {saudacao} e {nome} onde quiser personalizar."></textarea>
-
           <div class="actions">
             <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
             <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
@@ -248,42 +116,39 @@
     </main>
   </div>
 
-  <script>
-    const STORAGE_KEY = "responde_facil_messages";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
+      authDomain: "responde-facil.firebaseapp.com",
+      projectId: "responde-facil",
+      storageBucket: "responde-facil.firebasestorage.app",
+      messagingSenderId: "210022478525",
+      appId: "1:210022478525:web:b9119b7e01259878ab7dd4",
+      measurementId: "G-SRD5TDMRFM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const messagesCollection = collection(db, "messages");
 
     const initialMessages = [
-      {
-        id: 1,
-        title: "Pedido mínimo",
-        category: "Vendas",
-        text: "{saudacao}, {nome}! Tudo bem?\\n\\nNosso pedido mínimo é de R$ 600,00. O que você gostaria de acrescentar?"
-      },
-      {
-        id: 2,
-        title: "Canal exclusivo para vendas",
-        category: "Atendimento",
-        text: "{saudacao}, {nome}! Tudo bem?\\n\\nEste canal é exclusivo para vendas e orçamentos. Para assuntos de SAC, por favor envie um e-mail para contato@winnerhorse.com.br."
-      },
-      {
-        id: 3,
-        title: "Revenda / representante",
-        category: "Comercial",
-        text: "{saudacao}, {nome}! Tudo bem?\\n\\nPara avaliarmos a possibilidade de revenda, poderia nos enviar o CNPJ, inscrição estadual, cidade de atuação, estrutura comercial e média de volume mensal de vendas?"
-      },
-      {
-        id: 4,
-        title: "Agradecimento após pedido",
-        category: "Vendas",
-        text: "{saudacao}, {nome}! Pedido recebido, obrigada! Vou encaminhar para conferência e já seguimos com as próximas informações."
-      }
+      { title:"Pedido mínimo", category:"Vendas", text:"{saudacao}, {nome}! Tudo bem?\n\nNosso pedido mínimo é de R$ 600,00. O que você gostaria de acrescentar?" },
+      { title:"Canal exclusivo para vendas", category:"Atendimento", text:"{saudacao}, {nome}! Tudo bem?\n\nEste canal é exclusivo para vendas e orçamentos. Para assuntos de SAC, por favor envie um e-mail para contato@winnerhorse.com.br." },
+      { title:"Revenda / representante", category:"Comercial", text:"{saudacao}, {nome}! Tudo bem?\n\nPara avaliarmos a possibilidade de revenda, poderia nos enviar o CNPJ, inscrição estadual, cidade de atuação, estrutura comercial e média de volume mensal de vendas?" },
+      { title:"Agradecimento após pedido", category:"Vendas", text:"{saudacao}, {nome}! Pedido recebido, obrigada! Vou encaminhar para conferência e já seguimos com as próximas informações." }
     ];
 
-    let messages = loadMessages();
-    let selectedId = messages[0]?.id || 1;
+    let messages = [];
+    let selectedId = null;
     let editingId = null;
+    let firebaseReady = false;
 
     const els = {
       greetingLabel: document.getElementById("greetingLabel"),
+      syncStatus: document.getElementById("syncStatus"),
       clientName: document.getElementById("clientName"),
       search: document.getElementById("search"),
       messageList: document.getElementById("messageList"),
@@ -311,30 +176,37 @@
         .replaceAll("{saudacao}", greeting)
         .replaceAll("{nome}", clientName.trim())
         .replace(/, !/g, "!")
-        .replace(/, \\n/g, "\\n")
+        .replace(/, \n/g, "\n")
         .replace(/  +/g, " ")
         .trim();
     }
 
     function appendWithSmartSpacing(currentText, insertion) {
       const text = currentText || "";
-      const needsSpace = text.length > 0 && !text.endsWith(" ") && !text.endsWith("\\n");
+      const needsSpace = text.length > 0 && !text.endsWith(" ") && !text.endsWith("\n");
       return `${text}${needsSpace ? " " : ""}${insertion}`;
     }
 
-    function loadMessages() {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) return initialMessages;
-        const parsed = JSON.parse(stored);
-        return Array.isArray(parsed) && parsed.length > 0 ? parsed : initialMessages;
-      } catch {
-        return initialMessages;
-      }
+    async function seedInitialMessagesIfEmpty() {
+      const snapshot = await getDocs(messagesCollection);
+      if (!snapshot.empty) return;
+      await Promise.all(initialMessages.map((message) => addDoc(messagesCollection, { ...message, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })));
     }
 
-    function saveMessages() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    function startRealtimeSync() {
+      const q = query(messagesCollection, orderBy("createdAt", "asc"));
+      onSnapshot(q, (snapshot) => {
+        messages = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
+        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
+        firebaseReady = true;
+        els.syncStatus.textContent = "Sincronizado na nuvem";
+        render();
+      }, (error) => {
+        console.error(error);
+        els.syncStatus.textContent = "Erro ao conectar no Firebase";
+        firebaseReady = false;
+        render();
+      });
     }
 
     function selectedMessage() {
@@ -346,51 +218,24 @@
       els.greetingLabel.textContent = greeting;
 
       const term = els.search.value.toLowerCase().trim();
-      const filtered = term
-        ? messages.filter((message) => `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term))
-        : messages;
+      const filtered = term ? messages.filter((message) => `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term)) : messages;
 
       els.messageList.innerHTML = "";
-
       if (filtered.length === 0) {
         const empty = document.createElement("div");
         empty.className = "message-btn";
-        empty.textContent = "Nenhuma resposta encontrada.";
+        empty.textContent = firebaseReady ? "Nenhuma resposta encontrada." : "Carregando mensagens...";
         els.messageList.appendChild(empty);
       } else {
         filtered.forEach((message) => {
           const btn = document.createElement("button");
           btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
-          btn.innerHTML = `
-            <div class="message-row">
-              <div>
-                <div class="message-title"></div>
-                <div class="message-cat"></div>
-              </div>
-              <div class="icons">
-                <span class="icon edit" title="Editar mensagem">✏️</span>
-                <span class="icon delete" title="Excluir mensagem">🗑️</span>
-              </div>
-            </div>
-          `;
-          btn.querySelector(".message-title").textContent = message.title;
-          btn.querySelector(".message-cat").textContent = message.category;
-
-          btn.addEventListener("click", () => {
-            selectedId = message.id;
-            render();
-          });
-
-          btn.querySelector(".edit").addEventListener("click", (event) => {
-            event.stopPropagation();
-            startEditing(message);
-          });
-
-          btn.querySelector(".delete").addEventListener("click", (event) => {
-            event.stopPropagation();
-            deleteMessage(message.id);
-          });
-
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-cat"></div></div><div class="icons"><span class="icon edit" title="Editar mensagem">✏️</span><span class="icon delete" title="Excluir mensagem">🗑️</span></div></div>`;
+          btn.querySelector(".message-title").textContent = message.title || "";
+          btn.querySelector(".message-cat").textContent = message.category || "Geral";
+          btn.addEventListener("click", () => { selectedId = message.id; render(); });
+          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
+          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
           els.messageList.appendChild(btn);
         });
       }
@@ -416,58 +261,54 @@
       render();
     }
 
-    function saveForm() {
+    async function saveForm() {
       const title = els.newTitle.value.trim();
       const category = els.newCategory.value.trim() || "Geral";
       const text = els.newText.value.trim();
-
       if (!title || !text) return;
+      els.saveBtn.disabled = true;
 
-      if (editingId !== null) {
-        messages = messages.map((message) =>
-          message.id === editingId ? { ...message, title, category, text } : message
-        );
-        selectedId = editingId;
-        saveMessages();
+      try {
+        if (editingId !== null) {
+          await updateDoc(doc(db, "messages", editingId), { title, category, text, updatedAt: serverTimestamp() });
+          selectedId = editingId;
+        } else {
+          const docRef = await addDoc(messagesCollection, { title, category, text, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+          selectedId = docRef.id;
+        }
         clearForm();
-        return;
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível salvar no Firebase. Verifique as regras do Firestore.");
+      } finally {
+        els.saveBtn.disabled = false;
       }
-
-      const newMessage = {
-        id: Date.now(),
-        title,
-        category,
-        text
-      };
-
-      messages = [newMessage, ...messages];
-      selectedId = newMessage.id;
-      saveMessages();
-      clearForm();
     }
 
     function startEditing(message) {
       editingId = message.id;
       selectedId = message.id;
-      els.newTitle.value = message.title;
-      els.newCategory.value = message.category;
-      els.newText.value = message.text;
+      els.newTitle.value = message.title || "";
+      els.newCategory.value = message.category || "";
+      els.newText.value = message.text || "";
       render();
     }
 
-    function deleteMessage(id) {
-      messages = messages.filter((message) => message.id !== id);
-      if (messages.length === 0) messages = [...initialMessages];
-      if (selectedId === id) selectedId = messages[0].id;
-      saveMessages();
-      render();
+    async function deleteMessageById(id) {
+      if (!confirm("Deseja apagar esta mensagem?")) return;
+      try {
+        await deleteDoc(doc(db, "messages", id));
+        if (selectedId === id) selectedId = null;
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível apagar no Firebase.");
+      }
     }
 
     async function copyText() {
       const text = els.previewText.textContent;
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch {
+      try { await navigator.clipboard.writeText(text); }
+      catch {
         const textArea = document.createElement("textarea");
         textArea.value = text;
         document.body.appendChild(textArea);
@@ -476,20 +317,7 @@
         document.body.removeChild(textArea);
       }
       els.copyBtn.textContent = "Copiado";
-      setTimeout(() => {
-        els.copyBtn.textContent = editingId !== null ? "📋 Copiar" : "📋 Copiar";
-      }, 1400);
-    }
-
-    function runSelfTests() {
-      console.assert(getGreeting(new Date("2026-04-24T08:00:00")) === "Bom dia", "Teste saudação manhã falhou");
-      console.assert(getGreeting(new Date("2026-04-24T13:00:00")) === "Boa tarde", "Teste saudação tarde falhou");
-      console.assert(getGreeting(new Date("2026-04-24T19:00:00")) === "Boa noite", "Teste saudação noite falhou");
-      console.assert(buildFinalText("{saudacao}, {nome}!", "Bom dia", "Danilo") === "Bom dia, Danilo!", "Teste com nome falhou");
-      console.assert(buildFinalText("{saudacao}, {nome}!", "Bom dia", "") === "Bom dia!", "Teste sem nome falhou");
-      console.assert(appendWithSmartSpacing("Olá", "{nome}") === "Olá {nome}", "Teste inserir com espaço falhou");
-      console.assert(appendWithSmartSpacing("Olá ", "{nome}") === "Olá {nome}", "Teste inserir sem duplicar espaço falhou");
-      console.assert(appendWithSmartSpacing("Olá\\n", "{nome}") === "Olá\\n{nome}", "Teste inserir após quebra de linha falhou");
+      setTimeout(() => { els.copyBtn.textContent = "📋 Copiar"; }, 1400);
     }
 
     document.querySelectorAll("[data-insert]").forEach((btn) => {
@@ -504,8 +332,15 @@
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
 
-    runSelfTests();
     render();
+
+    seedInitialMessagesIfEmpty()
+      .then(startRealtimeSync)
+      .catch((error) => {
+        console.error(error);
+        els.syncStatus.textContent = "Erro ao iniciar Firebase";
+        alert("Não foi possível iniciar o Firebase. Verifique se o Firestore está em modo de teste.");
+      });
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js").catch(() => {});
