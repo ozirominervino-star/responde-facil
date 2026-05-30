@@ -28,34 +28,31 @@
     .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
     .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
     
-    /* Estrutura do Grid Principal Fixa em Duas Colunas */
+    /* Estrutura do Grid Principal Fixa Inquebrável */
     .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
-    .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+    .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
     .space > * + * { margin-top: 16px; }
     
     label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
+    input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
     textarea { resize: vertical; min-height: 120px; }
-    input:focus, textarea:focus { border-color: #111; }
+    input:focus, textarea:focus, select:focus { border-color: #111; }
     
-    .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; margin-bottom: 8px; }
+    .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
     .searchbox input { border: 0; padding-left: 0; height: 46px; }
     
-    /* Abas Deslizantes Slim horizontais */
-    .tabs-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .tabs-container::-webkit-scrollbar { display: none; }
-    .tab-btn { background: #eee; border: 0; border-radius: 999px; color: var(--muted); padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-    .tab-btn:hover { background: #e7e5e4; color: var(--text); }
-    .tab-btn.active { background: var(--dark); color: white; }
+    /* Container do Filtro por Categoria Corrigido para Select */
+    .filter-container { margin-top: 12px; }
+    select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
 
-    /* Lista com rolagem vertical limitada */
-    .list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+    /* Lista com rolagem vertical controlada */
+    .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
     
-    /* Botões/Cards de Mensagem da Lista */
+    /* Cards de Mensagem */
     .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
     .message-btn:hover { background: #e7e5e4; }
     
-    /* Visualização do Card Ativo Corrigida (Legibilidade total) */
+    /* Visualização Ativa Clara, Legível e com Contraste Elevado */
     .message-btn.active { background: var(--dark); color: white; }
     .message-btn.active .message-title { color: white; }
     .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
@@ -63,7 +60,6 @@
     .message-btn.active .icon { color: white; opacity: 0.8; }
     .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); opacity: 1; }
 
-    /* Efeito de Feedback ao Copiar */
     @keyframes copyFlash {
       0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.6); border-color: var(--primary); }
       100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
@@ -71,16 +67,16 @@
     .message-btn.copied-effect { animation: copyFlash 0.5s ease-out; }
 
     .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .message-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; }
-    .message-info-row { display: flex; align-items: center; gap: 6px; }
-    .message-cat { color: var(--muted); font-size: 13px; background: #e7e5e4; padding: 2px 8px; border-radius: 6px; }
+    .message-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; word-break: break-word; }
+    .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .message-cat { color: var(--muted); font-size: 12px; background: #e7e5e4; padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .message-count { font-size: 11px; color: var(--muted); }
     
-    .icons { display: flex; gap: 4px; }
+    .icons { display: flex; gap: 4px; flex-shrink: 0; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.08); }
     
-    .preview { min-height: 210px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); }
+    .preview { min-height: 210px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
     .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
@@ -132,8 +128,10 @@
             <span>🔎</span>
             <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
           </div>
-          <div class="tabs-container" id="filterTabs">
-            <button class="tab-btn active" data-category="all">Todas</button>
+          <div class="filter-container">
+            <select class="category-select" id="categoryFilter">
+              <option value="all">📁 Filtrar por Categoria: Todas</option>
+            </select>
           </div>
         </div>
         <div class="list" id="messageList"></div>
@@ -220,7 +218,7 @@
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
       cancelBtn: document.getElementById("cancelBtn"),
-      filterTabs: document.getElementById("filterTabs"),
+      categoryFilter: document.getElementById("categoryFilter"),
       exportBtn: document.getElementById("exportBtn")
     };
 
@@ -289,26 +287,35 @@
         if(m.useCount && m.useCount > 0) hasUsage = true;
       });
       
-      let html = "";
+      els.categoryFilter.innerHTML = "";
+      
+      const optAll = document.createElement("option");
+      optAll.value = "all";
+      optAll.textContent = "📁 Filtrar por Categoria: Todas";
+      if(currentSelectedCategory === "all") optAll.selected = true;
+      els.categoryFilter.appendChild(optAll);
+
       if (hasUsage) {
-        html += `<button class="tab-btn ${currentSelectedCategory === 'top_used' ? 'active' : ''}" data-category="top_used">⭐ Mais Usadas</button>`;
+        const optTop = document.createElement("option");
+        optTop.value = "top_used";
+        optTop.textContent = "⭐ Mais Usadas";
+        if(currentSelectedCategory === "top_used") optTop.selected = true;
+        els.categoryFilter.appendChild(optTop);
       }
-      html += `<button class="tab-btn ${currentSelectedCategory === 'all' ? 'active' : ''}" data-category="all">Todas</button>`;
       
       categories.forEach(cat => {
-        html += `<button class="tab-btn ${currentSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>`;
-      });
-      els.filterTabs.innerHTML = html;
-
-      els.filterTabs.querySelectorAll(".tab-btn").forEach(tab => {
-        tab.addEventListener("click", () => {
-          currentSelectedCategory = tab.dataset.category;
-          renderCategories();
-          render();
-          tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        });
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = `📁 ${cat}`;
+        if(currentSelectedCategory === cat) opt.selected = true;
+        els.categoryFilter.appendChild(opt);
       });
     }
+
+    els.categoryFilter.addEventListener("change", (e) => {
+      currentSelectedCategory = e.target.value;
+      render();
+    });
 
     function selectedMessage() {
       return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
@@ -423,115 +430,3 @@
       try {
         await deleteDoc(doc(db, "messages", id));
         if (selectedId === id) selectedId = null;
-      } catch (error) {
-        console.error(error);
-        alert("Não foi possível apagar no Firebase.");
-      }
-    }
-
-    async function copyText() {
-      const text = els.previewText.textContent;
-      if (!text) return;
-      
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
-      
-      const currentMsg = selectedMessage();
-      if (currentMsg && currentMsg.id) {
-        const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
-        if (cardEl) {
-          cardEl.classList.remove("copied-effect");
-          void cardEl.offsetWidth; 
-          cardEl.classList.add("copied-effect");
-        }
-      }
-
-      els.copyBtn.textContent = "✓ Copiado!";
-      els.copyBtn.classList.add("success");
-      setTimeout(() => { 
-        els.copyBtn.textContent = "📋 Copiar"; 
-        els.copyBtn.classList.remove("success");
-      }, 1400);
-
-      if (currentMsg && currentMsg.id) {
-        try {
-          await updateDoc(doc(db, "messages", currentMsg.id), {
-            useCount: increment(1)
-          });
-        } catch(e) {
-          console.error(e);
-        }
-      }
-    }
-
-    window.addEventListener("keydown", (event) => {
-      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
-        if (event.key === "Enter" && document.activeElement === els.search) {
-          els.search.blur();
-          event.preventDefault();
-        }
-        return;
-      }
-
-      if (filteredMessagesCache.length === 0) return;
-      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
-        selectedId = filteredMessagesCache[nextIndex].id;
-        render();
-      } else if (event.key === "ArrowUp") {
-        event.preventDefault();
-        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : filteredMessagesCache.length - 1;
-        selectedId = filteredMessagesCache[prevIndex].id;
-        render();
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        copyText();
-      }
-    });
-
-    function exportBackup() {
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    document.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
-      });
-    });
-
-    els.clientName.addEventListener("input", render);
-    els.search.addEventListener("input", render);
-    els.copyBtn.addEventListener("click", copyText);
-    els.saveBtn.addEventListener("click", saveForm);
-    els.cancelBtn.addEventListener("click", clearForm);
-    els.exportBtn.addEventListener("click", exportBackup);
-
-    render();
-    startRealtimeSync();
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-    }
-  </script>
-</body>
-</html>
