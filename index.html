@@ -7,46 +7,74 @@
   <link rel="manifest" href="manifest.json" />
   <title>Responde Fácil</title>
   <style>
-    :root { --bg:#f5f5f4; --card:#fff; --text:#1c1917; --muted:#78716c; --dark:#111; --soft:#f5f5f5; --border:#e7e5e4; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); padding:16px; }
-    .app { max-width:1100px; margin:0 auto; }
-    header { background:var(--dark); color:white; border-radius:28px; padding:24px; margin-bottom:16px; display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap; }
-    header p { margin:0 0 6px; color:#d6d3d1; font-size:14px; }
-    h1 { margin:0; font-size:32px; }
-    h2 { margin:0; font-size:22px; }
-    .badge { background:rgba(255,255,255,.12); border-radius:999px; padding:10px 14px; font-size:14px; }
-    .status { font-size:12px; color:#57534e; background:#eee; padding:8px 12px; border-radius:999px; display:inline-block; }
-    .grid { display:grid; grid-template-columns:1fr 1.2fr; gap:16px; }
-    .card { background:var(--card); border-radius:28px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
-    .space > * + * { margin-top:16px; }
-    label { display:block; font-size:14px; font-weight:700; margin-bottom:8px; }
-    input, textarea { width:100%; border:1px solid var(--border); border-radius:18px; padding:13px 15px; font-size:15px; outline:none; background:white; }
-    textarea { resize:vertical; min-height:120px; }
-    input:focus, textarea:focus { border-color:#111; }
-    .searchbox { display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:18px; padding:0 12px; background:white; }
-    .searchbox input { border:0; padding-left:0; }
-    .list { display:flex; flex-direction:column; gap:8px; }
-    .message-btn { width:100%; border:0; border-radius:18px; padding:16px; text-align:left; background:var(--soft); cursor:pointer; color:var(--text); }
-    .message-btn.active { background:var(--dark); color:white; }
-    .message-row { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
-    .message-title { font-weight:700; margin-bottom:4px; }
-    .message-cat { color:var(--muted); font-size:14px; }
-    .active .message-cat { color:#d6d3d1; }
-    .icons { display:flex; gap:8px; }
-    .icon { border:0; background:transparent; cursor:pointer; font-size:16px; padding:4px; border-radius:999px; }
-    .preview { min-height:210px; white-space:pre-wrap; background:var(--soft); border-radius:24px; padding:20px; line-height:1.5; }
-    .topline { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
-    .muted { color:var(--muted); font-size:14px; margin:0 0 4px; }
-    .hint { color:var(--muted); font-size:12px; margin:6px 0 0; }
-    .btn { border:0; background:var(--dark); color:white; padding:13px 18px; border-radius:18px; cursor:pointer; font-weight:700; font-size:14px; }
-    .btn:disabled { opacity:.45; cursor:not-allowed; }
-    .btn.secondary { background:#eee; color:var(--text); }
-    .chips { display:flex; flex-wrap:wrap; gap:8px; }
-    .chip { border:0; background:#eee; color:var(--text); padding:9px 12px; border-radius:999px; cursor:pointer; font-size:13px; }
-    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .actions { display:flex; flex-wrap:wrap; gap:8px; }
-    @media (max-width:850px) { body{padding:10px;} .grid,.form-grid{grid-template-columns:1fr;} h1{font-size:26px;} header,.card{border-radius:22px;} }
+    :root { 
+      --bg: #f4f4f5; 
+      --card: #ffffff; 
+      --text: #18181b; 
+      --muted: #71717a; 
+      --dark: #09090b; 
+      --soft: #f4f4f5; 
+      --border: #e4e4e7; 
+      --primary: #10b981; /* Verde para feedback de copiado */
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+    .app { max-width: 1200px; margin: 0 auto; }
+    header { background: var(--dark); color: white; border-radius: 24px; padding: 24px; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    header p { margin: 0 0 6px; color: #a1a1aa; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+    h1 { margin: 0; font-size: 32px; font-weight: 800; }
+    h2 { margin: 0; font-size: 20px; font-weight: 700; }
+    .badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 500; }
+    .status { font-size: 12px; color: #71717a; background: #e4e4e7; padding: 8px 16px; border-radius: 999px; display: inline-block; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; }
+    .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,.02); border: 1px solid var(--border); }
+    .space > * + * { margin-top: 20px; }
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #3f3f46; }
+    input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; font-size: 15px; outline: none; background: white; color: var(--text); transition: all 0.2s; }
+    textarea { resize: vertical; min-height: 130px; line-height: 1.5; }
+    input:focus, textarea:focus { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
+    .searchbox { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 14px; padding: 0 16px; background: white; transition: all 0.2s; }
+    .searchbox:focus-within { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
+    .searchbox input { border: 0; padding-left: 0; }
+    .searchbox input:focus { box-shadow: none; }
+    
+    /* Nova seção de Filtros por Categoria */
+    .filter-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter-chip { border: 1px solid var(--border); background: white; color: var(--muted); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+    .filter-chip:hover { border-color: var(--muted); color: var(--text); }
+    .filter-chip.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+    .list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
+    .message-btn { width: 100%; border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: left; background: var(--card); cursor: pointer; color: var(--text); transition: all 0.2s; }
+    .message-btn:hover { background: var(--soft); transform: translateY(-1px); }
+    .message-btn.active { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .message-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .message-cat { color: var(--muted); font-size: 12px; font-weight: 600; background: var(--soft); padding: 3px 8px; border-radius: 6px; display: inline-block; }
+    .active .message-cat { color: #e4e4e7; background: rgba(255,255,255,0.15); }
+    .icons { display: flex; gap: 4px; }
+    .icon { border: 0; background: transparent; cursor: pointer; font-size: 14px; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+    .icon:hover { background: rgba(0,0,0,0.05); }
+    .active .icon:hover { background: rgba(255,255,255,0.2); }
+    
+    .preview { min-height: 220px; white-space: pre-wrap; background: var(--soft); border-radius: 18px; padding: 20px; line-height: 1.6; border: 1px solid var(--border); font-size: 15px; }
+    .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .muted { color: var(--muted); font-size: 13px; font-weight: 600; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
+    
+    .btn { border: 0; background: var(--dark); color: white; padding: 14px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn.secondary { background: #e4e4e7; color: var(--text); }
+    .btn.success { background: var(--primary); color: white; }
+    
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { border: 1px solid var(--border); background: var(--soft); color: var(--text); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+    .chip:hover { background: #e4e4e7; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 850px) { body { padding: 12px; } .grid, .form-grid { grid-template-columns: 1fr; } h1 { font-size: 26px; } header, .card { border-radius: 20px; } }
   </style>
 </head>
 <body>
@@ -71,9 +99,17 @@
         </div>
         <div>
           <label>Buscar resposta</label>
-          <div class="searchbox">
-            <span>🔎</span>
-            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
+          <div class="space" style="margin-top:0">
+            <div class="searchbox">
+              <span>🔎</span>
+              <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
+            </div>
+            <div class="filter-wrapper">
+              <span style="font-size: 12px; font-weight: 700; color: var(--muted)">FILTRAR POR CATEGORIA:</span>
+              <div class="filter-chips" id="filterChips">
+                <button class="filter-chip active" data-category="all">Todas</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="list" id="messageList"></div>
@@ -99,7 +135,7 @@
           </div>
           <div class="form-grid">
             <input id="newTitle" placeholder="Título" />
-            <input id="newCategory" placeholder="Categoria" />
+            <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
           </div>
           <div class="chips">
             <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
@@ -145,6 +181,7 @@
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
+    let currentSelectedCategory = "all"; // Guarda o filtro ativo
 
     const els = {
       greetingLabel: document.getElementById("greetingLabel"),
@@ -161,7 +198,8 @@
       newCategory: document.getElementById("newCategory"),
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
-      cancelBtn: document.getElementById("cancelBtn")
+      cancelBtn: document.getElementById("cancelBtn"),
+      filterChips: document.getElementById("filterChips")
     };
 
     function getGreeting(date = new Date()) {
@@ -200,12 +238,35 @@
         if (!selectedId && messages.length > 0) selectedId = messages[0].id;
         firebaseReady = true;
         els.syncStatus.textContent = "Sincronizado na nuvem";
+        renderCategories();
         render();
       }, (error) => {
         console.error(error);
         els.syncStatus.textContent = "Erro ao conectar no Firebase";
         firebaseReady = false;
         render();
+      });
+    }
+
+    // Renderiza os botões de categoria dinamicamente com base nas mensagens existentes
+    function renderCategories() {
+      const categories = new Set();
+      messages.forEach(m => { if(m.category) categories.add(m.category.trim()) });
+      
+      // Monta os elementos HTML dos filtros
+      let html = `<button class="filter-chip ${currentSelectedCategory === 'all' ? 'active' : ''}" data-category="all">Todas</button>`;
+      categories.forEach(cat => {
+        html += `<button class="filter-chip ${currentSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>`;
+      });
+      els.filterChips.innerHTML = html;
+
+      // Adiciona evento de clique em cada chip de filtro
+      els.filterChips.querySelectorAll(".filter-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          currentSelectedCategory = chip.dataset.category;
+          renderCategories();
+          render();
+        });
       });
     }
 
@@ -218,12 +279,20 @@
       els.greetingLabel.textContent = greeting;
 
       const term = els.search.value.toLowerCase().trim();
-      const filtered = term ? messages.filter((message) => `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term)) : messages;
+      
+      // Filtra por termo de busca E por categoria selecionada ao mesmo tempo
+      const filtered = messages.filter((message) => {
+        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
+        const matchesCategory = currentSelectedCategory === "all" ? true : (message.category || "").trim() === currentSelectedCategory;
+        return matchesSearch && matchesCategory;
+      });
 
       els.messageList.innerHTML = "";
       if (filtered.length === 0) {
         const empty = document.createElement("div");
         empty.className = "message-btn";
+        empty.style.textAlign = "center";
+        empty.style.color = "var(--muted)";
         empty.textContent = firebaseReady ? "Nenhuma resposta encontrada." : "Carregando mensagens...";
         els.messageList.appendChild(empty);
       } else {
@@ -316,8 +385,14 @@
         document.execCommand("copy");
         document.body.removeChild(textArea);
       }
-      els.copyBtn.textContent = "Copiado";
-      setTimeout(() => { els.copyBtn.textContent = "📋 Copiar"; }, 1400);
+      
+      // Feedback visual moderno ao copiar
+      els.copyBtn.textContent = "✓ Copiado!";
+      els.copyBtn.classList.add("success");
+      setTimeout(() => { 
+        els.copyBtn.textContent = "📋 Copiar"; 
+        els.copyBtn.classList.remove("success");
+      }, 1400);
     }
 
     document.querySelectorAll("[data-insert]").forEach((btn) => {
