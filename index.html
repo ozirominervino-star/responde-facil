@@ -28,7 +28,7 @@
     .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
     .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
     
-    /* Estrutura do Grid Principal Fixa Inquebrável */
+    /* Estrutura do Grid Principal Fixa */
     .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
     .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
     .space > * + * { margin-top: 16px; }
@@ -41,18 +41,17 @@
     .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
     .searchbox input { border: 0; padding-left: 0; height: 46px; }
     
-    /* Container do Filtro por Categoria Corrigido para Select */
     .filter-container { margin-top: 12px; }
     select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
 
     /* Lista com rolagem vertical controlada */
     .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
     
-    /* Cards de Mensagem */
+    /* Botões de Mensagem */
     .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
     .message-btn:hover { background: #e7e5e4; }
     
-    /* Visualização Ativa Clara, Legível e com Contraste Elevado */
+    /* Visualização Ativa Clara e com Alto Contraste */
     .message-btn.active { background: var(--dark); color: white; }
     .message-btn.active .message-title { color: white; }
     .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
@@ -179,7 +178,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -194,6 +193,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const messagesCollection = collection(db, "messages");
+
+    const initialMessages = [
+      { title:"Pedido mínimo", category:"Vendas", text:"{saudacao}, {nome}! Tudo bem?\n\nNosso pedido mínimo é de R$ 600,00. O que você gostaria de acrescentar?" },
+      { title:"Canal exclusivo para vendas", category:"Atendimento", text:"{saudacao}, {nome}! Tudo bem?\n\nEste canal é exclusivo para vendas e orçamentos. Para assuntos de SAC, por favor envie um e-mail para contato@winnerhorse.com.br." },
+      { title:"Revenda / representante", category:"Comercial", text:"{saudacao}, {nome}! Tudo bem?\n\nPara avaliarmos a possibilidade de revenda, poderia nos enviar o CNPJ, inscrição estadual, cidade de atuação, estrutura comercial e média de volume mensal de vendas?" },
+      { title:"Agradecimento após pedido", category:"Vendas", text:"{saudacao}, {nome}! Pedido recebido, obrigada! Vou encaminhar para conferência e já seguimos com as próximas informações." }
+    ];
 
     let messages = [];
     let filteredMessagesCache = []; 
@@ -245,7 +251,20 @@
       return `${text}${needsSpace ? " " : ""}${insertion}`;
     }
 
+    async function seedInitialMessagesIfEmpty() {
+      try {
+        const snapshot = await getDocs(messagesCollection);
+        if (!snapshot.empty) return;
+        await Promise.all(initialMessages.map((message) => 
+          addDoc(messagesCollection, { ...message, useCount: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
+        ));
+      } catch (e) {
+        console.error("Erro ao verificar/inserir dados iniciais:", e);
+      }
+    }
+
     function startRealtimeSync() {
+      // Sincronização resiliente sem cláusula orderBy direta no Firebase para não ocultar cards sem o atributo data
       onSnapshot(messagesCollection, (snapshot) => {
         messages = snapshot.docs.map((docItem) => {
           const data = docItem.data();
@@ -255,15 +274,15 @@
             title: "", 
             category: "Geral", 
             text: "",
-            createdAt: { toMillis: () => 0 },
             ...data 
           };
         });
 
+        // Ordenação segura em memória por título em ordem alfabética (ou por data de criação se disponível)
         messages.sort((a, b) => {
-          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-          return timeA - timeB;
+          const titleA = (a.title || "").toLowerCase();
+          const titleB = (b.title || "").toLowerCase();
+          return titleA.localeCompare(titleB);
         });
 
         if (!selectedId && messages.length > 0) selectedId = messages[0].id;
@@ -303,7 +322,8 @@
         els.categoryFilter.appendChild(optTop);
       }
       
-      categories.forEach(cat => {
+      // Converte para array para ordenar alfabeticamente as categorias no seletor
+      Array.from(categories).sort().forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat;
         opt.textContent = `📁 ${cat}`;
@@ -430,3 +450,121 @@
       try {
         await deleteDoc(doc(db, "messages", id));
         if (selectedId === id) selectedId = null;
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível apagar no Firebase.");
+      }
+    }
+
+    async function copyText() {
+      const text = els.previewText.textContent;
+      if (!text) return;
+      
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      
+      const currentMsg = selectedMessage();
+      if (currentMsg && currentMsg.id) {
+        const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
+        if (cardEl) {
+          cardEl.classList.remove("copied-effect");
+          void cardEl.offsetWidth; 
+          cardEl.classList.add("copied-effect");
+        }
+      }
+
+      els.copyBtn.textContent = "✓ Copiado!";
+      els.copyBtn.classList.add("success");
+      setTimeout(() => { 
+        els.copyBtn.textContent = "📋 Copiar"; 
+        els.copyBtn.classList.remove("success");
+      }, 1400);
+
+      if (currentMsg && currentMsg.id) {
+        try {
+          await updateDoc(doc(db, "messages", currentMsg.id), {
+            useCount: increment(1)
+          });
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        if (event.key === "Enter" && document.activeElement === els.search) {
+          els.search.blur();
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (filteredMessagesCache.length === 0) return;
+      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
+        selectedId = filteredMessagesCache[nextIndex].id;
+        render();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : filteredMessagesCache.length - 1;
+        selectedId = filteredMessagesCache[prevIndex].id;
+        render();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        copyText();
+      }
+    });
+
+    function exportBackup() {
+      if (messages.length === 0) {
+        alert("Nenhuma mensagem para exportar.");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    document.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
+      });
+    });
+
+    els.clientName.addEventListener("input", render);
+    els.search.addEventListener("input", render);
+    els.copyBtn.addEventListener("click", copyText);
+    els.saveBtn.addEventListener("click", saveForm);
+    els.cancelBtn.addEventListener("click", clearForm);
+    els.exportBtn.addEventListener("click", exportBackup);
+
+    render();
+    
+    seedInitialMessagesIfEmpty()
+      .then(startRealtimeSync)
+      .catch((err) => {
+        console.error(err);
+        startRealtimeSync();
+      });
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
