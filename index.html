@@ -8,56 +8,62 @@
   <title>Responde Fácil</title>
   <style>
     :root { 
-      --bg: #f4f4f5; 
+      --bg: #f5f5f4; 
       --card: #ffffff; 
-      --text: #18181b; 
-      --muted: #71717a; 
-      --dark: #09090b; 
-      --soft: #f4f4f5; 
-      --border: #e4e4e7; 
+      --text: #1c1917; 
+      --muted: #78716c; 
+      --dark: #111111; 
+      --soft: #f5f5f5; 
+      --border: #e7e5e4; 
       --primary: #10b981; 
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-    .app { max-width: 1200px; margin: 0 auto; }
-    header { background: var(--dark); color: white; border-radius: 24px; padding: 24px; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    header p { margin: 0 0 6px; color: #a1a1aa; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
-    h1 { margin: 0; font-size: 32px; font-weight: 800; }
-    h2 { margin: 0; font-size: 20px; font-weight: 700; }
-    .badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 500; }
-    .status { font-size: 12px; color: #71717a; background: #e4e4e7; padding: 8px 16px; border-radius: 999px; display: inline-block; font-weight: 600; }
-    .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; }
-    .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,.02); border: 1px solid var(--border); }
-    .space > * + * { margin-top: 20px; }
-    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #3f3f46; }
-    input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; font-size: 15px; outline: none; background: white; color: var(--text); transition: all 0.2s; }
-    textarea { resize: vertical; min-height: 130px; line-height: 1.5; }
-    input:focus, textarea:focus { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
+    .app { max-width: 1100px; margin: 0 auto; }
     
-    .searchbox { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 14px; padding: 0 16px; background: white; transition: all 0.2s; }
-    .searchbox:focus-within { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
-    .searchbox input { border: 0; padding-left: 0; }
+    header { background: var(--dark); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
+    header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
+    h1 { margin: 0; font-size: 32px; }
+    h2 { margin: 0; font-size: 22px; }
+    .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
+    .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
     
-    /* Abas Deslizantes */
-    .tabs-container { border-bottom: 1px solid var(--border); margin: -10px -24px 10px -24px; padding: 0 24px 8px 24px; display: flex; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; gap: 4px; }
+    /* Estrutura do Grid Principal Fixa em Duas Colunas */
+    .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
+    .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+    .space > * + * { margin-top: 16px; }
+    
+    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
+    textarea { resize: vertical; min-height: 120px; }
+    input:focus, textarea:focus { border-color: #111; }
+    
+    .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; margin-bottom: 8px; }
+    .searchbox input { border: 0; padding-left: 0; height: 46px; }
+    
+    /* Abas Deslizantes Slim horizontais */
+    .tabs-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .tabs-container::-webkit-scrollbar { display: none; }
-    .tab-btn { background: transparent; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active { color: var(--dark); border-bottom-color: var(--dark); }
+    .tab-btn { background: #eee; border: 0; border-radius: 999px; color: var(--muted); padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn:hover { background: #e7e5e4; color: var(--text); }
+    .tab-btn.active { background: var(--dark); color: white; }
 
-    /* Lista de Mensagens Esquerda */
-    .list { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
-    .message-btn { width: 100%; border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: left; background: var(--card); cursor: pointer; color: var(--text); transition: all 0.2s; position: relative; }
-    .message-btn:hover { background: var(--soft); transform: translateY(-1px); }
+    /* Lista com rolagem vertical limitada */
+    .list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
     
-    /* CORREÇÃO CRUCIAL: Cores Legíveis no Card Ativo/Selecionado */
-    .message-btn.active { background: var(--dark) !important; border-color: var(--dark) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .message-btn.active .message-title { color: #ffffff !important; }
-    .message-btn.active .message-cat { color: #f4f4f5 !important; background: rgba(255,255,255,0.15) !important; }
-    .message-btn.active .message-count { color: #d4d4d8 !important; }
-    .message-btn.active .icon { filter: brightness(0) invert(1); } /* Torna os emojis edit/delete brancos e visíveis */
+    /* Botões/Cards de Mensagem da Lista */
+    .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
+    .message-btn:hover { background: #e7e5e4; }
+    
+    /* Visualização do Card Ativo Corrigida (Legibilidade total) */
+    .message-btn.active { background: var(--dark); color: white; }
+    .message-btn.active .message-title { color: white; }
+    .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
+    .message-btn.active .message-count { color: #a8a29e; }
+    .message-btn.active .icon { color: white; opacity: 0.8; }
+    .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); opacity: 1; }
 
-    /* Animação ao Copiar */
+    /* Efeito de Feedback ao Copiar */
     @keyframes copyFlash {
       0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.6); border-color: var(--primary); }
       100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
@@ -65,34 +71,39 @@
     .message-btn.copied-effect { animation: copyFlash 0.5s ease-out; }
 
     .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .message-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: var(--text); }
-    .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .message-cat { color: var(--muted); font-size: 12px; font-weight: 600; background: var(--soft); padding: 4px 10px; border-radius: 8px; display: inline-block; }
-    .message-count { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .message-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; }
+    .message-info-row { display: flex; align-items: center; gap: 6px; }
+    .message-cat { color: var(--muted); font-size: 13px; background: #e7e5e4; padding: 2px 8px; border-radius: 6px; }
+    .message-count { font-size: 11px; color: var(--muted); }
     
     .icons { display: flex; gap: 4px; }
-    .icon { border: 0; background: transparent; cursor: pointer; font-size: 14px; padding: 6px; border-radius: 8px; transition: background 0.2s; }
-    .icon:hover { background: rgba(0,0,0,0.05); }
-    .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); }
+    .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
+    .icon:hover { background: rgba(0,0,0,0.08); }
     
-    .preview { min-height: 220px; white-space: pre-wrap; background: var(--soft); border-radius: 18px; padding: 20px; line-height: 1.6; border: 1px solid var(--border); font-size: 15px; }
+    .preview { min-height: 210px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .muted { color: var(--muted); font-size: 13px; font-weight: 600; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
     .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
     
-    .btn { border: 0; background: var(--dark); color: white; padding: 14px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn.secondary { background: #e4e4e7; color: var(--text); }
+    .btn.secondary { background: #eee; color: var(--text); }
     .btn.success { background: var(--primary); color: white; }
     
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { border: 1px solid var(--border); background: var(--soft); color: var(--text); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
-    .chip:hover { background: #e4e4e7; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 0; background: #eee; color: var(--text); padding: 9px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+    .chip:hover { background: #e7e5e4; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
     .actions-left { display: flex; gap: 8px; }
-    @media (max-width: 850px) { body { padding: 12px; } .grid, .form-grid { grid-template-columns: 1fr; } h1 { font-size: 26px; } header, .card { border-radius: 20px; } }
+    
+    @media (max-width: 850px) { 
+      body { padding: 10px; } 
+      .grid, .form-grid { grid-template-columns: 1fr; } 
+      h1 { font-size: 26px; } 
+      header, .card { border-radius: 22px; } 
+    }
   </style>
 </head>
 <body>
@@ -117,15 +128,12 @@
         </div>
         <div>
           <label>Buscar resposta</label>
-          <div class="space" style="margin-top:0">
-            <div class="searchbox">
-              <span>🔎</span>
-              <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
-            </div>
-            <div style="height: 4px"></div>
-            <div class="tabs-container" id="filterTabs">
-              <button class="tab-btn active" data-category="all">Todas</button>
-            </div>
+          <div class="searchbox">
+            <span>🔎</span>
+            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
+          </div>
+          <div class="tabs-container" id="filterTabs">
+            <button class="tab-btn active" data-category="all">Todas</button>
           </div>
         </div>
         <div class="list" id="messageList"></div>
@@ -164,7 +172,7 @@
               <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
               <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
             </div>
-            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar todas as mensagens em formato JSON de segurança">💾 Exportar Backup</button>
+            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar Backup</button>
           </div>
         </section>
       </div>
@@ -211,4 +219,319 @@
       newCategory: document.getElementById("newCategory"),
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
-      cancelBtn: document.
+      cancelBtn: document.getElementById("cancelBtn"),
+      filterTabs: document.getElementById("filterTabs"),
+      exportBtn: document.getElementById("exportBtn")
+    };
+
+    function getGreeting(date = new Date()) {
+      const hour = date.getHours();
+      if (hour < 12) return "Bom dia";
+      if (hour < 18) return "Boa tarde";
+      return "Boa noite";
+    }
+
+    function buildFinalText(template, greeting, clientName) {
+      return (template || "")
+        .replaceAll("{saudacao}", greeting)
+        .replaceAll("{nome}", clientName.trim())
+        .replace(/, !/g, "!")
+        .replace(/, \n/g, "\n")
+        .replace(/  +/g, " ")
+        .trim();
+    }
+
+    function appendWithSmartSpacing(currentText, insertion) {
+      const text = currentText || "";
+      const needsSpace = text.length > 0 && !text.endsWith(" ") && !text.endsWith("\n");
+      return `${text}${needsSpace ? " " : ""}${insertion}`;
+    }
+
+    function startRealtimeSync() {
+      onSnapshot(messagesCollection, (snapshot) => {
+        messages = snapshot.docs.map((docItem) => {
+          const data = docItem.data();
+          return { 
+            id: docItem.id, 
+            useCount: 0, 
+            title: "", 
+            category: "Geral", 
+            text: "",
+            createdAt: { toMillis: () => 0 },
+            ...data 
+          };
+        });
+
+        messages.sort((a, b) => {
+          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+          return timeA - timeB;
+        });
+
+        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
+        firebaseReady = true;
+        els.syncStatus.textContent = "Sincronizado na nuvem";
+        renderCategories();
+        render();
+      }, (error) => {
+        console.error(error);
+        els.syncStatus.textContent = "Erro ao conectar no Firebase";
+        firebaseReady = false;
+        render();
+      });
+    }
+
+    function renderCategories() {
+      const categories = new Set();
+      let hasUsage = false;
+      messages.forEach(m => { 
+        if(m.category) categories.add(m.category.trim());
+        if(m.useCount && m.useCount > 0) hasUsage = true;
+      });
+      
+      let html = "";
+      if (hasUsage) {
+        html += `<button class="tab-btn ${currentSelectedCategory === 'top_used' ? 'active' : ''}" data-category="top_used">⭐ Mais Usadas</button>`;
+      }
+      html += `<button class="tab-btn ${currentSelectedCategory === 'all' ? 'active' : ''}" data-category="all">Todas</button>`;
+      
+      categories.forEach(cat => {
+        html += `<button class="tab-btn ${currentSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>`;
+      });
+      els.filterTabs.innerHTML = html;
+
+      els.filterTabs.querySelectorAll(".tab-btn").forEach(tab => {
+        tab.addEventListener("click", () => {
+          currentSelectedCategory = tab.dataset.category;
+          renderCategories();
+          render();
+          tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+      });
+    }
+
+    function selectedMessage() {
+      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
+    }
+
+    function render() {
+      const greeting = getGreeting();
+      els.greetingLabel.textContent = greeting;
+
+      const term = els.search.value.toLowerCase().trim();
+      
+      let filtered = messages.filter((message) => {
+        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
+        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
+        return matchesSearch && matchesCategory;
+      });
+
+      if (currentSelectedCategory === "top_used") {
+        filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
+      }
+
+      filteredMessagesCache = filtered; 
+
+      els.messageList.innerHTML = "";
+      if (filtered.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "message-btn";
+        empty.style.textAlign = "center";
+        empty.style.color = "var(--muted)";
+        empty.textContent = firebaseReady ? "Nenhuma resposta encontrada." : "Carregando mensagens...";
+        els.messageList.appendChild(empty);
+      } else {
+        filtered.forEach((message) => {
+          const btn = document.createElement("button");
+          btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
+          btn.setAttribute("id", `msg-card-${message.id}`);
+          
+          const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
+          
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div><span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.querySelector(".message-title").textContent = message.title || "";
+          btn.querySelector(".message-cat").textContent = message.category || "Geral";
+          btn.querySelector(".message-count").textContent = countText;
+          
+          btn.addEventListener("click", () => { selectedId = message.id; render(); });
+          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
+          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
+          els.messageList.appendChild(btn);
+
+          if (message.id === selectedId) {
+            btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          }
+        });
+      }
+
+      const selected = selectedMessage();
+      const finalText = buildFinalText(selected?.text, greeting, els.clientName.value);
+      els.previewTitle.textContent = selected?.title || "Nenhuma mensagem";
+      els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
+      els.copyBtn.disabled = !finalText;
+
+      const isEditing = editingId !== null;
+      els.formMode.textContent = isEditing ? "Editando resposta" : "Nova resposta";
+      els.formTitle.textContent = isEditing ? "Alterar mensagem" : "Cadastrar mensagem";
+      els.saveBtn.textContent = isEditing ? "💾 Salvar alterações" : "＋ Salvar mensagem";
+      els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
+    }
+
+    function clearForm() {
+      editingId = null;
+      els.newTitle.value = "";
+      els.newCategory.value = "";
+      els.newText.value = "";
+      render();
+    }
+
+    async function saveForm() {
+      const title = els.newTitle.value.trim();
+      const category = els.newCategory.value.trim() || "Geral";
+      const text = els.newText.value.trim();
+      if (!title || !text) return;
+      els.saveBtn.disabled = true;
+
+      try {
+        if (editingId !== null) {
+          await updateDoc(doc(db, "messages", editingId), { title, category, text, updatedAt: serverTimestamp() });
+          selectedId = editingId;
+        } else {
+          const docRef = await addDoc(messagesCollection, { title, category, text, useCount: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+          selectedId = docRef.id;
+        }
+        clearForm();
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível salvar no Firebase.");
+      } finally {
+        els.saveBtn.disabled = false;
+      }
+    }
+
+    function startEditing(message) {
+      editingId = message.id;
+      selectedId = message.id;
+      els.newTitle.value = message.title || "";
+      els.newCategory.value = message.category || "";
+      els.newText.value = message.text || "";
+      render();
+    }
+
+    async function deleteMessageById(id) {
+      if (!confirm("Deseja apagar esta mensagem?")) return;
+      try {
+        await deleteDoc(doc(db, "messages", id));
+        if (selectedId === id) selectedId = null;
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível apagar no Firebase.");
+      }
+    }
+
+    async function copyText() {
+      const text = els.previewText.textContent;
+      if (!text) return;
+      
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      
+      const currentMsg = selectedMessage();
+      if (currentMsg && currentMsg.id) {
+        const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
+        if (cardEl) {
+          cardEl.classList.remove("copied-effect");
+          void cardEl.offsetWidth; 
+          cardEl.classList.add("copied-effect");
+        }
+      }
+
+      els.copyBtn.textContent = "✓ Copiado!";
+      els.copyBtn.classList.add("success");
+      setTimeout(() => { 
+        els.copyBtn.textContent = "📋 Copiar"; 
+        els.copyBtn.classList.remove("success");
+      }, 1400);
+
+      if (currentMsg && currentMsg.id) {
+        try {
+          await updateDoc(doc(db, "messages", currentMsg.id), {
+            useCount: increment(1)
+          });
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+        if (event.key === "Enter" && document.activeElement === els.search) {
+          els.search.blur();
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (filteredMessagesCache.length === 0) return;
+      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
+        selectedId = filteredMessagesCache[nextIndex].id;
+        render();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : filteredMessagesCache.length - 1;
+        selectedId = filteredMessagesCache[prevIndex].id;
+        render();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        copyText();
+      }
+    });
+
+    function exportBackup() {
+      if (messages.length === 0) {
+        alert("Nenhuma mensagem para exportar.");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    document.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
+      });
+    });
+
+    els.clientName.addEventListener("input", render);
+    els.search.addEventListener("input", render);
+    els.copyBtn.addEventListener("click", copyText);
+    els.saveBtn.addEventListener("click", saveForm);
+    els.cancelBtn.addEventListener("click", clearForm);
+    els.exportBtn.addEventListener("click", exportBackup);
+
+    render();
+    startRealtimeSync();
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
