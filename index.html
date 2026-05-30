@@ -33,23 +33,31 @@
     input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; font-size: 15px; outline: none; background: white; color: var(--text); transition: all 0.2s; }
     textarea { resize: vertical; min-height: 130px; line-height: 1.5; }
     input:focus, textarea:focus { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
+    
     .searchbox { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 14px; padding: 0 16px; background: white; transition: all 0.2s; }
     .searchbox:focus-within { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(9,9,11,0.05); }
     .searchbox input { border: 0; padding-left: 0; }
     
     /* Abas Deslizantes */
-    .tabs-container { border-bottom: 1px solid var(--border); margin: -10px -24px 10px -24px; padding: 0 24px; display: flex; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; gap: 4px; }
+    .tabs-container { border-bottom: 1px solid var(--border); margin: -10px -24px 10px -24px; padding: 0 24px 8px 24px; display: flex; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; gap: 4px; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tab-btn { background: transparent; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--dark); border-bottom-color: var(--dark); }
 
-    .list { display: flex; flex-direction: column; gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
+    /* Lista de Mensagens Esquerda */
+    .list { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
     .message-btn { width: 100%; border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: left; background: var(--card); cursor: pointer; color: var(--text); transition: all 0.2s; position: relative; }
     .message-btn:hover { background: var(--soft); transform: translateY(-1px); }
-    .message-btn.active { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     
-    /* Animação de Feedback ao Copiar */
+    /* CORREÇÃO CRUCIAL: Cores Legíveis no Card Ativo/Selecionado */
+    .message-btn.active { background: var(--dark) !important; border-color: var(--dark) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .message-btn.active .message-title { color: #ffffff !important; }
+    .message-btn.active .message-cat { color: #f4f4f5 !important; background: rgba(255,255,255,0.15) !important; }
+    .message-btn.active .message-count { color: #d4d4d8 !important; }
+    .message-btn.active .icon { filter: brightness(0) invert(1); } /* Torna os emojis edit/delete brancos e visíveis */
+
+    /* Animação ao Copiar */
     @keyframes copyFlash {
       0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.6); border-color: var(--primary); }
       100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
@@ -57,16 +65,15 @@
     .message-btn.copied-effect { animation: copyFlash 0.5s ease-out; }
 
     .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .message-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-    .message-info-row { display: flex; align-items: center; gap: 6px; }
-    .message-cat { color: var(--muted); font-size: 12px; font-weight: 600; background: var(--soft); padding: 3px 8px; border-radius: 6px; display: inline-block; }
+    .message-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: var(--text); }
+    .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .message-cat { color: var(--muted); font-size: 12px; font-weight: 600; background: var(--soft); padding: 4px 10px; border-radius: 8px; display: inline-block; }
     .message-count { font-size: 11px; color: var(--muted); font-weight: 500; }
-    .active .message-cat { color: #e4e4e7; background: rgba(255,255,255,0.15); }
-    .active .message-count { color: #a1a1aa; }
+    
     .icons { display: flex; gap: 4px; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 14px; padding: 6px; border-radius: 8px; transition: background 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.05); }
-    .active .icon:hover { background: rgba(255,255,255,0.2); }
+    .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); }
     
     .preview { min-height: 220px; white-space: pre-wrap; background: var(--soft); border-radius: 18px; padding: 20px; line-height: 1.6; border: 1px solid var(--border); font-size: 15px; }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -204,320 +211,4 @@
       newCategory: document.getElementById("newCategory"),
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
-      cancelBtn: document.getElementById("cancelBtn"),
-      filterTabs: document.getElementById("filterTabs"),
-      exportBtn: document.getElementById("exportBtn")
-    };
-
-    function getGreeting(date = new Date()) {
-      const hour = date.getHours();
-      if (hour < 12) return "Bom dia";
-      if (hour < 18) return "Boa tarde";
-      return "Boa noite";
-    }
-
-    function buildFinalText(template, greeting, clientName) {
-      return (template || "")
-        .replaceAll("{saudacao}", greeting)
-        .replaceAll("{nome}", clientName.trim())
-        .replace(/, !/g, "!")
-        .replace(/, \n/g, "\n")
-        .replace(/  +/g, " ")
-        .trim();
-    }
-
-    function appendWithSmartSpacing(currentText, insertion) {
-      const text = currentText || "";
-      const needsSpace = text.length > 0 && !text.endsWith(" ") && !text.endsWith("\n");
-      return `${text}${needsSpace ? " " : ""}${insertion}`;
-    }
-
-    function startRealtimeSync() {
-      onSnapshot(messagesCollection, (snapshot) => {
-        messages = snapshot.docs.map((docItem) => {
-          const data = docItem.data();
-          return { 
-            id: docItem.id, 
-            useCount: 0, 
-            title: "", 
-            category: "Geral", 
-            text: "",
-            createdAt: { toMillis: () => 0 },
-            ...data 
-          };
-        });
-
-        messages.sort((a, b) => {
-          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-          return timeA - timeB;
-        });
-
-        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
-        firebaseReady = true;
-        els.syncStatus.textContent = "Sincronizado na nuvem";
-        renderCategories();
-        render();
-      }, (error) => {
-        console.error("Erro no onSnapshot: ", error);
-        els.syncStatus.textContent = "Erro ao conectar no Firebase";
-        firebaseReady = false;
-        render();
-      });
-    }
-
-    function renderCategories() {
-      const categories = new Set();
-      let hasUsage = false;
-      messages.forEach(m => { 
-        if(m.category) categories.add(m.category.trim());
-        if(m.useCount && m.useCount > 0) hasUsage = true;
-      });
-      
-      let html = "";
-      if (hasUsage) {
-        html += `<button class="tab-btn ${currentSelectedCategory === 'top_used' ? 'active' : ''}" data-category="top_used">⭐ Mais Usadas</button>`;
-      }
-      html += `<button class="tab-btn ${currentSelectedCategory === 'all' ? 'active' : ''}" data-category="all">Todas</button>`;
-      
-      categories.forEach(cat => {
-        html += `<button class="tab-btn ${currentSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>`;
-      });
-      els.filterTabs.innerHTML = html;
-
-      els.filterTabs.querySelectorAll(".tab-btn").forEach(tab => {
-        tab.addEventListener("click", () => {
-          currentSelectedCategory = tab.dataset.category;
-          renderCategories();
-          render();
-          tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        });
-      });
-    }
-
-    function selectedMessage() {
-      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
-    }
-
-    function render() {
-      const greeting = getGreeting();
-      els.greetingLabel.textContent = greeting;
-
-      const term = els.search.value.toLowerCase().trim();
-      
-      let filtered = messages.filter((message) => {
-        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
-        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
-        return matchesSearch && matchesCategory;
-      });
-
-      if (currentSelectedCategory === "top_used") {
-        filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
-      }
-
-      filteredMessagesCache = filtered; 
-
-      els.messageList.innerHTML = "";
-      if (filtered.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "message-btn";
-        empty.style.textAlign = "center";
-        empty.style.color = "var(--muted)";
-        empty.textContent = firebaseReady ? "Nenhuma resposta encontrada." : "Carregando mensagens...";
-        els.messageList.appendChild(empty);
-      } else {
-        filtered.forEach((message) => {
-          const btn = document.createElement("button");
-          btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
-          btn.setAttribute("id", `msg-card-${message.id}`);
-          
-          const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
-          
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div><span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar mensagem">✏️</span><span class="icon delete" title="Excluir mensagem">🗑️</span></div></div>`;
-          btn.querySelector(".message-title").textContent = message.title || "";
-          btn.querySelector(".message-cat").textContent = message.category || "Geral";
-          btn.querySelector(".message-count").textContent = countText;
-          
-          btn.addEventListener("click", () => { selectedId = message.id; render(); });
-          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
-          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
-          els.messageList.appendChild(btn);
-
-          if (message.id === selectedId) {
-            btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
-        });
-      }
-
-      const selected = selectedMessage();
-      const finalText = buildFinalText(selected?.text, greeting, els.clientName.value);
-      els.previewTitle.textContent = selected?.title || "Nenhuma mensagem";
-      els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
-      els.copyBtn.disabled = !finalText;
-
-      const isEditing = editingId !== null;
-      els.formMode.textContent = isEditing ? "Editando resposta" : "Nova resposta";
-      els.formTitle.textContent = isEditing ? "Alterar mensagem" : "Cadastrar mensagem";
-      els.saveBtn.textContent = isEditing ? "💾 Salvar alterações" : "＋ Salvar mensagem";
-      els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
-    }
-
-    function clearForm() {
-      editingId = null;
-      els.newTitle.value = "";
-      els.newCategory.value = "";
-      els.newText.value = "";
-      render();
-    }
-
-    async function saveForm() {
-      const title = els.newTitle.value.trim();
-      const category = els.newCategory.value.trim() || "Geral";
-      const text = els.newText.value.trim();
-      if (!title || !text) return;
-      els.saveBtn.disabled = true;
-
-      try {
-        if (editingId !== null) {
-          await updateDoc(doc(db, "messages", editingId), { title, category, text, updatedAt: serverTimestamp() });
-          selectedId = editingId;
-        } else {
-          const docRef = await addDoc(messagesCollection, { title, category, text, useCount: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-          selectedId = docRef.id;
-        }
-        clearForm();
-      } catch (error) {
-        console.error(error);
-        alert("Não foi possível salvar no Firebase.");
-      } finally {
-        els.saveBtn.disabled = false;
-      }
-    }
-
-    function startEditing(message) {
-      editingId = message.id;
-      selectedId = message.id;
-      els.newTitle.value = message.title || "";
-      els.newCategory.value = message.category || "";
-      els.newText.value = message.text || "";
-      render();
-    }
-
-    async function deleteMessageById(id) {
-      if (!confirm("Deseja apagar esta mensagem?")) return;
-      try {
-        await deleteDoc(doc(db, "messages", id));
-        if (selectedId === id) selectedId = null;
-      } catch (error) {
-        console.error(error);
-        alert("Não foi possível apagar no Firebase.");
-      }
-    }
-
-    async function copyText() {
-      const text = els.previewText.textContent;
-      if (!text) return;
-      
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
-      
-      const currentMsg = selectedMessage();
-      if (currentMsg && currentMsg.id) {
-        const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
-        if (cardEl) {
-          cardEl.classList.remove("copied-effect");
-          void cardEl.offsetWidth; 
-          cardEl.classList.add("copied-effect");
-        }
-      }
-
-      els.copyBtn.textContent = "✓ Copiado!";
-      els.copyBtn.classList.add("success");
-      setTimeout(() => { 
-        els.copyBtn.textContent = "📋 Copiar"; 
-        els.copyBtn.classList.remove("success");
-      }, 1400);
-
-      if (currentMsg && currentMsg.id) {
-        try {
-          await updateDoc(doc(db, "messages", currentMsg.id), {
-            useCount: increment(1)
-          });
-        } catch(e) {
-          console.error("Erro ao incrementar contador: ", e);
-        }
-      }
-    }
-
-    window.addEventListener("keydown", (event) => {
-      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
-        if (event.key === "Enter" && document.activeElement === els.search) {
-          els.search.blur();
-          event.preventDefault();
-        }
-        return;
-      }
-
-      if (filteredMessagesCache.length === 0) return;
-
-      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
-        selectedId = filteredMessagesCache[nextIndex].id;
-        render();
-      } else if (event.key === "ArrowUp") {
-        event.preventDefault();
-        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : filteredMessagesCache.length - 1;
-        selectedId = filteredMessagesCache[prevIndex].id;
-        render();
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        copyText();
-      }
-    });
-
-    function exportBackup() {
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    document.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
-      });
-    });
-
-    els.clientName.addEventListener("input", render);
-    els.search.addEventListener("input", render);
-    els.copyBtn.addEventListener("click", copyText);
-    els.saveBtn.addEventListener("click", saveForm);
-    els.cancelBtn.addEventListener("click", clearForm);
-    els.exportBtn.addEventListener("click", exportBackup);
-
-    render();
-    startRealtimeSync();
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-    }
-  </script>
-</body>
-</html>
+      cancelBtn: document.

@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-firebase-v5";
+const CACHE_NAME = "responde-facil-firebase-v6";
 const FILES = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
