@@ -1,5 +1,5 @@
-const CACHE_NAME = "responde-facil-firebase-v9";
-const FILES = ["./", "./index.html", "./manifest.json"];
+const CACHE_NAME = "responde-facil-firebase-v10";
+const FILES = ["./", "./index.html", "./manifest.json", "./favicon.ico", "./icons/icon-32.png", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
