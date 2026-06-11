@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-firebase-v13";
+const CACHE_NAME = "responde-facil-firebase-v13-corrigido";
 const FILES = ["./", "./index.html", "./manifest.json", "./favicon.ico", "./icons/icon-32.png", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -12,10 +12,17 @@ self.addEventListener("activate", (event) => {
       Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => response || fetch(event.request))
+    fetch(event.request)
+      .then((response) => {
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone)).catch(() => {});
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

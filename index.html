@@ -282,8 +282,8 @@
       }
 
       // Limite preventivo de 1.5MB para evitar estouro de tamanho do documento no Firestore
-      if (file.size > 1500000) {
-        alert("O arquivo é muito grande! Escolha uma imagem ou PDF de no máximo 1.5MB.");
+      if (file.size > 650000) {
+        alert("O arquivo é muito grande para salvar no Firebase. Escolha uma imagem ou PDF de até 650 KB, ou salve a mensagem sem anexo.");
         els.newFile.value = "";
         return;
       }
@@ -474,6 +474,8 @@
       const text = els.newText.value.trim();
       if (!title || !text) return;
       els.saveBtn.disabled = true;
+      const originalSaveText = els.saveBtn.textContent;
+      els.saveBtn.textContent = "Salvando...";
 
       const payload = { 
         title, 
@@ -502,9 +504,10 @@
         clearForm();
       } catch (error) {
         console.error(error);
-        alert("Não foi possível salvar no Firebase.");
+        alert("Não foi possível salvar no Firebase.\n\nDetalhe: " + (error.code || error.message || error));
       } finally {
         els.saveBtn.disabled = false;
+        els.saveBtn.textContent = originalSaveText;
       }
     }
 
@@ -516,14 +519,15 @@
       els.newText.value = message.text || "";
       
       if (message.fileData) {
-        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro se quiser substituir.`;
-        currentBase64File = message.fileData;
-        currentFileName = message.fileName;
+        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
       } else {
         els.fileStatusInfo.textContent = "";
-        currentBase64File = null;
-        currentFileName = null;
       }
+
+      // Não recarrega automaticamente o anexo antigo no formulário.
+      // Assim, editar só o texto não tenta reenviar arquivo grande ao Firebase.
+      currentBase64File = null;
+      currentFileName = null;
       
       render();
     }
