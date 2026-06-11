@@ -32,7 +32,6 @@
     .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
     .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
     
-    /* Estrutura do Grid Principal Fixa */
     .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
     .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
     .space > * + * { margin-top: 16px; }
@@ -42,24 +41,25 @@
     textarea { resize: vertical; min-height: 120px; }
     input:focus, textarea:focus, select:focus { border-color: #111; }
     
+    /* Estilização para o campo de arquivo */
+    input[type="file"] { padding: 10px; font-size: 13px; background: var(--soft); cursor: pointer; }
+
     .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
     .searchbox input { border: 0; padding-left: 0; height: 46px; }
     
     .filter-container { margin-top: 12px; }
     select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
 
-    /* Lista com rolagem vertical controlada */
     .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
     
-    /* Botões de Mensagem */
     .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
     .message-btn:hover { background: #e7e5e4; }
     
-    /* Visualização Ativa Clara e com Alto Contraste */
     .message-btn.active { background: var(--dark); color: white; }
     .message-btn.active .message-title { color: white; }
     .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
     .message-btn.active .message-count { color: #a8a29e; }
+    .message-btn.active .message-attachment-badge { background: rgba(255,255,255,0.25); color: white; }
     .message-btn.active .icon { color: white; opacity: 0.8; }
     .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); opacity: 1; }
 
@@ -75,20 +75,26 @@
     .message-cat { color: var(--muted); font-size: 12px; background: #e7e5e4; padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .message-count { font-size: 11px; color: var(--muted); }
     
+    /* Tag de anexo na lista */
+    .message-attachment-badge { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 2px; }
+
     .icons { display: flex; gap: 4px; flex-shrink: 0; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.08); }
     
-    .preview { min-height: 210px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
+    .preview { min-height: 160px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
     .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
     
+    .preview-actions { display: flex; gap: 8px; align-items: center; }
+
     .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
     .btn.secondary { background: #eee; color: var(--text); }
     .btn.success { background: var(--primary); color: white; }
+    .btn.info { background: #2563eb; color: white; }
     
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { border: 0; background: #eee; color: var(--text); padding: 9px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
@@ -97,6 +103,8 @@
     .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
     .actions-left { display: flex; gap: 8px; }
     
+    .file-status-info { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
     @media (max-width: 850px) { 
       body { padding: 10px; } 
       .grid, .form-grid { grid-template-columns: 1fr; } 
@@ -147,7 +155,10 @@
               <p class="muted">Prévia da resposta</p>
               <h2 id="previewTitle">Nenhuma mensagem</h2>
             </div>
-            <button class="btn" id="copyBtn">📋 Copiar</button>
+            <div class="preview-actions">
+              <button class="btn info" id="downloadFileBtn" style="display: none;">📎 Baixar Anexo</button>
+              <button class="btn" id="copyBtn">📋 Copiar</button>
+            </div>
           </div>
           <div class="preview" id="previewText"></div>
         </section>
@@ -162,6 +173,13 @@
             <input id="newTitle" placeholder="Título" />
             <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
           </div>
+          
+          <div>
+            <label>Anexar Imagem ou PDF (Opcional)</label>
+            <input type="file" id="newFile" accept="image/*, application/pdf" />
+            <div id="fileStatusInfo" class="file-status-info"></div>
+          </div>
+
           <div class="chips">
             <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
             <button class="chip" data-insert="{nome}">Inserir nome</button>
@@ -198,19 +216,14 @@
     const db = getFirestore(app);
     const messagesCollection = collection(db, "messages");
 
-    const initialMessages = [
-      { title:"Pedido mínimo", category:"Vendas", text:"{saudacao}, {nome}! Tudo bem?\n\nNosso pedido mínimo é de R$ 600,00. O que você gostaria de acrescentar?" },
-      { title:"Canal exclusivo para vendas", category:"Atendimento", text:"{saudacao}, {nome}! Tudo bem?\n\nEste canal é exclusivo para vendas e orçamentos. Para assuntos de SAC, por favor envie um e-mail para contato@winnerhorse.com.br." },
-      { title:"Revenda / representante", category:"Comercial", text:"{saudacao}, {nome}! Tudo bem?\n\nPara avaliarmos a possibilidade de revenda, poderia nos enviar o CNPJ, inscrição estadual, cidade de atuação, estrutura comercial e média de volume mensal de vendas?" },
-      { title:"Agradecimento após pedido", category:"Vendas", text:"{saudacao}, {nome}! Pedido recebido, obrigada! Vou encaminhar para conferência e já seguimos com as próximas informações." }
-    ];
-
     let messages = [];
     let filteredMessagesCache = []; 
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
     let currentSelectedCategory = "all"; 
+    let currentBase64File = null;
+    let currentFileName = null;
 
     const els = {
       greetingLabel: document.getElementById("greetingLabel"),
@@ -221,10 +234,13 @@
       previewTitle: document.getElementById("previewTitle"),
       previewText: document.getElementById("previewText"),
       copyBtn: document.getElementById("copyBtn"),
+      downloadFileBtn: document.getElementById("downloadFileBtn"),
       formMode: document.getElementById("formMode"),
       formTitle: document.getElementById("formTitle"),
       newTitle: document.getElementById("newTitle"),
       newCategory: document.getElementById("newCategory"),
+      newFile: document.getElementById("newFile"),
+      fileStatusInfo: document.getElementById("fileStatusInfo"),
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
       cancelBtn: document.getElementById("cancelBtn"),
@@ -255,20 +271,33 @@
       return `${text}${needsSpace ? " " : ""}${insertion}`;
     }
 
-    async function seedInitialMessagesIfEmpty() {
-      try {
-        const snapshot = await getDocs(messagesCollection);
-        if (!snapshot.empty) return;
-        await Promise.all(initialMessages.map((message) => 
-          addDoc(messagesCollection, { ...message, useCount: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
-        ));
-      } catch (e) {
-        console.error("Erro ao verificar/inserir dados iniciais:", e);
+    // Monitora a seleção de arquivos e converte para Base64
+    els.newFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) {
+        currentBase64File = null;
+        currentFileName = null;
+        els.fileStatusInfo.textContent = "";
+        return;
       }
-    }
+
+      // Limite preventivo de 1.5MB para evitar estouro de tamanho do documento no Firestore
+      if (file.size > 1500000) {
+        alert("O arquivo é muito grande! Escolha uma imagem ou PDF de no máximo 1.5MB.");
+        els.newFile.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        currentBase64File = reader.result; 
+        currentFileName = file.name;
+        els.fileStatusInfo.textContent = `📎 Arquivo pronto: ${file.name}`;
+      };
+      reader.readAsDataURL(file);
+    });
 
     function startRealtimeSync() {
-      // Sincronização resiliente sem cláusula orderBy direta no Firebase para não ocultar cards sem o atributo data
       onSnapshot(messagesCollection, (snapshot) => {
         messages = snapshot.docs.map((docItem) => {
           const data = docItem.data();
@@ -282,7 +311,6 @@
           };
         });
 
-        // Ordenação segura em memória por título em ordem alfabética (ou por data de criação se disponível)
         messages.sort((a, b) => {
           const titleA = (a.title || "").toLowerCase();
           const titleB = (b.title || "").toLowerCase();
@@ -326,7 +354,6 @@
         els.categoryFilter.appendChild(optTop);
       }
       
-      // Converte para array para ordenar alfabeticamente as categorias no seletor
       Array.from(categories).sort().forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat;
@@ -378,8 +405,9 @@
           btn.setAttribute("id", `msg-card-${message.id}`);
           
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
+          const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
           
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div><span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
@@ -401,6 +429,14 @@
       els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
       els.copyBtn.disabled = !finalText;
 
+      // Exibe ou esconde o botão de baixar anexo na área de prévia
+      if (selected && selected.fileData) {
+        els.downloadFileBtn.style.display = "inline-flex";
+        els.downloadFileBtn.textContent = `📎 Baixar ${selected.fileName || 'Anexo'}`;
+      } else {
+        els.downloadFileBtn.style.display = "none";
+      }
+
       const isEditing = editingId !== null;
       els.formMode.textContent = isEditing ? "Editando resposta" : "Nova resposta";
       els.formTitle.textContent = isEditing ? "Alterar mensagem" : "Cadastrar mensagem";
@@ -408,11 +444,27 @@
       els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
     }
 
+    // Executa o download do anexo quando clicado
+    els.downloadFileBtn.addEventListener("click", () => {
+      const selected = selectedMessage();
+      if (!selected || !selected.fileData) return;
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = selected.fileData;
+      downloadLink.download = selected.fileName || "arquivo_anexo";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    });
+
     function clearForm() {
       editingId = null;
       els.newTitle.value = "";
       els.newCategory.value = "";
-      els.newText.value = "";
+      els.newFile.value = "";
+      els.fileStatusInfo.textContent = "";
+      currentBase64File = null;
+      currentFileName = null;
       render();
     }
 
@@ -423,12 +475,28 @@
       if (!title || !text) return;
       els.saveBtn.disabled = true;
 
+      const payload = { 
+        title, 
+        category, 
+        text, 
+        updatedAt: serverTimestamp() 
+      };
+
+      // Inclui os dados do arquivo se houver um novo carregado
+      if (currentBase64File) {
+        payload.fileData = currentBase64File;
+        payload.fileName = currentFileName;
+      }
+
       try {
         if (editingId !== null) {
-          await updateDoc(doc(db, "messages", editingId), { title, category, text, updatedAt: serverTimestamp() });
+          // Se na edição não foi subido um arquivo novo, mantém o antigo existente no registro do Firestore
+          await updateDoc(doc(db, "messages", editingId), payload);
           selectedId = editingId;
         } else {
-          const docRef = await addDoc(messagesCollection, { title, category, text, useCount: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+          payload.useCount = 0;
+          payload.createdAt = serverTimestamp();
+          const docRef = await addDoc(messagesCollection, payload);
           selectedId = docRef.id;
         }
         clearForm();
@@ -446,6 +514,17 @@
       els.newTitle.value = message.title || "";
       els.newCategory.value = message.category || "";
       els.newText.value = message.text || "";
+      
+      if (message.fileData) {
+        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro se quiser substituir.`;
+        currentBase64File = message.fileData;
+        currentFileName = message.fileName;
+      } else {
+        els.fileStatusInfo.textContent = "";
+        currentBase64File = null;
+        currentFileName = null;
+      }
+      
       render();
     }
 
@@ -558,13 +637,7 @@
     els.exportBtn.addEventListener("click", exportBackup);
 
     render();
-    
-    seedInitialMessagesIfEmpty()
-      .then(startRealtimeSync)
-      .catch((err) => {
-        console.error(err);
-        startRealtimeSync();
-      });
+    startRealtimeSync();
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js").catch(() => {});
