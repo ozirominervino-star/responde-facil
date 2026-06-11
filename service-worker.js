@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-firebase-v12";
+const CACHE_NAME = "responde-facil-firebase-v13";
 const FILES = ["./", "./index.html", "./manifest.json", "./favicon.ico", "./icons/icon-32.png", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
