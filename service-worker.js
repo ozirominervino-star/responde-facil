@@ -1,27 +1,18 @@
-const CACHE_NAME = "responde-facil-firebase-v15-upload-fallback";
+const CACHE_NAME = "responde-facil-firestore-v3-restauracao";
 const FILES = [
   "./",
   "./index.html",
   "./manifest.json",
   "./favicon.ico",
   "./icons/icon-32.png",
-  "./icons/icon-48.png",
-  "./icons/icon-72.png",
-  "./icons/icon-96.png",
-  "./icons/icon-128.png",
   "./icons/icon-180.png",
   "./icons/icon-192.png",
-  "./icons/icon-256.png",
   "./icons/icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      Promise.all(FILES.map((file) => cache.add(file).catch(() => null)))
-    )
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES)));
 });
 
 self.addEventListener("activate", (event) => {
@@ -34,18 +25,21 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+  const request = event.request;
+  const url = new URL(request.url);
 
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
+  // Não intercepta Firebase/Google APIs. Isso evita cache antigo interferindo na sincronização.
+  if (request.method !== "GET" || url.origin !== self.location.origin) {
+    return;
+  }
 
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
         const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone)).catch(() => {});
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(request))
   );
 });

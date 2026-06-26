@@ -1,31 +1,19 @@
-# Responde Fácil com Firebase - versão corrigida v2
+# Responde Fácil - versão v3 restauração
 
-Esta versão corrige o travamento em "Enviando anexo 0%".
+Esta versão prioriza restaurar a visualização dos registros existentes e evitar o travamento em "Enviando anexo 0%".
 
-Principais ajustes:
-- Troca do envio resumível por envio simples ao Firebase Storage, que é mais estável para este app.
-- Timeout de 45 segundos: o app não fica mais travado indefinidamente.
-- Plano B para anexos pequenos: se o Storage falhar, o app oferece salvar o arquivo pequeno no Firestore em modo compatível.
-- Service worker atualizado para não interferir em requisições externas.
+O que mudou:
+- Voltou a usar somente Firestore na coleção "messages".
+- Removeu Firebase Storage do app para evitar travamento no upload.
+- Mostra no topo quantas respostas foram carregadas.
+- Não intercepta Firebase no service-worker.
+- Compacta imagens automaticamente antes de salvar.
+- PDFs precisam ter até aproximadamente 520 KB nesta versão.
 
-Arquivos necessários na raiz do GitHub/Vercel:
+Arquivos necessários na raiz do projeto:
 - index.html
 - manifest.json
 - service-worker.js
 - README.txt
+- favicon.ico
 - pasta icons completa
-
-Atenção: para anexos funcionarem no modo ideal, o Firebase Storage precisa estar ativado e com regra permitindo escrita/leitura para este app.
-
-Regra simples para teste, no Firebase Console > Storage > Rules:
-
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /attachments/{allPaths=**} {
-      allow read, write: if true;
-    }
-  }
-}
-
-Essa regra é permissiva para facilitar o uso sem login. Para produção, o ideal é configurar autenticação e regras mais restritas.
