@@ -1,14 +1,6 @@
-# Responde Fácil - versão v3 restauração
+# Responde Fácil v4 - Imagens no Firestore
 
-Esta versão prioriza restaurar a visualização dos registros existentes e evitar o travamento em "Enviando anexo 0%".
-
-O que mudou:
-- Voltou a usar somente Firestore na coleção "messages".
-- Removeu Firebase Storage do app para evitar travamento no upload.
-- Mostra no topo quantas respostas foram carregadas.
-- Não intercepta Firebase no service-worker.
-- Compacta imagens automaticamente antes de salvar.
-- PDFs precisam ter até aproximadamente 520 KB nesta versão.
+Esta versão mantém a coleção Firestore `messages` e salva imagens compactadas diretamente no documento, sem Firebase Storage.
 
 Arquivos necessários na raiz do projeto:
 - index.html
@@ -16,4 +8,9 @@ Arquivos necessários na raiz do projeto:
 - service-worker.js
 - README.txt
 - favicon.ico
-- pasta icons completa
+- pasta icons/ completa
+
+Observação:
+- Imagens são convertidas para JPG e compactadas automaticamente.
+- PDFs são aceitos apenas até 520 KB, porque o Firestore tem limite de tamanho por documento.
+- Depois de publicar, abra com ?v=imagens4 para evitar cache antigo.

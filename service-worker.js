@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-firestore-v3-restauracao";
+const CACHE_NAME = "responde-facil-firestore-v4-imagens";
 const FILES = [
   "./",
   "./index.html",
