@@ -11,50 +11,51 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
   <title>Responde Fácil</title>
   <style>
-    :root { 
-      --bg: #f5f5f4; 
-      --card: #ffffff; 
-      --text: #1c1917; 
-      --muted: #78716c; 
-      --dark: #111111; 
-      --soft: #f5f5f5; 
-      --border: #e7e5e4; 
-      --primary: #10b981; 
+    :root {
+      --bg: #f5f5f4;
+      --card: #ffffff;
+      --text: #1c1917;
+      --muted: #78716c;
+      --dark: #111111;
+      --soft: #f5f5f5;
+      --border: #e7e5e4;
+      --primary: #10b981;
+      --blue: #2563eb;
+      --danger: #dc2626;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
     .app { max-width: 1100px; margin: 0 auto; }
-    
+
     header { background: var(--dark); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
     header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
     h1 { margin: 0; font-size: 32px; }
     h2 { margin: 0; font-size: 22px; }
     .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
     .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
-    
+    .status.ok { color: #065f46; background: #d1fae5; }
+    .status.warning { color: #92400e; background: #fef3c7; }
+    .status.error { color: #991b1b; background: #fee2e2; }
+
     .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
     .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
     .space > * + * { margin-top: 16px; }
-    
+
     label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
     input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
     textarea { resize: vertical; min-height: 120px; }
     input:focus, textarea:focus, select:focus { border-color: #111; }
-    
-    /* Estilização para o campo de arquivo */
     input[type="file"] { padding: 10px; font-size: 13px; background: var(--soft); cursor: pointer; }
 
     .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
     .searchbox input { border: 0; padding-left: 0; height: 46px; }
-    
+
     .filter-container { margin-top: 12px; }
     select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
 
     .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
-    
     .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
     .message-btn:hover { background: #e7e5e4; }
-    
     .message-btn.active { background: var(--dark); color: white; }
     .message-btn.active .message-title { color: white; }
     .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
@@ -74,42 +75,42 @@
     .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .message-cat { color: var(--muted); font-size: 12px; background: #e7e5e4; padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .message-count { font-size: 11px; color: var(--muted); }
-    
-    /* Tag de anexo na lista */
     .message-attachment-badge { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 2px; }
 
     .icons { display: flex; gap: 4px; flex-shrink: 0; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.08); }
-    
+
     .preview { min-height: 160px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
     .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
-    
-    .preview-actions { display: flex; gap: 8px; align-items: center; }
+    .preview-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
     .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
     .btn.secondary { background: #eee; color: var(--text); }
     .btn.success { background: var(--primary); color: white; }
-    .btn.info { background: #2563eb; color: white; }
-    
+    .btn.info { background: var(--blue); color: white; }
+    .btn.danger { background: #fee2e2; color: var(--danger); }
+
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { border: 0; background: #eee; color: var(--text); padding: 9px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
     .chip:hover { background: #e7e5e4; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
-    .actions-left { display: flex; gap: 8px; }
-    
-    .file-status-info { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .actions-left { display: flex; gap: 8px; flex-wrap: wrap; }
+    .file-status-info { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    .file-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 
-    @media (max-width: 850px) { 
-      body { padding: 10px; } 
-      .grid, .form-grid { grid-template-columns: 1fr; } 
-      h1 { font-size: 26px; } 
-      header, .card { border-radius: 22px; } 
+    @media (max-width: 850px) {
+      body { padding: 10px; }
+      .grid, .form-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 26px; }
+      header, .card { border-radius: 22px; }
+      .preview-actions, .actions, .actions-left { width: 100%; }
+      .btn { justify-content: center; }
     }
   </style>
 </head>
@@ -123,7 +124,7 @@
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
         <div style="height:8px"></div>
-        <span class="status" id="syncStatus">Conectando ao Firebase...</span>
+        <span class="status warning" id="syncStatus">Conectando ao Firebase...</span>
       </div>
     </header>
 
@@ -131,13 +132,13 @@
       <section class="card space">
         <div>
           <label>Nome do cliente</label>
-          <input id="clientName" placeholder="Ex: Danilo" />
+          <input id="clientName" placeholder="Ex: Danilo" autocomplete="off" />
         </div>
         <div>
           <label>Buscar resposta</label>
           <div class="searchbox">
             <span>🔎</span>
-            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
+            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." autocomplete="off" />
           </div>
           <div class="filter-container">
             <select class="category-select" id="categoryFilter">
@@ -156,7 +157,7 @@
               <h2 id="previewTitle">Nenhuma mensagem</h2>
             </div>
             <div class="preview-actions">
-              <button class="btn info" id="downloadFileBtn" style="display: none;">📎 Baixar Anexo</button>
+              <button class="btn info" id="downloadFileBtn" style="display: none;">📎 Abrir anexo</button>
               <button class="btn" id="copyBtn">📋 Copiar</button>
             </div>
           </div>
@@ -170,20 +171,23 @@
             <p class="hint">Dica: use os botões abaixo para inserir os campos automáticos na mensagem.</p>
           </div>
           <div class="form-grid">
-            <input id="newTitle" placeholder="Título" />
-            <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
+            <input id="newTitle" placeholder="Título" autocomplete="off" />
+            <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" autocomplete="off" />
           </div>
-          
+
           <div>
-            <label>Anexar Imagem ou PDF (Opcional)</label>
+            <label>Anexar imagem ou PDF (opcional)</label>
             <input type="file" id="newFile" accept="image/*, application/pdf" />
             <div id="fileStatusInfo" class="file-status-info"></div>
+            <div class="file-toolbar">
+              <button class="btn danger" id="removeFileBtn" type="button" style="display:none; font-size:12px; padding:10px 14px;">Remover anexo atual</button>
+            </div>
           </div>
 
           <div class="chips">
-            <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
-            <button class="chip" data-insert="{nome}">Inserir nome</button>
-            <button class="chip" data-insert="{saudacao}, {nome}! Tudo bem?">Inserir abertura completa</button>
+            <button class="chip" type="button" data-insert="{saudacao}">Inserir saudação</button>
+            <button class="chip" type="button" data-insert="{nome}">Inserir nome</button>
+            <button class="chip" type="button" data-insert="{saudacao}, {nome}! Tudo bem?">Inserir abertura completa</button>
           </div>
           <textarea id="newText" placeholder="Digite a mensagem. Use {saudacao} e {nome} onde quiser personalizar."></textarea>
           <div class="actions">
@@ -191,7 +195,7 @@
               <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
               <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
             </div>
-            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar Backup</button>
+            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar backup</button>
           </div>
         </section>
       </div>
@@ -200,7 +204,25 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      doc,
+      onSnapshot,
+      serverTimestamp,
+      increment,
+      deleteField
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getStorage,
+      ref as storageRef,
+      uploadBytes,
+      getDownloadURL,
+      deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -212,18 +234,23 @@
       measurementId: "G-SRD5TDMRFM"
     };
 
+    const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB. O arquivo fica no Storage; no Firestore ficam só os dados do link.
+    const FALLBACK_FILESTORE_MAX_SIZE = 650 * 1024; // Plano B: salva anexos pequenos no Firestore se o Storage falhar.
+    const UPLOAD_TIMEOUT_MS = 45000; // Evita ficar travado indefinidamente em 0%.
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
     const messagesCollection = collection(db, "messages");
 
     let messages = [];
-    let filteredMessagesCache = []; 
+    let filteredMessagesCache = [];
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
-    let currentSelectedCategory = "all"; 
-    let currentBase64File = null;
-    let currentFileName = null;
+    let currentSelectedCategory = "all";
+    let pendingFile = null;
+    let removeExistingFile = false;
 
     const els = {
       greetingLabel: document.getElementById("greetingLabel"),
@@ -240,6 +267,7 @@
       newTitle: document.getElementById("newTitle"),
       newCategory: document.getElementById("newCategory"),
       newFile: document.getElementById("newFile"),
+      removeFileBtn: document.getElementById("removeFileBtn"),
       fileStatusInfo: document.getElementById("fileStatusInfo"),
       newText: document.getElementById("newText"),
       saveBtn: document.getElementById("saveBtn"),
@@ -247,6 +275,14 @@
       categoryFilter: document.getElementById("categoryFilter"),
       exportBtn: document.getElementById("exportBtn")
     };
+
+    els.clientName.value = localStorage.getItem("respondeFacilClientName") || "";
+
+    function setSyncStatus(text, type = "warning") {
+      els.syncStatus.textContent = text;
+      els.syncStatus.classList.remove("ok", "warning", "error");
+      els.syncStatus.classList.add(type);
+    }
 
     function getGreeting(date = new Date()) {
       const hour = date.getHours();
@@ -271,60 +307,199 @@
       return `${text}${needsSpace ? " " : ""}${insertion}`;
     }
 
-    // Monitora a seleção de arquivos e converte para Base64
-    els.newFile.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        currentBase64File = null;
-        currentFileName = null;
-        els.fileStatusInfo.textContent = "";
-        return;
+    function hasAttachment(message) {
+      return Boolean(message && (message.fileUrl || message.fileData || message.storagePath));
+    }
+
+    function safeFileName(name) {
+      return (name || "arquivo")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9._-]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 120) || "arquivo";
+    }
+
+    function uniqueId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+      return `${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    }
+
+    function withTimeout(promise, ms, timeoutMessage) {
+      let timerId;
+      const timeoutPromise = new Promise((_, reject) => {
+        timerId = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+      });
+      return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timerId));
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error || new Error("Não foi possível ler o arquivo."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadFileToStorage(file) {
+      if (!navigator.onLine) {
+        throw new Error("Sem conexão com a internet. Conecte-se e tente salvar novamente.");
       }
 
-      // Limite preventivo de 1.5MB para evitar estouro de tamanho do documento no Firestore
-      if (file.size > 650000) {
-        alert("O arquivo é muito grande para salvar no Firebase. Escolha uma imagem ou PDF de até 650 KB, ou salve a mensagem sem anexo.");
-        els.newFile.value = "";
-        return;
-      }
+      const cleanName = safeFileName(file.name);
+      const path = `attachments/${new Date().toISOString().slice(0, 10)}/${Date.now()}_${uniqueId()}_${cleanName}`;
+      const fileRef = storageRef(storage, path);
 
-      const reader = new FileReader();
-      reader.onload = function () {
-        currentBase64File = reader.result; 
-        currentFileName = file.name;
-        els.fileStatusInfo.textContent = `📎 Arquivo pronto: ${file.name}`;
+      els.fileStatusInfo.textContent = "Enviando anexo para a nuvem...";
+      els.saveBtn.textContent = "Enviando anexo...";
+
+      const uploadPromise = (async () => {
+        const snapshot = await uploadBytes(fileRef, file, { contentType: file.type || "application/octet-stream" });
+        const fileUrl = await getDownloadURL(snapshot.ref);
+        return {
+          fileName: file.name,
+          fileType: file.type || "application/octet-stream",
+          fileSize: file.size,
+          storagePath: path,
+          fileUrl,
+          attachmentStorage: "firebase-storage"
+        };
+      })();
+
+      return withTimeout(
+        uploadPromise,
+        UPLOAD_TIMEOUT_MS,
+        "O envio do anexo ficou parado. Geralmente isso indica bloqueio nas regras do Firebase Storage ou instabilidade de conexão."
+      );
+    }
+
+    async function prepareAttachmentPayload(file) {
+      try {
+        return await uploadFileToStorage(file);
+      } catch (storageError) {
+        console.error("Falha ao enviar para o Firebase Storage:", storageError);
+
+        if (file.size <= FALLBACK_FILESTORE_MAX_SIZE) {
+          const useFallback = confirm(
+            "O anexo não conseguiu subir para o Firebase Storage.
+
+" +
+            "Como este arquivo é pequeno, posso salvar usando o modo compatível dentro do Firestore.
+" +
+            "Ele abre em outros dispositivos, mas o ideal continua sendo corrigir o Storage.
+
+" +
+            "Deseja salvar o anexo pelo modo compatível?"
+          );
+
+          if (useFallback) {
+            els.fileStatusInfo.textContent = "Salvando anexo em modo compatível...";
+            els.saveBtn.textContent = "Salvando anexo...";
+            const fileData = await fileToDataUrl(file);
+            return {
+              fileName: file.name,
+              fileType: file.type || "application/octet-stream",
+              fileSize: file.size,
+              fileData,
+              attachmentStorage: "firestore-base64"
+            };
+          }
+        }
+
+        throw storageError;
+      }
+    }
+
+    function buildAttachmentReplacement(uploadedFilePayload) {
+      return {
+        fileName: deleteField(),
+        fileType: deleteField(),
+        fileSize: deleteField(),
+        storagePath: deleteField(),
+        fileUrl: deleteField(),
+        fileData: deleteField(),
+        attachmentStorage: deleteField(),
+        ...uploadedFilePayload
       };
-      reader.readAsDataURL(file);
+    }
+
+    function deleteStorageFile(path) {
+      if (!path) return;
+      deleteObject(storageRef(storage, path)).catch((error) => console.warn("Não foi possível apagar o anexo antigo:", error));
+    }
+
+    els.newFile.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      pendingFile = null;
+      removeExistingFile = false;
+
+      if (!file) {
+        updateFileStatusForEditing();
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        alert("O arquivo é muito grande. Para manter o app leve, envie imagem ou PDF de até 15 MB.");
+        els.newFile.value = "";
+        updateFileStatusForEditing();
+        return;
+      }
+
+      pendingFile = file;
+      els.fileStatusInfo.textContent = `📎 Arquivo selecionado: ${file.name} (${formatBytes(file.size)}). Será enviado para a nuvem ao salvar.`;
+      els.removeFileBtn.style.display = "none";
     });
+
+    els.removeFileBtn.addEventListener("click", () => {
+      if (!editingId) return;
+      if (!confirm("Remover o anexo desta mensagem?")) return;
+      removeExistingFile = true;
+      pendingFile = null;
+      els.newFile.value = "";
+      els.fileStatusInfo.textContent = "🗑️ O anexo atual será removido quando você salvar as alterações.";
+      els.removeFileBtn.style.display = "none";
+    });
+
+    function formatBytes(bytes) {
+      if (!bytes) return "0 KB";
+      const units = ["B", "KB", "MB", "GB"];
+      let size = bytes;
+      let unitIndex = 0;
+      while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex += 1;
+      }
+      return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+    }
 
     function startRealtimeSync() {
       onSnapshot(messagesCollection, (snapshot) => {
         messages = snapshot.docs.map((docItem) => {
           const data = docItem.data();
-          return { 
-            id: docItem.id, 
-            useCount: 0, 
-            title: "", 
-            category: "Geral", 
+          return {
+            id: docItem.id,
+            useCount: 0,
+            title: "",
+            category: "Geral",
             text: "",
-            ...data 
+            ...data
           };
         });
 
         messages.sort((a, b) => {
           const titleA = (a.title || "").toLowerCase();
           const titleB = (b.title || "").toLowerCase();
-          return titleA.localeCompare(titleB);
+          return titleA.localeCompare(titleB, "pt-BR");
         });
 
-        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
         firebaseReady = true;
-        els.syncStatus.textContent = "Sincronizado na nuvem";
+        setSyncStatus("Sincronizado na nuvem", "ok");
         renderCategories();
         render();
       }, (error) => {
         console.error(error);
-        els.syncStatus.textContent = "Erro ao conectar no Firebase";
+        setSyncStatus("Erro ao conectar no Firebase", "error");
         firebaseReady = false;
         render();
       });
@@ -333,54 +508,55 @@
     function renderCategories() {
       const categories = new Set();
       let hasUsage = false;
-      messages.forEach(m => { 
-        if(m.category) categories.add(m.category.trim());
-        if(m.useCount && m.useCount > 0) hasUsage = true;
+      messages.forEach((message) => {
+        const category = (message.category || "Geral").trim();
+        if (category) categories.add(category);
+        if (message.useCount && message.useCount > 0) hasUsage = true;
       });
-      
+
+      if (currentSelectedCategory !== "all" && currentSelectedCategory !== "top_used" && !categories.has(currentSelectedCategory)) {
+        currentSelectedCategory = "all";
+      }
+      if (currentSelectedCategory === "top_used" && !hasUsage) currentSelectedCategory = "all";
+
       els.categoryFilter.innerHTML = "";
-      
+
       const optAll = document.createElement("option");
       optAll.value = "all";
       optAll.textContent = "📁 Filtrar por Categoria: Todas";
-      if(currentSelectedCategory === "all") optAll.selected = true;
+      optAll.selected = currentSelectedCategory === "all";
       els.categoryFilter.appendChild(optAll);
 
       if (hasUsage) {
         const optTop = document.createElement("option");
         optTop.value = "top_used";
         optTop.textContent = "⭐ Mais Usadas";
-        if(currentSelectedCategory === "top_used") optTop.selected = true;
+        optTop.selected = currentSelectedCategory === "top_used";
         els.categoryFilter.appendChild(optTop);
       }
-      
-      Array.from(categories).sort().forEach(cat => {
+
+      Array.from(categories).sort((a, b) => a.localeCompare(b, "pt-BR")).forEach((category) => {
         const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = `📁 ${cat}`;
-        if(currentSelectedCategory === cat) opt.selected = true;
+        opt.value = category;
+        opt.textContent = `📁 ${category}`;
+        opt.selected = currentSelectedCategory === category;
         els.categoryFilter.appendChild(opt);
       });
     }
 
-    els.categoryFilter.addEventListener("change", (e) => {
-      currentSelectedCategory = e.target.value;
+    els.categoryFilter.addEventListener("change", (event) => {
+      currentSelectedCategory = event.target.value;
       render();
     });
 
-    function selectedMessage() {
-      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
-    }
-
-    function render() {
-      const greeting = getGreeting();
-      els.greetingLabel.textContent = greeting;
-
+    function getFilteredMessages() {
       const term = els.search.value.toLowerCase().trim();
-      
-      let filtered = messages.filter((message) => {
-        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
-        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
+
+      const filtered = messages.filter((message) => {
+        const searchBase = `${message.title || ""} ${message.category || ""} ${message.text || ""} ${message.fileName || ""}`.toLowerCase();
+        const matchesSearch = term ? searchBase.includes(term) : true;
+        const messageCategory = (message.category || "Geral").trim();
+        const matchesCategory = currentSelectedCategory === "all" || currentSelectedCategory === "top_used" || messageCategory === currentSelectedCategory;
         return matchesSearch && matchesCategory;
       });
 
@@ -388,7 +564,26 @@
         filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
       }
 
-      filteredMessagesCache = filtered; 
+      return filtered;
+    }
+
+    function selectedMessage() {
+      const filtered = filteredMessagesCache.length ? filteredMessagesCache : getFilteredMessages();
+      const selectedInFiltered = filtered.find((message) => message.id === selectedId);
+      return selectedInFiltered || filtered[0] || messages.find((message) => message.id === selectedId) || null;
+    }
+
+    function render() {
+      const greeting = getGreeting();
+      els.greetingLabel.textContent = greeting;
+
+      const filtered = getFilteredMessages();
+      filteredMessagesCache = filtered;
+
+      if (filtered.length > 0 && !filtered.some((message) => message.id === selectedId)) {
+        selectedId = filtered[0].id;
+      }
+      if (filtered.length === 0) selectedId = null;
 
       els.messageList.innerHTML = "";
       if (filtered.length === 0) {
@@ -403,23 +598,28 @@
           const btn = document.createElement("button");
           btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
           btn.setAttribute("id", `msg-card-${message.id}`);
-          
+
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
-          const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
-          
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          const attachmentBadge = hasAttachment(message) ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
+
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${attachmentBadge}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
-          
-          btn.addEventListener("click", () => { selectedId = message.id; render(); });
-          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
-          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
-          els.messageList.appendChild(btn);
 
-          if (message.id === selectedId) {
-            btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
+          btn.addEventListener("click", () => {
+            selectedId = message.id;
+            render();
+          });
+          btn.querySelector(".edit").addEventListener("click", (event) => {
+            event.stopPropagation();
+            startEditing(message);
+          });
+          btn.querySelector(".delete").addEventListener("click", (event) => {
+            event.stopPropagation();
+            deleteMessageById(message.id);
+          });
+          els.messageList.appendChild(btn);
         });
       }
 
@@ -429,10 +629,9 @@
       els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
       els.copyBtn.disabled = !finalText;
 
-      // Exibe ou esconde o botão de baixar anexo na área de prévia
-      if (selected && selected.fileData) {
+      if (hasAttachment(selected)) {
         els.downloadFileBtn.style.display = "inline-flex";
-        els.downloadFileBtn.textContent = `📎 Baixar ${selected.fileName || 'Anexo'}`;
+        els.downloadFileBtn.textContent = `📎 Abrir ${selected.fileName || "anexo"}`;
       } else {
         els.downloadFileBtn.style.display = "none";
       }
@@ -442,29 +641,53 @@
       els.formTitle.textContent = isEditing ? "Alterar mensagem" : "Cadastrar mensagem";
       els.saveBtn.textContent = isEditing ? "💾 Salvar alterações" : "＋ Salvar mensagem";
       els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
+      updateFileStatusForEditing(false);
     }
 
-    // Executa o download do anexo quando clicado
+    function updateFileStatusForEditing(allowOverwriteStatus = true) {
+      if (pendingFile || removeExistingFile) return;
+      if (editingId) {
+        const message = messages.find((item) => item.id === editingId);
+        if (hasAttachment(message)) {
+          if (allowOverwriteStatus) els.fileStatusInfo.textContent = `📎 Anexo atual: ${message.fileName || "arquivo"}. Suba outro arquivo somente se quiser substituir.`;
+          els.removeFileBtn.style.display = "inline-flex";
+          return;
+        }
+      }
+      if (allowOverwriteStatus) els.fileStatusInfo.textContent = "";
+      els.removeFileBtn.style.display = "none";
+    }
+
     els.downloadFileBtn.addEventListener("click", () => {
       const selected = selectedMessage();
-      if (!selected || !selected.fileData) return;
+      if (!hasAttachment(selected)) return;
 
-      const downloadLink = document.createElement("a");
-      downloadLink.href = selected.fileData;
-      downloadLink.download = selected.fileName || "arquivo_anexo";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+      const url = selected.fileUrl || selected.fileData;
+      if (!url) {
+        alert("Este anexo não possui link válido. Reanexe o arquivo e salve a mensagem novamente.");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.download = selected.fileName || "arquivo_anexo";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     });
 
     function clearForm() {
       editingId = null;
+      removeExistingFile = false;
+      pendingFile = null;
       els.newTitle.value = "";
       els.newCategory.value = "";
+      els.newText.value = "";
       els.newFile.value = "";
       els.fileStatusInfo.textContent = "";
-      currentBase64File = null;
-      currentFileName = null;
+      els.removeFileBtn.style.display = "none";
       render();
     }
 
@@ -472,117 +695,174 @@
       const title = els.newTitle.value.trim();
       const category = els.newCategory.value.trim() || "Geral";
       const text = els.newText.value.trim();
-      if (!title || !text) return;
+
+      if (!title || !text) {
+        alert("Preencha pelo menos o título e a mensagem antes de salvar.");
+        return;
+      }
+
       els.saveBtn.disabled = true;
+      els.newFile.disabled = true;
       const originalSaveText = els.saveBtn.textContent;
       els.saveBtn.textContent = "Salvando...";
 
-      const payload = { 
-        title, 
-        category, 
-        text, 
-        updatedAt: serverTimestamp() 
+      const basePayload = {
+        title,
+        category,
+        text,
+        updatedAt: serverTimestamp()
       };
 
-      // Inclui os dados do arquivo se houver um novo carregado
-      if (currentBase64File) {
-        payload.fileData = currentBase64File;
-        payload.fileName = currentFileName;
-      }
+      const previousMessage = editingId ? messages.find((message) => message.id === editingId) : null;
+      let uploadedFilePayload = null;
 
       try {
+        if (pendingFile) {
+          uploadedFilePayload = await prepareAttachmentPayload(pendingFile);
+        }
+
         if (editingId !== null) {
-          // Se na edição não foi subido um arquivo novo, mantém o antigo existente no registro do Firestore
+          const payload = { ...basePayload };
+
+          if (uploadedFilePayload) {
+            Object.assign(payload, buildAttachmentReplacement(uploadedFilePayload));
+          } else if (removeExistingFile) {
+            Object.assign(payload, {
+              fileName: deleteField(),
+              fileType: deleteField(),
+              fileSize: deleteField(),
+              storagePath: deleteField(),
+              fileUrl: deleteField(),
+              fileData: deleteField(),
+              attachmentStorage: deleteField()
+            });
+          }
+
           await updateDoc(doc(db, "messages", editingId), payload);
+
+          if ((uploadedFilePayload || removeExistingFile) && previousMessage?.storagePath) {
+            deleteStorageFile(previousMessage.storagePath);
+          }
+
           selectedId = editingId;
         } else {
-          payload.useCount = 0;
-          payload.createdAt = serverTimestamp();
+          const payload = {
+            ...basePayload,
+            ...(uploadedFilePayload || {}),
+            useCount: 0,
+            createdAt: serverTimestamp()
+          };
           const docRef = await addDoc(messagesCollection, payload);
           selectedId = docRef.id;
         }
+
         clearForm();
       } catch (error) {
         console.error(error);
-        alert("Não foi possível salvar no Firebase.\n\nDetalhe: " + (error.code || error.message || error));
+        const codeOrMessage = error.code || error.message || String(error);
+        alert(
+          "Não foi possível salvar no Firebase.\n\n" +
+          "Detalhe: " + codeOrMessage + "\n\n" +
+          "Se o erro mencionar Storage, permission-denied, unauthorized ou timeout, confira as regras do Firebase Storage."
+        );
       } finally {
         els.saveBtn.disabled = false;
+        els.newFile.disabled = false;
         els.saveBtn.textContent = originalSaveText;
+        updateFileStatusForEditing();
       }
     }
 
     function startEditing(message) {
       editingId = message.id;
       selectedId = message.id;
+      removeExistingFile = false;
+      pendingFile = null;
       els.newTitle.value = message.title || "";
       els.newCategory.value = message.category || "";
       els.newText.value = message.text || "";
-      
-      if (message.fileData) {
-        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
-      } else {
-        els.fileStatusInfo.textContent = "";
-      }
-
-      // Não recarrega automaticamente o anexo antigo no formulário.
-      // Assim, editar só o texto não tenta reenviar arquivo grande ao Firebase.
-      currentBase64File = null;
-      currentFileName = null;
-      
+      els.newFile.value = "";
+      els.fileStatusInfo.textContent = hasAttachment(message)
+        ? `📎 Anexo atual: ${message.fileName || "arquivo"}. Suba outro arquivo somente se quiser substituir.`
+        : "";
+      els.removeFileBtn.style.display = hasAttachment(message) ? "inline-flex" : "none";
       render();
+      els.newTitle.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
     async function deleteMessageById(id) {
+      const message = messages.find((item) => item.id === id);
       if (!confirm("Deseja apagar esta mensagem?")) return;
+
       try {
         await deleteDoc(doc(db, "messages", id));
+        if (message?.storagePath) deleteStorageFile(message.storagePath);
         if (selectedId === id) selectedId = null;
       } catch (error) {
         console.error(error);
-        alert("Não foi possível apagar no Firebase.");
+        alert("Não foi possível apagar no Firebase. Detalhe: " + (error.code || error.message || error));
       }
     }
 
     async function copyText() {
       const text = els.previewText.textContent;
-      if (!text) return;
-      
-      try { await navigator.clipboard.writeText(text); }
-      catch {
+      if (!text || text === "Selecione ou cadastre uma mensagem para visualizar aqui.") return;
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
         const textArea = document.createElement("textarea");
         textArea.value = text;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand("copy");
-        document.body.removeChild(textArea);
+        textArea.remove();
       }
-      
+
       const currentMsg = selectedMessage();
       if (currentMsg && currentMsg.id) {
         const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
         if (cardEl) {
           cardEl.classList.remove("copied-effect");
-          void cardEl.offsetWidth; 
+          void cardEl.offsetWidth;
           cardEl.classList.add("copied-effect");
         }
       }
 
       els.copyBtn.textContent = "✓ Copiado!";
       els.copyBtn.classList.add("success");
-      setTimeout(() => { 
-        els.copyBtn.textContent = "📋 Copiar"; 
+      setTimeout(() => {
+        els.copyBtn.textContent = "📋 Copiar";
         els.copyBtn.classList.remove("success");
       }, 1400);
 
       if (currentMsg && currentMsg.id) {
         try {
-          await updateDoc(doc(db, "messages", currentMsg.id), {
-            useCount: increment(1)
-          });
-        } catch(e) {
-          console.error(e);
+          await updateDoc(doc(db, "messages", currentMsg.id), { useCount: increment(1) });
+        } catch (error) {
+          console.error(error);
         }
       }
+    }
+
+    function exportBackup() {
+      if (messages.length === 0) {
+        alert("Nenhuma mensagem para exportar.");
+        return;
+      }
+
+      const backup = messages.map((message) => ({
+        ...message,
+        exportedAt: new Date().toISOString()
+      }));
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
     window.addEventListener("keydown", (event) => {
@@ -595,7 +875,7 @@
       }
 
       if (filteredMessagesCache.length === 0) return;
-      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
+      const currentIndex = filteredMessagesCache.findIndex((message) => message.id === selectedId);
 
       if (event.key === "ArrowDown") {
         event.preventDefault();
@@ -613,27 +893,17 @@
       }
     });
 
-    function exportBackup() {
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
     document.querySelectorAll("[data-insert]").forEach((btn) => {
       btn.addEventListener("click", () => {
         els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
+        els.newText.focus();
       });
     });
 
-    els.clientName.addEventListener("input", render);
+    els.clientName.addEventListener("input", () => {
+      localStorage.setItem("respondeFacilClientName", els.clientName.value);
+      render();
+    });
     els.search.addEventListener("input", render);
     els.copyBtn.addEventListener("click", copyText);
     els.saveBtn.addEventListener("click", saveForm);
@@ -644,7 +914,9 @@
     startRealtimeSync();
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      navigator.serviceWorker.register("./service-worker.js")
+        .then((registration) => registration.update().catch(() => {}))
+        .catch(() => {});
     }
   </script>
 </body>
