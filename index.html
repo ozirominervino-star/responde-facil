@@ -20,41 +20,53 @@
       --soft: #f5f5f5; 
       --border: #e7e5e4; 
       --primary: #10b981; 
+      --danger: #dc2626;
+      --warning: #f59e0b;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
     .app { max-width: 1100px; margin: 0 auto; }
-    
+    .hidden { display: none !important; }
+
+    .auth-screen { min-height: calc(100vh - 32px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .login-card { width: 100%; max-width: 460px; background: var(--card); border-radius: 30px; padding: 26px; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+    .login-logo { width: 86px; height: 86px; border-radius: 22px; display: block; margin: 0 auto 16px; }
+    .login-title { text-align: center; margin-bottom: 18px; }
+    .login-title p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    .auth-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .auth-message { margin-top: 12px; font-size: 13px; color: var(--muted); background: var(--soft); border: 1px solid var(--border); border-radius: 16px; padding: 10px 12px; line-height: 1.35; }
+
     header { background: var(--dark); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
     header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
     h1 { margin: 0; font-size: 32px; }
     h2 { margin: 0; font-size: 22px; }
+    h3 { margin: 0; font-size: 18px; }
+    .header-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
     .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
     .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
+    .userbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .user-pill { color: white; background: rgba(255,255,255,.12); border-radius: 999px; padding: 8px 12px; font-size: 12px; }
     
     .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
     .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
     .space > * + * { margin-top: 16px; }
+    .section-disabled { opacity: .55; pointer-events: none; }
     
     label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
     input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
     textarea { resize: vertical; min-height: 120px; }
     input:focus, textarea:focus, select:focus { border-color: #111; }
-    
-    /* Estilização para o campo de arquivo */
     input[type="file"] { padding: 10px; font-size: 13px; background: var(--soft); cursor: pointer; }
+    input[type="checkbox"] { width: auto; }
 
     .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
     .searchbox input { border: 0; padding-left: 0; height: 46px; }
-    
     .filter-container { margin-top: 12px; }
     select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
 
     .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
-    
     .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
     .message-btn:hover { background: #e7e5e4; }
-    
     .message-btn.active { background: var(--dark); color: white; }
     .message-btn.active .message-title { color: white; }
     .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
@@ -68,16 +80,12 @@
       100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
     }
     .message-btn.copied-effect { animation: copyFlash 0.5s ease-out; }
-
     .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
     .message-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; word-break: break-word; }
     .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .message-cat { color: var(--muted); font-size: 12px; background: #e7e5e4; padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .message-count { font-size: 11px; color: var(--muted); }
-    
-    /* Tag de anexo na lista */
     .message-attachment-badge { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 2px; }
-
     .icons { display: flex; gap: 4px; flex-shrink: 0; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.08); }
@@ -85,24 +93,24 @@
     .preview { min-height: 160px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
     .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
-    .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
-    
-    .preview-actions { display: flex; gap: 8px; align-items: center; }
+    .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; line-height: 1.35; }
+    .preview-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-    .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; text-decoration: none; }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
     .btn.secondary { background: #eee; color: var(--text); }
     .btn.success { background: var(--primary); color: white; }
     .btn.info { background: #2563eb; color: white; }
+    .btn.danger { background: var(--danger); color: white; }
+    .btn.small { font-size: 12px; padding: 9px 12px; border-radius: 14px; }
     
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { border: 0; background: #eee; color: var(--text); padding: 9px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
     .chip:hover { background: #e7e5e4; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
-    .actions-left { display: flex; gap: 8px; }
-    
+    .actions-left { display: flex; gap: 8px; flex-wrap: wrap; }
     .file-status-info { font-size: 12px; color: var(--muted); margin-top: 6px; }
     .attachment-preview { display: none; margin-top: 10px; border: 1px solid var(--border); background: var(--soft); border-radius: 18px; padding: 12px; }
     .attachment-preview.visible { display: block; }
@@ -110,30 +118,74 @@
     .attachment-name { font-size: 12px; color: var(--muted); word-break: break-word; }
     .remove-file-btn { margin-top: 8px; font-size: 12px; padding: 9px 12px; }
 
+    .admin-panel { margin-top: 16px; }
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .permission-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .check-row { display: flex; align-items: center; gap: 8px; background: var(--soft); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; font-size: 13px; }
+    .check-row label { margin: 0; font-weight: 600; font-size: 13px; cursor: pointer; }
+    .users-list { display: flex; flex-direction: column; gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 4px; }
+    .user-card { border: 1px solid var(--border); background: var(--soft); border-radius: 18px; padding: 14px; }
+    .user-head { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; margin-bottom: 10px; }
+    .user-email { font-weight: 700; word-break: break-word; }
+    .role-badge { font-size: 11px; padding: 4px 7px; border-radius: 999px; background: #e7e5e4; color: var(--text); white-space: nowrap; }
+    .role-badge.admin { background: #dcfce7; color: #166534; }
+    .user-controls { display: grid; gap: 8px; }
+    .user-controls .form-grid { grid-template-columns: 1fr 1fr; }
 
     @media (max-width: 850px) { 
       body { padding: 10px; } 
-      .grid, .form-grid { grid-template-columns: 1fr; } 
+      .grid, .form-grid, .admin-grid, .permission-grid { grid-template-columns: 1fr; } 
       h1 { font-size: 26px; } 
       header, .card { border-radius: 22px; } 
+      .header-right { align-items: flex-start; }
+      .userbar { justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="auth-screen" id="authScreen">
+    <section class="login-card space">
+      <img src="icons/icon-192.png" class="login-logo" alt="Responde Fácil" />
+      <div class="login-title">
+        <h1>Responde Fácil</h1>
+        <p>Acesse com usuário e senha autorizados.</p>
+      </div>
+      <div>
+        <label>E-mail</label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="seuemail@winnerhorse.com.br" />
+      </div>
+      <div>
+        <label>Senha</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Digite sua senha" />
+      </div>
+      <div class="auth-actions">
+        <button class="btn" id="loginBtn">Entrar</button>
+        <button class="btn secondary" id="createFirstAdminBtn">Criar administrador inicial</button>
+      </div>
+      <div class="auth-message" id="authMessage">
+        Administrador principal: oziro@winnerhorse.com.br.
+      </div>
+    </section>
+  </div>
+
+  <div class="app hidden" id="appShell">
     <header>
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil</h1>
       </div>
-      <div>
+      <div class="header-right">
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
-        <div style="height:8px"></div>
-        <span class="status" id="syncStatus">Conectando ao Firebase...</span>
+        <span class="status" id="syncStatus">Aguardando login...</span>
+        <div class="userbar">
+          <span class="user-pill" id="currentUserLabel">Usuário</span>
+          <button class="btn secondary small" id="adminToggleBtn" style="display:none;">⚙️ Usuários</button>
+          <button class="btn secondary small" id="logoutBtn">Sair</button>
+        </div>
       </div>
     </header>
 
-    <main class="grid">
+    <main class="grid" id="mainGrid">
       <section class="card space">
         <div>
           <label>Nome do cliente</label>
@@ -170,7 +222,7 @@
           <div class="attachment-preview" id="previewAttachment"></div>
         </section>
 
-        <section class="card space">
+        <section class="card space" id="messageFormCard">
           <div>
             <p class="muted" id="formMode">Nova resposta</p>
             <h2 id="formTitle">Cadastrar mensagem</h2>
@@ -180,7 +232,6 @@
             <input id="newTitle" placeholder="Título" />
             <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
           </div>
-          
           <div>
             <label>Anexar Imagem ou PDF (Opcional)</label>
             <input type="file" id="newFile" accept="image/*, application/pdf" />
@@ -188,7 +239,6 @@
             <div id="formAttachmentPreview" class="attachment-preview"></div>
             <button type="button" class="btn secondary remove-file-btn" id="removeFileBtn" style="display:none;">Remover anexo atual</button>
           </div>
-
           <div class="chips">
             <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
             <button class="chip" data-insert="{nome}">Inserir nome</button>
@@ -205,11 +255,59 @@
         </section>
       </div>
     </main>
+
+    <section class="card admin-panel hidden" id="adminPanel">
+      <div class="topline">
+        <div>
+          <p class="muted">Área do administrador</p>
+          <h2>Usuários e permissões</h2>
+          <p class="hint">Somente o administrador pode criar usuários e definir o que cada um poderá acessar.</p>
+        </div>
+        <button class="btn secondary" id="closeAdminBtn">Fechar</button>
+      </div>
+      <div class="admin-grid" style="margin-top: 16px;">
+        <div class="space">
+          <h3>Novo usuário</h3>
+          <div>
+            <label>Nome</label>
+            <input id="newUserName" placeholder="Ex: Bruna" />
+          </div>
+          <div>
+            <label>E-mail</label>
+            <input id="newUserEmail" type="email" placeholder="usuario@winnerhorse.com.br" />
+          </div>
+          <div>
+            <label>Senha inicial</label>
+            <input id="newUserPassword" type="password" placeholder="Mínimo 6 caracteres" />
+          </div>
+          <div>
+            <label>Tipo</label>
+            <select id="newUserRole">
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+          <div>
+            <label>Permissões</label>
+            <div class="permission-grid" id="newUserPerms"></div>
+          </div>
+          <button class="btn" id="createUserBtn">＋ Criar usuário</button>
+          <p class="hint">A senha é usada apenas para criar o login. Ela não fica salva na base de dados do app.</p>
+        </div>
+        <div class="space">
+          <h3>Usuários cadastrados</h3>
+          <div class="users-list" id="usersList"></div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, deleteField } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, deleteField, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const ADMIN_EMAIL = "oziro@winnerhorse.com.br";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -222,11 +320,43 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const secondaryApp = initializeApp(firebaseConfig, "secondary-user-creator");
+    const auth = getAuth(app);
+    const secondaryAuth = getAuth(secondaryApp);
     const db = getFirestore(app);
     const messagesCollection = collection(db, "messages");
+    const usersCollection = collection(db, "users");
+
+    const PERMISSION_LABELS = {
+      canView: "Ver respostas",
+      canCreate: "Cadastrar respostas",
+      canEdit: "Editar respostas",
+      canDelete: "Excluir respostas",
+      canExport: "Exportar backup",
+      canManageUsers: "Gerenciar usuários"
+    };
+
+    const BASIC_PERMISSIONS = {
+      canView: true,
+      canCreate: false,
+      canEdit: false,
+      canDelete: false,
+      canExport: false,
+      canManageUsers: false
+    };
+
+    const FULL_PERMISSIONS = {
+      canView: true,
+      canCreate: true,
+      canEdit: true,
+      canDelete: true,
+      canExport: true,
+      canManageUsers: true
+    };
 
     let messages = [];
     let filteredMessagesCache = []; 
+    let users = [];
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
@@ -237,8 +367,25 @@
     let currentFileSizeBytes = null;
     let fileIsPreparing = false;
     let removeExistingFile = false;
+    let currentUser = null;
+    let currentProfile = null;
+    let unsubscribeMessages = null;
+    let unsubscribeUsers = null;
 
     const els = {
+      authScreen: document.getElementById("authScreen"),
+      appShell: document.getElementById("appShell"),
+      loginEmail: document.getElementById("loginEmail"),
+      loginPassword: document.getElementById("loginPassword"),
+      loginBtn: document.getElementById("loginBtn"),
+      createFirstAdminBtn: document.getElementById("createFirstAdminBtn"),
+      authMessage: document.getElementById("authMessage"),
+      logoutBtn: document.getElementById("logoutBtn"),
+      currentUserLabel: document.getElementById("currentUserLabel"),
+      adminToggleBtn: document.getElementById("adminToggleBtn"),
+      adminPanel: document.getElementById("adminPanel"),
+      closeAdminBtn: document.getElementById("closeAdminBtn"),
+      mainGrid: document.getElementById("mainGrid"),
       greetingLabel: document.getElementById("greetingLabel"),
       syncStatus: document.getElementById("syncStatus"),
       clientName: document.getElementById("clientName"),
@@ -248,6 +395,7 @@
       previewText: document.getElementById("previewText"),
       copyBtn: document.getElementById("copyBtn"),
       downloadFileBtn: document.getElementById("downloadFileBtn"),
+      messageFormCard: document.getElementById("messageFormCard"),
       formMode: document.getElementById("formMode"),
       formTitle: document.getElementById("formTitle"),
       newTitle: document.getElementById("newTitle"),
@@ -261,14 +409,64 @@
       saveBtn: document.getElementById("saveBtn"),
       cancelBtn: document.getElementById("cancelBtn"),
       categoryFilter: document.getElementById("categoryFilter"),
-      exportBtn: document.getElementById("exportBtn")
+      exportBtn: document.getElementById("exportBtn"),
+      newUserName: document.getElementById("newUserName"),
+      newUserEmail: document.getElementById("newUserEmail"),
+      newUserPassword: document.getElementById("newUserPassword"),
+      newUserRole: document.getElementById("newUserRole"),
+      newUserPerms: document.getElementById("newUserPerms"),
+      createUserBtn: document.getElementById("createUserBtn"),
+      usersList: document.getElementById("usersList")
     };
+
+    function normalizeEmail(email) {
+      return String(email || "").trim().toLowerCase();
+    }
 
     function getGreeting(date = new Date()) {
       const hour = date.getHours();
       if (hour < 12) return "Bom dia";
       if (hour < 18) return "Boa tarde";
       return "Boa noite";
+    }
+
+    function isAdminProfile(profile = currentProfile) {
+      return Boolean(profile && (profile.role === "admin" || normalizeEmail(profile.email) === ADMIN_EMAIL));
+    }
+
+    function hasPermission(permission) {
+      if (!currentProfile || currentProfile.active === false) return false;
+      if (isAdminProfile()) return true;
+      return currentProfile.permissions && currentProfile.permissions[permission] === true;
+    }
+
+    function getPermsFromContainer(container) {
+      const result = {};
+      Object.keys(PERMISSION_LABELS).forEach((key) => {
+        const input = container.querySelector(`[data-perm="${key}"]`);
+        result[key] = Boolean(input && input.checked);
+      });
+      return result;
+    }
+
+    function renderPermissionCheckboxes(container, permissions = BASIC_PERMISSIONS, disabled = false) {
+      container.innerHTML = "";
+      Object.entries(PERMISSION_LABELS).forEach(([key, labelText]) => {
+        const row = document.createElement("div");
+        row.className = "check-row";
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.dataset.perm = key;
+        input.id = `${container.id || "perm"}-${key}`;
+        input.checked = Boolean(permissions[key]);
+        input.disabled = disabled;
+        const label = document.createElement("label");
+        label.htmlFor = input.id;
+        label.textContent = labelText;
+        row.appendChild(input);
+        row.appendChild(label);
+        container.appendChild(row);
+      });
     }
 
     function buildFinalText(template, greeting, clientName) {
@@ -430,7 +628,6 @@
 
     function openAttachment(fileDataOrUrl, fileName) {
       if (!fileDataOrUrl) return;
-
       if (String(fileDataOrUrl).startsWith("data:")) {
         const blob = dataUrlToBlob(fileDataOrUrl);
         const objectUrl = URL.createObjectURL(blob);
@@ -446,88 +643,177 @@
         setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
         return;
       }
-
       window.open(fileDataOrUrl, "_blank", "noopener");
     }
 
-    // Monitora a seleção de arquivos. Imagens são compactadas e salvas no próprio Firestore.
-    // Assim não dependemos do Firebase Storage, que foi o ponto que travava em 0%.
-    els.newFile.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      currentBase64File = null;
-      currentFileName = null;
-      currentFileType = null;
-      currentFileSizeBytes = null;
-      fileIsPreparing = false;
-      removeExistingFile = false;
-      els.fileStatusInfo.textContent = "";
-      showAttachmentPreview(els.formAttachmentPreview, null, null, null);
-      if (!file) return;
+    function setAuthMessage(message, isError = false) {
+      els.authMessage.textContent = message;
+      els.authMessage.style.color = isError ? "#991b1b" : "var(--muted)";
+      els.authMessage.style.borderColor = isError ? "#fecaca" : "var(--border)";
+      els.authMessage.style.background = isError ? "#fef2f2" : "var(--soft)";
+    }
 
+    function friendlyAuthError(error) {
+      const code = error && error.code ? error.code : "";
+      if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "E-mail ou senha inválidos.";
+      if (code.includes("email-already-in-use")) return "Este e-mail já tem login. Use Entrar ou cadastre outro e-mail.";
+      if (code.includes("weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
+      if (code.includes("operation-not-allowed")) return "Ative o login por E-mail/Senha no Firebase Authentication.";
+      if (code.includes("permission-denied")) return "Permissão negada. Confira as regras do Firestore para users e messages.";
+      return (error && (error.message || error.code)) || "Erro desconhecido.";
+    }
+
+    async function ensureProfileForLoggedUser(user) {
+      const email = normalizeEmail(user.email);
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref).catch((error) => {
+        throw error;
+      });
+
+      if (snap.exists()) {
+        let profile = { id: snap.id, ...snap.data() };
+        if (email === ADMIN_EMAIL && profile.role !== "admin") {
+          await setDoc(ref, {
+            email,
+            displayName: profile.displayName || "Oziro",
+            role: "admin",
+            active: true,
+            permissions: FULL_PERMISSIONS,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          profile = { ...profile, email, role: "admin", active: true, permissions: FULL_PERMISSIONS };
+        }
+        return profile;
+      }
+
+      if (email === ADMIN_EMAIL) {
+        const adminProfile = {
+          email,
+          displayName: "Oziro",
+          role: "admin",
+          active: true,
+          permissions: FULL_PERMISSIONS,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        await setDoc(ref, adminProfile, { merge: true });
+        return { id: user.uid, ...adminProfile };
+      }
+
+      return {
+        id: user.uid,
+        email,
+        displayName: user.email,
+        role: "blocked",
+        active: false,
+        permissions: {}
+      };
+    }
+
+    async function login() {
+      const email = normalizeEmail(els.loginEmail.value);
+      const password = els.loginPassword.value;
+      if (!email || !password) {
+        setAuthMessage("Informe e-mail e senha.", true);
+        return;
+      }
+      els.loginBtn.disabled = true;
+      els.loginBtn.textContent = "Entrando...";
       try {
-        fileIsPreparing = true;
-        els.fileStatusInfo.textContent = `Preparando anexo: ${file.name}...`;
-
-        if (file.type && file.type.startsWith("image/")) {
-          const prepared = await compressImageFile(file);
-          currentBase64File = prepared.fileData;
-          currentFileName = prepared.fileName;
-          currentFileType = prepared.fileType;
-          currentFileSizeBytes = prepared.fileSizeBytes;
-          els.fileStatusInfo.textContent = `🖼️ Imagem pronta: ${currentFileName} (${readableSize(currentFileSizeBytes)})`;
-          showAttachmentPreview(els.formAttachmentPreview, currentBase64File, currentFileName, currentFileType);
-          return;
-        }
-
-        if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
-          if (file.size > 520000) {
-            alert("Este PDF ainda é grande para salvar direto no Firestore. Use PDF de até 520 KB ou salve sem anexo.");
-            els.newFile.value = "";
-            els.fileStatusInfo.textContent = "";
-            return;
-          }
-          currentBase64File = await readFileAsDataUrl(file);
-          currentFileName = file.name;
-          currentFileType = "application/pdf";
-          currentFileSizeBytes = file.size;
-          els.fileStatusInfo.textContent = `📄 PDF pronto: ${file.name} (${readableSize(file.size)})`;
-          showAttachmentPreview(els.formAttachmentPreview, null, currentFileName, currentFileType);
-          return;
-        }
-
-        alert("Formato não aceito. Use imagem ou PDF.");
-        els.newFile.value = "";
-        els.fileStatusInfo.textContent = "";
+        await signInWithEmailAndPassword(auth, email, password);
+        setAuthMessage("Login realizado.");
       } catch (error) {
         console.error(error);
-        alert("Não consegui preparar este anexo. " + (error.message || "Tente uma imagem menor."));
-        els.newFile.value = "";
-        els.fileStatusInfo.textContent = "";
+        setAuthMessage(friendlyAuthError(error), true);
       } finally {
-        fileIsPreparing = false;
+        els.loginBtn.disabled = false;
+        els.loginBtn.textContent = "Entrar";
       }
-    });
+    }
+
+    async function createFirstAdmin() {
+      const email = normalizeEmail(els.loginEmail.value);
+      const password = els.loginPassword.value;
+      if (email !== ADMIN_EMAIL) {
+        setAuthMessage(`O primeiro administrador precisa ser ${ADMIN_EMAIL}.`, true);
+        return;
+      }
+      if (!password || password.length < 6) {
+        setAuthMessage("Digite uma senha com pelo menos 6 caracteres.", true);
+        return;
+      }
+      els.createFirstAdminBtn.disabled = true;
+      els.createFirstAdminBtn.textContent = "Criando...";
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await ensureProfileForLoggedUser(cred.user);
+        setAuthMessage("Administrador inicial criado com sucesso.");
+      } catch (error) {
+        console.error(error);
+        setAuthMessage(friendlyAuthError(error), true);
+      } finally {
+        els.createFirstAdminBtn.disabled = false;
+        els.createFirstAdminBtn.textContent = "Criar administrador inicial";
+      }
+    }
+
+    async function logout() {
+      await signOut(auth);
+    }
+
+    function stopRealtimeListeners() {
+      if (unsubscribeMessages) {
+        unsubscribeMessages();
+        unsubscribeMessages = null;
+      }
+      if (unsubscribeUsers) {
+        unsubscribeUsers();
+        unsubscribeUsers = null;
+      }
+    }
+
+    function showLoggedOut() {
+      stopRealtimeListeners();
+      currentUser = null;
+      currentProfile = null;
+      messages = [];
+      users = [];
+      selectedId = null;
+      firebaseReady = false;
+      els.authScreen.classList.remove("hidden");
+      els.appShell.classList.add("hidden");
+      els.adminPanel.classList.add("hidden");
+      setAuthMessage(`Administrador principal: ${ADMIN_EMAIL}.`);
+    }
+
+    function showLoggedIn() {
+      els.authScreen.classList.add("hidden");
+      els.appShell.classList.remove("hidden");
+      const labelName = currentProfile.displayName || currentProfile.email || currentUser.email;
+      const labelRole = isAdminProfile() ? "Administrador" : "Usuário";
+      els.currentUserLabel.textContent = `${labelName} • ${labelRole}`;
+      els.adminToggleBtn.style.display = hasPermission("canManageUsers") ? "inline-flex" : "none";
+      els.mainGrid.classList.toggle("section-disabled", !hasPermission("canView"));
+      els.messageFormCard.classList.toggle("hidden", !(hasPermission("canCreate") || hasPermission("canEdit")));
+      els.exportBtn.style.display = hasPermission("canExport") ? "inline-flex" : "none";
+      render();
+      if (hasPermission("canView")) startRealtimeSync();
+      if (hasPermission("canManageUsers")) startUsersSync();
+    }
 
     function startRealtimeSync() {
-      onSnapshot(messagesCollection, (snapshot) => {
+      if (unsubscribeMessages) return;
+      els.syncStatus.textContent = "Conectando ao Firebase...";
+      unsubscribeMessages = onSnapshot(messagesCollection, (snapshot) => {
         messages = snapshot.docs.map((docItem) => {
           const data = docItem.data();
-          return { 
-            id: docItem.id, 
-            useCount: 0, 
-            title: "", 
-            category: "Geral", 
-            text: "",
-            ...data 
-          };
+          return { id: docItem.id, useCount: 0, title: "", category: "Geral", text: "", ...data };
         });
-
         messages.sort((a, b) => {
           const titleA = (a.title || "").toLowerCase();
           const titleB = (b.title || "").toLowerCase();
           return titleA.localeCompare(titleB);
         });
-
         if (!selectedId && messages.length > 0) selectedId = messages[0].id;
         firebaseReady = true;
         els.syncStatus.textContent = `Sincronizado na nuvem • ${messages.length} respostas`;
@@ -541,6 +827,18 @@
       });
     }
 
+    function startUsersSync() {
+      if (unsubscribeUsers) return;
+      unsubscribeUsers = onSnapshot(usersCollection, (snapshot) => {
+        users = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
+        users.sort((a, b) => (a.email || "").localeCompare(b.email || ""));
+        renderUsers();
+      }, (error) => {
+        console.error(error);
+        els.usersList.innerHTML = `<div class="hint">Erro ao carregar usuários: ${error.code || error.message}</div>`;
+      });
+    }
+
     function renderCategories() {
       const categories = new Set();
       let hasUsage = false;
@@ -548,9 +846,7 @@
         if(m.category) categories.add(m.category.trim());
         if(m.useCount && m.useCount > 0) hasUsage = true;
       });
-      
       els.categoryFilter.innerHTML = "";
-      
       const optAll = document.createElement("option");
       optAll.value = "all";
       optAll.textContent = "📁 Filtrar por Categoria: Todas";
@@ -564,7 +860,6 @@
         if(currentSelectedCategory === "top_used") optTop.selected = true;
         els.categoryFilter.appendChild(optTop);
       }
-      
       Array.from(categories).sort().forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat;
@@ -574,11 +869,6 @@
       });
     }
 
-    els.categoryFilter.addEventListener("change", (e) => {
-      currentSelectedCategory = e.target.value;
-      render();
-    });
-
     function selectedMessage() {
       return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
     }
@@ -586,23 +876,26 @@
     function render() {
       const greeting = getGreeting();
       els.greetingLabel.textContent = greeting;
-
       const term = els.search.value.toLowerCase().trim();
-      
       let filtered = messages.filter((message) => {
         const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
         const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
         return matchesSearch && matchesCategory;
       });
-
       if (currentSelectedCategory === "top_used") {
         filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
       }
-
       filteredMessagesCache = filtered; 
-
       els.messageList.innerHTML = "";
-      if (filtered.length === 0) {
+
+      if (!currentProfile || !hasPermission("canView")) {
+        const empty = document.createElement("div");
+        empty.className = "message-btn";
+        empty.style.textAlign = "center";
+        empty.style.color = "var(--muted)";
+        empty.textContent = "Seu usuário ainda não tem permissão para visualizar respostas.";
+        els.messageList.appendChild(empty);
+      } else if (filtered.length === 0) {
         const empty = document.createElement("div");
         empty.className = "message-btn";
         empty.style.textAlign = "center";
@@ -614,23 +907,21 @@
           const btn = document.createElement("button");
           btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
           btn.setAttribute("id", `msg-card-${message.id}`);
-          
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
           const hasAttachmentBadge = hasAttachment(message) ? `<span class="message-attachment-badge">${isImageData(message.fileType, message.fileData || message.fileUrl) ? "🖼️ Imagem" : "📎 Anexo"}</span>` : "";
-          
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachmentBadge}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          const editIcon = hasPermission("canEdit") ? `<span class="icon edit" title="Editar">✏️</span>` : "";
+          const deleteIcon = hasPermission("canDelete") ? `<span class="icon delete" title="Excluir">🗑️</span>` : "";
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachmentBadge}<span class="message-count"></span></div></div><div class="icons">${editIcon}${deleteIcon}</div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
-          
           btn.addEventListener("click", () => { selectedId = message.id; render(); });
-          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
-          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
+          const editEl = btn.querySelector(".edit");
+          if (editEl) editEl.addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
+          const deleteEl = btn.querySelector(".delete");
+          if (deleteEl) deleteEl.addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
           els.messageList.appendChild(btn);
-
-          if (message.id === selectedId) {
-            btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
+          if (message.id === selectedId) btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
       }
 
@@ -638,9 +929,8 @@
       const finalText = buildFinalText(selected?.text, greeting, els.clientName.value);
       els.previewTitle.textContent = selected?.title || "Nenhuma mensagem";
       els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
-      els.copyBtn.disabled = !finalText;
+      els.copyBtn.disabled = !finalText || !hasPermission("canView");
 
-      // Exibe ou esconde o anexo na área de prévia
       renderPreviewAttachment(selected);
       if (selected && hasAttachment(selected)) {
         els.downloadFileBtn.style.display = "inline-flex";
@@ -655,13 +945,6 @@
       els.saveBtn.textContent = isEditing ? "💾 Salvar alterações" : "＋ Salvar mensagem";
       els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
     }
-
-    // Abre ou baixa o anexo quando clicado
-    els.downloadFileBtn.addEventListener("click", () => {
-      const selected = selectedMessage();
-      if (!selected || !hasAttachment(selected)) return;
-      openAttachment(selected.fileData || selected.fileUrl, selected.fileName || "arquivo_anexo");
-    });
 
     function clearForm() {
       editingId = null;
@@ -686,23 +969,23 @@
       const category = els.newCategory.value.trim() || "Geral";
       const text = els.newText.value.trim();
       if (!title || !text) return;
-
+      if (editingId === null && !hasPermission("canCreate")) {
+        alert("Seu usuário não tem permissão para cadastrar respostas.");
+        return;
+      }
+      if (editingId !== null && !hasPermission("canEdit")) {
+        alert("Seu usuário não tem permissão para editar respostas.");
+        return;
+      }
       if (fileIsPreparing) {
         alert("A imagem ainda está sendo preparada. Aguarde aparecer 'Imagem pronta' antes de salvar.");
         return;
       }
-
       els.saveBtn.disabled = true;
       const originalSaveText = els.saveBtn.textContent;
       els.saveBtn.textContent = currentBase64File ? "Salvando imagem..." : "Salvando...";
 
-      const payload = { 
-        title, 
-        category, 
-        text, 
-        updatedAt: serverTimestamp() 
-      };
-
+      const payload = { title, category, text, updatedAt: serverTimestamp(), updatedBy: currentUser?.email || "" };
       if (currentBase64File) {
         payload.fileData = currentBase64File;
         payload.fileName = currentFileName || "imagem.jpg";
@@ -714,7 +997,6 @@
       try {
         if (editingId !== null) {
           if (currentBase64File) {
-            // Limpa campos antigos que possam ter vindo da tentativa com Storage.
             payload.fileUrl = deleteField();
           } else if (removeExistingFile) {
             payload.fileData = deleteField();
@@ -724,12 +1006,12 @@
             payload.fileSizeBytes = deleteField();
             payload.fileStorageMode = deleteField();
           }
-
           await updateDoc(doc(db, "messages", editingId), payload);
           selectedId = editingId;
         } else {
           payload.useCount = 0;
           payload.createdAt = serverTimestamp();
+          payload.createdBy = currentUser?.email || "";
           const docRef = await addDoc(messagesCollection, payload);
           selectedId = docRef.id;
         }
@@ -744,6 +1026,10 @@
     }
 
     function startEditing(message) {
+      if (!hasPermission("canEdit")) {
+        alert("Seu usuário não tem permissão para editar respostas.");
+        return;
+      }
       editingId = message.id;
       selectedId = message.id;
       removeExistingFile = false;
@@ -757,7 +1043,6 @@
       currentFileType = null;
       currentFileSizeBytes = null;
       showAttachmentPreview(els.formAttachmentPreview, null, null, null);
-      
       if (hasAttachment(message)) {
         els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Escolha outro arquivo para substituir ou clique em remover.`;
         els.removeFileBtn.style.display = "inline-flex";
@@ -766,11 +1051,14 @@
         els.fileStatusInfo.textContent = "";
         els.removeFileBtn.style.display = "none";
       }
-      
       render();
     }
 
     async function deleteMessageById(id) {
+      if (!hasPermission("canDelete")) {
+        alert("Seu usuário não tem permissão para excluir respostas.");
+        return;
+      }
       if (!confirm("Deseja apagar esta mensagem?")) return;
       try {
         await deleteDoc(doc(db, "messages", id));
@@ -783,8 +1071,7 @@
 
     async function copyText() {
       const text = els.previewText.textContent;
-      if (!text) return;
-      
+      if (!text || !hasPermission("canView")) return;
       try { await navigator.clipboard.writeText(text); }
       catch {
         const textArea = document.createElement("textarea");
@@ -794,7 +1081,6 @@
         document.execCommand("copy");
         document.body.removeChild(textArea);
       }
-      
       const currentMsg = selectedMessage();
       if (currentMsg && currentMsg.id) {
         const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
@@ -804,26 +1090,262 @@
           cardEl.classList.add("copied-effect");
         }
       }
-
       els.copyBtn.textContent = "✓ Copiado!";
       els.copyBtn.classList.add("success");
       setTimeout(() => { 
         els.copyBtn.textContent = "📋 Copiar"; 
         els.copyBtn.classList.remove("success");
       }, 1400);
-
       if (currentMsg && currentMsg.id) {
         try {
-          await updateDoc(doc(db, "messages", currentMsg.id), {
-            useCount: increment(1)
-          });
+          await updateDoc(doc(db, "messages", currentMsg.id), { useCount: increment(1), updatedAt: serverTimestamp() });
         } catch(e) {
           console.error(e);
         }
       }
     }
 
+    function exportBackup() {
+      if (!hasPermission("canExport")) {
+        alert("Seu usuário não tem permissão para exportar backup.");
+        return;
+      }
+      if (messages.length === 0) {
+        alert("Nenhuma mensagem para exportar.");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function renderUsers() {
+      if (!hasPermission("canManageUsers")) return;
+      els.usersList.innerHTML = "";
+      if (users.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.textContent = "Nenhum usuário cadastrado ainda.";
+        els.usersList.appendChild(empty);
+        return;
+      }
+      users.forEach((profile) => {
+        const card = document.createElement("div");
+        card.className = "user-card";
+        const email = normalizeEmail(profile.email);
+        const isRootAdmin = email === ADMIN_EMAIL;
+        const permissions = { ...BASIC_PERMISSIONS, ...(profile.permissions || {}) };
+        card.innerHTML = `
+          <div class="user-head">
+            <div>
+              <div class="user-email"></div>
+              <div class="hint"></div>
+            </div>
+            <span class="role-badge ${profile.role === "admin" ? "admin" : ""}"></span>
+          </div>
+          <div class="user-controls">
+            <div class="form-grid">
+              <input class="display-name" placeholder="Nome" />
+              <select class="role-select" ${isRootAdmin ? "disabled" : ""}>
+                <option value="user">Usuário</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+            <div class="check-row">
+              <input class="active-check" type="checkbox" ${isRootAdmin ? "disabled" : ""} />
+              <label>Usuário ativo</label>
+            </div>
+            <div class="permission-grid user-perms"></div>
+            <div class="actions-left">
+              <button class="btn small save-user">Salvar permissões</button>
+              <button class="btn danger small revoke-user" ${isRootAdmin ? "disabled" : ""}>Revogar acesso</button>
+            </div>
+          </div>
+        `;
+        card.querySelector(".user-email").textContent = profile.email || profile.id;
+        card.querySelector(".hint").textContent = profile.displayName || "Sem nome informado";
+        card.querySelector(".role-badge").textContent = profile.role === "admin" ? "Admin" : (profile.active === false ? "Bloqueado" : "Usuário");
+        const displayNameInput = card.querySelector(".display-name");
+        displayNameInput.value = profile.displayName || "";
+        const roleSelect = card.querySelector(".role-select");
+        roleSelect.value = profile.role === "admin" ? "admin" : "user";
+        const activeCheck = card.querySelector(".active-check");
+        activeCheck.checked = profile.active !== false;
+        const permsContainer = card.querySelector(".user-perms");
+        renderPermissionCheckboxes(permsContainer, isRootAdmin ? FULL_PERMISSIONS : permissions, isRootAdmin);
+        card.querySelector(".save-user").addEventListener("click", async () => {
+          await saveUserProfile(profile.id, {
+            email: email || profile.email,
+            displayName: displayNameInput.value.trim(),
+            role: isRootAdmin ? "admin" : roleSelect.value,
+            active: isRootAdmin ? true : activeCheck.checked,
+            permissions: isRootAdmin ? FULL_PERMISSIONS : getPermsFromContainer(permsContainer)
+          });
+        });
+        card.querySelector(".revoke-user").addEventListener("click", async () => {
+          if (isRootAdmin) return;
+          if (!confirm(`Revogar o acesso de ${profile.email}?`)) return;
+          await saveUserProfile(profile.id, { active: false, updatedAt: serverTimestamp() });
+        });
+        els.usersList.appendChild(card);
+      });
+    }
+
+    async function saveUserProfile(uid, data) {
+      if (!hasPermission("canManageUsers")) {
+        alert("Somente administrador pode gerenciar usuários.");
+        return;
+      }
+      try {
+        const payload = {
+          ...data,
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser?.email || ""
+        };
+        if (normalizeEmail(data.email) === ADMIN_EMAIL) {
+          payload.role = "admin";
+          payload.active = true;
+          payload.permissions = FULL_PERMISSIONS;
+        }
+        await setDoc(doc(db, "users", uid), payload, { merge: true });
+        alert("Usuário atualizado.");
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível salvar o usuário. Detalhe: " + (error.code || error.message || error));
+      }
+    }
+
+    async function createManagedUser() {
+      if (!hasPermission("canManageUsers")) {
+        alert("Somente administrador pode criar usuários.");
+        return;
+      }
+      const email = normalizeEmail(els.newUserEmail.value);
+      const password = els.newUserPassword.value;
+      const displayName = els.newUserName.value.trim();
+      const role = els.newUserRole.value === "admin" ? "admin" : "user";
+      const permissions = role === "admin" ? FULL_PERMISSIONS : getPermsFromContainer(els.newUserPerms);
+      if (!email || !password) {
+        alert("Informe e-mail e senha inicial.");
+        return;
+      }
+      if (password.length < 6) {
+        alert("A senha precisa ter pelo menos 6 caracteres.");
+        return;
+      }
+      els.createUserBtn.disabled = true;
+      els.createUserBtn.textContent = "Criando usuário...";
+      let createdUid = null;
+      try {
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        createdUid = cred.user.uid;
+        await signOut(secondaryAuth).catch(() => {});
+        await setDoc(doc(db, "users", createdUid), {
+          email,
+          displayName: displayName || email,
+          role,
+          active: true,
+          permissions,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          createdBy: currentUser?.email || ""
+        }, { merge: true });
+        els.newUserName.value = "";
+        els.newUserEmail.value = "";
+        els.newUserPassword.value = "";
+        els.newUserRole.value = "user";
+        renderPermissionCheckboxes(els.newUserPerms, BASIC_PERMISSIONS);
+        alert("Usuário criado com sucesso.");
+      } catch (error) {
+        console.error(error);
+        let extra = createdUid ? `\n\nO login foi criado com UID ${createdUid}, mas o perfil não foi salvo. Confira as regras do Firestore.` : "";
+        alert("Não foi possível criar o usuário. Detalhe: " + friendlyAuthError(error) + extra);
+      } finally {
+        els.createUserBtn.disabled = false;
+        els.createUserBtn.textContent = "＋ Criar usuário";
+      }
+    }
+
+    els.newFile.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      currentBase64File = null;
+      currentFileName = null;
+      currentFileType = null;
+      currentFileSizeBytes = null;
+      fileIsPreparing = false;
+      removeExistingFile = false;
+      els.fileStatusInfo.textContent = "";
+      showAttachmentPreview(els.formAttachmentPreview, null, null, null);
+      if (!file) return;
+      try {
+        fileIsPreparing = true;
+        els.fileStatusInfo.textContent = `Preparando anexo: ${file.name}...`;
+        if (file.type && file.type.startsWith("image/")) {
+          const prepared = await compressImageFile(file);
+          currentBase64File = prepared.fileData;
+          currentFileName = prepared.fileName;
+          currentFileType = prepared.fileType;
+          currentFileSizeBytes = prepared.fileSizeBytes;
+          els.fileStatusInfo.textContent = `🖼️ Imagem pronta: ${currentFileName} (${readableSize(currentFileSizeBytes)})`;
+          showAttachmentPreview(els.formAttachmentPreview, currentBase64File, currentFileName, currentFileType);
+          return;
+        }
+        if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+          if (file.size > 520000) {
+            alert("Este PDF ainda é grande para salvar direto no Firestore. Use PDF de até 520 KB ou salve sem anexo.");
+            els.newFile.value = "";
+            els.fileStatusInfo.textContent = "";
+            return;
+          }
+          currentBase64File = await readFileAsDataUrl(file);
+          currentFileName = file.name;
+          currentFileType = "application/pdf";
+          currentFileSizeBytes = file.size;
+          els.fileStatusInfo.textContent = `📄 PDF pronto: ${file.name} (${readableSize(file.size)})`;
+          showAttachmentPreview(els.formAttachmentPreview, null, currentFileName, currentFileType);
+          return;
+        }
+        alert("Formato não aceito. Use imagem ou PDF.");
+        els.newFile.value = "";
+        els.fileStatusInfo.textContent = "";
+      } catch (error) {
+        console.error(error);
+        alert("Não consegui preparar este anexo. " + (error.message || "Tente uma imagem menor."));
+        els.newFile.value = "";
+        els.fileStatusInfo.textContent = "";
+      } finally {
+        fileIsPreparing = false;
+      }
+    });
+
+    els.categoryFilter.addEventListener("change", (e) => { currentSelectedCategory = e.target.value; render(); });
+    els.downloadFileBtn.addEventListener("click", () => {
+      const selected = selectedMessage();
+      if (!selected || !hasAttachment(selected)) return;
+      openAttachment(selected.fileData || selected.fileUrl, selected.fileName || "arquivo_anexo");
+    });
+    document.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => { els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert); });
+    });
+    els.removeFileBtn.addEventListener("click", () => {
+      if (editingId === null) return;
+      removeExistingFile = true;
+      currentBase64File = null;
+      currentFileName = null;
+      currentFileType = null;
+      currentFileSizeBytes = null;
+      els.newFile.value = "";
+      els.fileStatusInfo.textContent = "🗑️ O anexo atual será removido ao salvar alterações.";
+      els.removeFileBtn.style.display = "none";
+      showAttachmentPreview(els.formAttachmentPreview, null, null, null);
+    });
+
     window.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && document.activeElement === els.loginPassword) login();
       if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
         if (event.key === "Enter" && document.activeElement === els.search) {
           els.search.blur();
@@ -831,10 +1353,8 @@
         }
         return;
       }
-
       if (filteredMessagesCache.length === 0) return;
       const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
-
       if (event.key === "ArrowDown") {
         event.preventDefault();
         const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
@@ -851,49 +1371,46 @@
       }
     });
 
-    function exportBackup() {
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    document.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
-      });
-    });
-
-
-    els.removeFileBtn.addEventListener("click", () => {
-      if (editingId === null) return;
-      removeExistingFile = true;
-      currentBase64File = null;
-      currentFileName = null;
-      currentFileType = null;
-      currentFileSizeBytes = null;
-      els.newFile.value = "";
-      els.fileStatusInfo.textContent = "🗑️ O anexo atual será removido ao salvar alterações.";
-      els.removeFileBtn.style.display = "none";
-      showAttachmentPreview(els.formAttachmentPreview, null, null, null);
-    });
-
+    els.loginBtn.addEventListener("click", login);
+    els.createFirstAdminBtn.addEventListener("click", createFirstAdmin);
+    els.logoutBtn.addEventListener("click", logout);
+    els.adminToggleBtn.addEventListener("click", () => els.adminPanel.classList.toggle("hidden"));
+    els.closeAdminBtn.addEventListener("click", () => els.adminPanel.classList.add("hidden"));
     els.clientName.addEventListener("input", render);
     els.search.addEventListener("input", render);
     els.copyBtn.addEventListener("click", copyText);
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
     els.exportBtn.addEventListener("click", exportBackup);
+    els.createUserBtn.addEventListener("click", createManagedUser);
+    els.newUserRole.addEventListener("change", () => {
+      const isNewAdmin = els.newUserRole.value === "admin";
+      renderPermissionCheckboxes(els.newUserPerms, isNewAdmin ? FULL_PERMISSIONS : BASIC_PERMISSIONS, isNewAdmin);
+    });
 
+    onAuthStateChanged(auth, async (user) => {
+      stopRealtimeListeners();
+      if (!user) {
+        showLoggedOut();
+        return;
+      }
+      currentUser = user;
+      try {
+        currentProfile = await ensureProfileForLoggedUser(user);
+        if (currentProfile.active === false) {
+          els.syncStatus.textContent = "Usuário sem acesso ativo.";
+        }
+        showLoggedIn();
+      } catch (error) {
+        console.error(error);
+        await signOut(auth).catch(() => {});
+        showLoggedOut();
+        setAuthMessage(friendlyAuthError(error), true);
+      }
+    });
+
+    renderPermissionCheckboxes(els.newUserPerms, BASIC_PERMISSIONS);
     render();
-    startRealtimeSync();
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js").catch(() => {});

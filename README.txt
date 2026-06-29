@@ -1,16 +1,24 @@
-# Responde Fácil v4 - Imagens no Firestore
+Responde Fácil v5 - Login, usuários e permissões
 
-Esta versão mantém a coleção Firestore `messages` e salva imagens compactadas diretamente no documento, sem Firebase Storage.
+Novidades:
+- Login com e-mail e senha pelo Firebase Authentication.
+- Administrador principal: oziro@winnerhorse.com.br.
+- Área de administração para criar usuários e definir permissões.
+- Imagens continuam sendo compactadas e salvas no Firestore, sem Firebase Storage.
+- As mensagens continuam na coleção messages.
 
-Arquivos necessários na raiz do projeto:
-- index.html
-- manifest.json
-- service-worker.js
-- README.txt
-- favicon.ico
-- pasta icons/ completa
+Antes de testar:
+1. No Firebase Console, vá em Authentication > Sign-in method.
+2. Ative Email/Password.
+3. No Firestore Database > Rules, cole as regras do arquivo firestore-rules.txt e publique.
+4. Publique esta pasta no Vercel.
+5. Abra o app com ?v=login5 para evitar cache antigo.
+
+Primeiro acesso:
+1. Na tela de login, informe oziro@winnerhorse.com.br.
+2. Digite a senha inicial desejada, com no mínimo 6 caracteres.
+3. Clique em Criar administrador inicial.
+4. Depois, use o botão Usuários para cadastrar outros acessos.
 
 Observação:
-- Imagens são convertidas para JPG e compactadas automaticamente.
-- PDFs são aceitos apenas até 520 KB, porque o Firestore tem limite de tamanho por documento.
-- Depois de publicar, abra com ?v=imagens4 para evitar cache antigo.
+A senha criada para novos usuários não fica salva no Firestore. Se precisar trocar senha depois, use o Firebase Authentication ou crie um novo usuário.

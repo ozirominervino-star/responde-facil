@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isRootAdmin() {
+      return signedIn() && request.auth.token.email == "oziro@winnerhorse.com.br";
+    }
+
+    function hasUserDoc() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isActive() {
+      return isRootAdmin() || (hasUserDoc() && userDoc().data.active == true);
+    }
+
+    function isAdmin() {
+      return isRootAdmin() || (isActive() && userDoc().data.role == "admin");
+    }
+
+    function can(permission) {
+      return isAdmin() || (isActive() && userDoc().data.permissions[permission] == true);
+    }
+
+    match /messages/{messageId} {
+      allow read: if can("canView");
+      allow create: if can("canCreate");
+      allow update: if can("canEdit") || (
+        can("canView") &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["useCount", "updatedAt"])
+      );
+      allow delete: if can("canDelete");
+    }
+
+    match /users/{userId} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow create: if isAdmin() || (isRootAdmin() && request.auth.uid == userId);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

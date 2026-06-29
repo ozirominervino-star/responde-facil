@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-firestore-v4-imagens";
+const CACHE_NAME = "responde-facil-v5-login-admin";
 const FILES = [
   "./",
   "./index.html",
@@ -25,21 +25,19 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Não intercepta Firebase/Google APIs. Isso evita cache antigo interferindo na sincronização.
-  if (request.method !== "GET" || url.origin !== self.location.origin) {
+  const url = new URL(event.request.url);
+  if (url.hostname.includes("googleapis.com") || url.hostname.includes("firebase") || url.hostname.includes("gstatic.com")) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
   event.respondWith(
-    fetch(request)
+    fetch(event.request)
       .then((response) => {
         const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone)).catch(() => {});
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request))
+      .catch(() => caches.match(event.request))
   );
 });
