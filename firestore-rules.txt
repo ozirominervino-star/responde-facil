@@ -30,6 +30,14 @@ service cloud.firestore {
       return isAdmin() || (isActive() && userDoc().data.permissions[permission] == true);
     }
 
+    function isSafeSelfBlockedProfile(userId) {
+      return signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.role == "blocked"
+        && request.resource.data.active == false;
+    }
+
     match /messages/{messageId} {
       allow read: if can("canView");
       allow create: if can("canCreate");
@@ -42,7 +50,9 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
-      allow create: if isAdmin() || (isRootAdmin() && request.auth.uid == userId);
+      allow create: if isAdmin()
+        || (isRootAdmin() && request.auth.uid == userId)
+        || isSafeSelfBlockedProfile(userId);
       allow update, delete: if isAdmin();
     }
   }

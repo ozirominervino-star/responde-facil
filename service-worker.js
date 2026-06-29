@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-v5-login-admin";
+const CACHE_NAME = "responde-facil-v6-senha-usuario";
 const FILES = [
   "./",
   "./index.html",

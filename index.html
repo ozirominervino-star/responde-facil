@@ -151,8 +151,8 @@
         <p>Acesse com usuário e senha autorizados.</p>
       </div>
       <div>
-        <label>E-mail</label>
-        <input id="loginEmail" type="email" autocomplete="username" placeholder="seuemail@winnerhorse.com.br" />
+        <label>Usuário ou e-mail</label>
+        <input id="loginEmail" type="text" autocomplete="username" placeholder="Ex: oziro.teste ou oziro@winnerhorse.com.br" />
       </div>
       <div>
         <label>Senha</label>
@@ -163,7 +163,7 @@
         <button class="btn secondary" id="createFirstAdminBtn">Criar administrador inicial</button>
       </div>
       <div class="auth-message" id="authMessage">
-        Administrador principal: oziro@winnerhorse.com.br.
+        Administrador principal: oziro@winnerhorse.com.br. Você também pode entrar digitando apenas o usuário antes do @.
       </div>
     </section>
   </div>
@@ -180,6 +180,7 @@
         <div class="userbar">
           <span class="user-pill" id="currentUserLabel">Usuário</span>
           <button class="btn secondary small" id="adminToggleBtn" style="display:none;">⚙️ Usuários</button>
+          <button class="btn secondary small" id="changeMyPasswordBtn">🔐 Minha senha</button>
           <button class="btn secondary small" id="logoutBtn">Sair</button>
         </div>
       </div>
@@ -273,8 +274,8 @@
             <input id="newUserName" placeholder="Ex: Bruna" />
           </div>
           <div>
-            <label>E-mail</label>
-            <input id="newUserEmail" type="email" placeholder="usuario@winnerhorse.com.br" />
+            <label>Usuário ou e-mail</label>
+            <input id="newUserEmail" type="text" placeholder="Ex: bruna ou bruna@winnerhorse.com.br" />
           </div>
           <div>
             <label>Senha inicial</label>
@@ -304,10 +305,11 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, deleteField, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const ADMIN_EMAIL = "oziro@winnerhorse.com.br";
+    const DEFAULT_LOGIN_DOMAIN = "winnerhorse.com.br";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -381,6 +383,7 @@
       createFirstAdminBtn: document.getElementById("createFirstAdminBtn"),
       authMessage: document.getElementById("authMessage"),
       logoutBtn: document.getElementById("logoutBtn"),
+      changeMyPasswordBtn: document.getElementById("changeMyPasswordBtn"),
       currentUserLabel: document.getElementById("currentUserLabel"),
       adminToggleBtn: document.getElementById("adminToggleBtn"),
       adminPanel: document.getElementById("adminPanel"),
@@ -421,6 +424,23 @@
 
     function normalizeEmail(email) {
       return String(email || "").trim().toLowerCase();
+    }
+
+    function loginInputToEmail(value) {
+      const raw = normalizeEmail(value).replace(/\s+/g, "");
+      if (!raw) return "";
+      if (raw.includes("@")) return raw;
+      return `${raw}@${DEFAULT_LOGIN_DOMAIN}`;
+    }
+
+    function usernameFromEmail(email) {
+      return normalizeEmail(email).split("@")[0] || "";
+    }
+
+    function usernameFromLogin(value) {
+      const raw = normalizeEmail(value).replace(/\s+/g, "");
+      if (!raw) return "";
+      return raw.includes("@") ? usernameFromEmail(raw) : raw;
     }
 
     function getGreeting(date = new Date()) {
@@ -655,8 +675,8 @@
 
     function friendlyAuthError(error) {
       const code = error && error.code ? error.code : "";
-      if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "E-mail ou senha inválidos.";
-      if (code.includes("email-already-in-use")) return "Este e-mail já tem login. Use Entrar ou cadastre outro e-mail.";
+      if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "Usuário/e-mail ou senha inválidos. Se usar só o usuário, tente sem espaços, por exemplo: oziro.teste.";
+      if (code.includes("email-already-in-use")) return "Este usuário/e-mail já tem login. Use Entrar, envie redefinição de senha, ou peça para o usuário entrar uma vez para aparecer como bloqueado/pendente.";
       if (code.includes("weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
       if (code.includes("operation-not-allowed")) return "Ative o login por E-mail/Senha no Firebase Authentication.";
       if (code.includes("permission-denied")) return "Permissão negada. Confira as regras do Firestore para users e messages.";
@@ -676,12 +696,13 @@
           await setDoc(ref, {
             email,
             displayName: profile.displayName || "Oziro",
+            username: profile.username || usernameFromEmail(email),
             role: "admin",
             active: true,
             permissions: FULL_PERMISSIONS,
             updatedAt: serverTimestamp()
           }, { merge: true });
-          profile = { ...profile, email, role: "admin", active: true, permissions: FULL_PERMISSIONS };
+          profile = { ...profile, email, username: profile.username || usernameFromEmail(email), role: "admin", active: true, permissions: FULL_PERMISSIONS };
         }
         return profile;
       }
@@ -689,6 +710,7 @@
       if (email === ADMIN_EMAIL) {
         const adminProfile = {
           email,
+          username: usernameFromEmail(email),
           displayName: "Oziro",
           role: "admin",
           active: true,
@@ -700,18 +722,23 @@
         return { id: user.uid, ...adminProfile };
       }
 
-      return {
-        id: user.uid,
+      const blockedProfile = {
         email,
-        displayName: user.email,
+        username: usernameFromEmail(email),
+        displayName: usernameFromEmail(email) || user.email,
         role: "blocked",
         active: false,
-        permissions: {}
+        permissions: {},
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        pendingApproval: true
       };
+      await setDoc(ref, blockedProfile, { merge: true });
+      return { id: user.uid, ...blockedProfile };
     }
 
     async function login() {
-      const email = normalizeEmail(els.loginEmail.value);
+      const email = loginInputToEmail(els.loginEmail.value);
       const password = els.loginPassword.value;
       if (!email || !password) {
         setAuthMessage("Informe e-mail e senha.", true);
@@ -732,7 +759,7 @@
     }
 
     async function createFirstAdmin() {
-      const email = normalizeEmail(els.loginEmail.value);
+      const email = loginInputToEmail(els.loginEmail.value);
       const password = els.loginPassword.value;
       if (email !== ADMIN_EMAIL) {
         setAuthMessage(`O primeiro administrador precisa ser ${ADMIN_EMAIL}.`, true);
@@ -783,13 +810,13 @@
       els.authScreen.classList.remove("hidden");
       els.appShell.classList.add("hidden");
       els.adminPanel.classList.add("hidden");
-      setAuthMessage(`Administrador principal: ${ADMIN_EMAIL}.`);
+      setAuthMessage(`Administrador principal: ${ADMIN_EMAIL}. Você também pode entrar digitando apenas o usuário antes do @.`);
     }
 
     function showLoggedIn() {
       els.authScreen.classList.add("hidden");
       els.appShell.classList.remove("hidden");
-      const labelName = currentProfile.displayName || currentProfile.email || currentUser.email;
+      const labelName = currentProfile.displayName || currentProfile.username || currentProfile.email || currentUser.email;
       const labelRole = isAdminProfile() ? "Administrador" : "Usuário";
       els.currentUserLabel.textContent = `${labelName} • ${labelRole}`;
       els.adminToggleBtn.style.display = hasPermission("canManageUsers") ? "inline-flex" : "none";
@@ -1162,12 +1189,13 @@
             <div class="permission-grid user-perms"></div>
             <div class="actions-left">
               <button class="btn small save-user">Salvar permissões</button>
+              <button class="btn info small reset-password">Redefinir senha</button>
               <button class="btn danger small revoke-user" ${isRootAdmin ? "disabled" : ""}>Revogar acesso</button>
             </div>
           </div>
         `;
         card.querySelector(".user-email").textContent = profile.email || profile.id;
-        card.querySelector(".hint").textContent = profile.displayName || "Sem nome informado";
+        card.querySelector(".hint").textContent = `${profile.displayName || "Sem nome informado"} • usuário: ${profile.username || usernameFromEmail(email)}`;
         card.querySelector(".role-badge").textContent = profile.role === "admin" ? "Admin" : (profile.active === false ? "Bloqueado" : "Usuário");
         const displayNameInput = card.querySelector(".display-name");
         displayNameInput.value = profile.displayName || "";
@@ -1185,6 +1213,9 @@
             active: isRootAdmin ? true : activeCheck.checked,
             permissions: isRootAdmin ? FULL_PERMISSIONS : getPermsFromContainer(permsContainer)
           });
+        });
+        card.querySelector(".reset-password").addEventListener("click", async () => {
+          await sendUserPasswordReset(email || profile.email);
         });
         card.querySelector(".revoke-user").addEventListener("click", async () => {
           if (isRootAdmin) return;
@@ -1206,6 +1237,7 @@
           updatedAt: serverTimestamp(),
           updatedBy: currentUser?.email || ""
         };
+        if (data.email && !payload.username) payload.username = usernameFromEmail(data.email);
         if (normalizeEmail(data.email) === ADMIN_EMAIL) {
           payload.role = "admin";
           payload.active = true;
@@ -1219,18 +1251,67 @@
       }
     }
 
+    async function sendUserPasswordReset(emailOrLogin) {
+      if (!hasPermission("canManageUsers")) {
+        alert("Somente administrador pode redefinir senha de usuários.");
+        return;
+      }
+      const email = loginInputToEmail(emailOrLogin);
+      if (!email) {
+        alert("Usuário sem e-mail/login válido para redefinição de senha.");
+        return;
+      }
+      if (!confirm(`Enviar link de redefinição de senha para ${email}?`)) return;
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert(`Link de redefinição enviado para ${email}.`);
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível enviar a redefinição de senha. Detalhe: " + friendlyAuthError(error));
+      }
+    }
+
+    async function changeMyPassword() {
+      if (!currentUser) return;
+      const newPassword = prompt("Digite sua nova senha. Ela precisa ter pelo menos 6 caracteres:");
+      if (newPassword === null) return;
+      if (!newPassword || newPassword.length < 6) {
+        alert("A senha precisa ter pelo menos 6 caracteres.");
+        return;
+      }
+      const confirmation = prompt("Digite novamente a nova senha para confirmar:");
+      if (confirmation === null) return;
+      if (newPassword !== confirmation) {
+        alert("As senhas não conferem.");
+        return;
+      }
+      try {
+        await updatePassword(currentUser, newPassword);
+        alert("Senha alterada com sucesso.");
+      } catch (error) {
+        console.error(error);
+        if ((error.code || "").includes("requires-recent-login")) {
+          alert("Por segurança, o Firebase exige login recente para alterar senha. Clique em Sair, entre novamente e tente alterar a senha logo em seguida.");
+          return;
+        }
+        alert("Não foi possível alterar a senha. Detalhe: " + friendlyAuthError(error));
+      }
+    }
+
     async function createManagedUser() {
       if (!hasPermission("canManageUsers")) {
         alert("Somente administrador pode criar usuários.");
         return;
       }
-      const email = normalizeEmail(els.newUserEmail.value);
+      const rawLogin = els.newUserEmail.value;
+      const email = loginInputToEmail(rawLogin);
+      const username = usernameFromLogin(rawLogin);
       const password = els.newUserPassword.value;
       const displayName = els.newUserName.value.trim();
       const role = els.newUserRole.value === "admin" ? "admin" : "user";
       const permissions = role === "admin" ? FULL_PERMISSIONS : getPermsFromContainer(els.newUserPerms);
       if (!email || !password) {
-        alert("Informe e-mail e senha inicial.");
+        alert("Informe usuário/e-mail e senha inicial.");
         return;
       }
       if (password.length < 6) {
@@ -1246,7 +1327,8 @@
         await signOut(secondaryAuth).catch(() => {});
         await setDoc(doc(db, "users", createdUid), {
           email,
-          displayName: displayName || email,
+          username,
+          displayName: displayName || username || email,
           role,
           active: true,
           permissions,
@@ -1374,6 +1456,7 @@
     els.loginBtn.addEventListener("click", login);
     els.createFirstAdminBtn.addEventListener("click", createFirstAdmin);
     els.logoutBtn.addEventListener("click", logout);
+    els.changeMyPasswordBtn.addEventListener("click", changeMyPassword);
     els.adminToggleBtn.addEventListener("click", () => els.adminPanel.classList.toggle("hidden"));
     els.closeAdminBtn.addEventListener("click", () => els.adminPanel.classList.add("hidden"));
     els.clientName.addEventListener("input", render);
