@@ -851,25 +851,39 @@
 
     function friendlyAuthError(error) {
       const code = error && error.code ? error.code : "";
+      const message = error && error.message ? error.message : "";
       if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "Usuário/e-mail ou senha inválidos. Se usar só o usuário, tente sem espaços, por exemplo: oziro.teste.";
       if (code.includes("email-already-in-use")) return "Este usuário/e-mail já tem login. Use Entrar, envie redefinição de senha, ou peça para o usuário entrar uma vez para aparecer como bloqueado/pendente.";
       if (code.includes("weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
       if (code.includes("operation-not-allowed")) return "Ative o login por E-mail/Senha no Firebase Authentication.";
-      if (code.includes("permission-denied")) return "Permissão negada. Confira as regras do Firestore para users e messages.";
+      if (code.includes("permission-denied")) return "Permissão negada. Confira as regras do Firestore da versão atual. O app precisa ler/criar seu perfil em users e ler messages.";
+      if (code.includes("network-request-failed") || message.includes("tempo limite")) return "O login demorou demais ou a rede bloqueou o Firebase. Atualize com Ctrl+F5 e teste novamente.";
       return (error && (error.message || error.code)) || "Erro desconhecido.";
+    }
+
+    function withTimeout(promise, ms, timeoutMessage) {
+      let timer;
+      const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject({ code: "timeout", message: timeoutMessage }), ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
     }
 
     async function ensureProfileForLoggedUser(user) {
       const email = normalizeEmail(user.email);
       const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref).catch((error) => {
-        throw error;
-      });
+      setAuthMessage("Verificando permissões do usuário...");
+      const snap = await withTimeout(
+        getDoc(ref),
+        20000,
+        "tempo limite ao ler o perfil do usuário"
+      );
 
       if (snap.exists()) {
         let profile = { id: snap.id, ...snap.data() };
         if (email === ADMIN_EMAIL && profile.role !== "admin") {
-          await setDoc(ref, {
+          setAuthMessage("Atualizando perfil de administrador...");
+          await withTimeout(setDoc(ref, {
             email,
             displayName: profile.displayName || "Oziro",
             username: profile.username || usernameFromEmail(email),
@@ -877,7 +891,7 @@
             active: true,
             permissions: FULL_PERMISSIONS,
             updatedAt: serverTimestamp()
-          }, { merge: true });
+          }, { merge: true }), 20000, "tempo limite ao atualizar perfil");
           profile = { ...profile, email, username: profile.username || usernameFromEmail(email), role: "admin", active: true, permissions: FULL_PERMISSIONS };
         }
         return profile;
@@ -894,7 +908,8 @@
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         };
-        await setDoc(ref, adminProfile, { merge: true });
+        setAuthMessage("Criando perfil de administrador...");
+        await withTimeout(setDoc(ref, adminProfile, { merge: true }), 20000, "tempo limite ao criar perfil de administrador");
         return { id: user.uid, ...adminProfile };
       }
 
@@ -909,7 +924,8 @@
         updatedAt: serverTimestamp(),
         pendingApproval: true
       };
-      await setDoc(ref, blockedProfile, { merge: true });
+      setAuthMessage("Criando perfil pendente para aprovação do administrador...");
+      await withTimeout(setDoc(ref, blockedProfile, { merge: true }), 20000, "tempo limite ao criar perfil pendente");
       return { id: user.uid, ...blockedProfile };
     }
 
@@ -917,14 +933,19 @@
       const email = loginInputToEmail(els.loginEmail.value);
       const password = els.loginPassword.value;
       if (!email || !password) {
-        setAuthMessage("Informe e-mail e senha.", true);
+        setAuthMessage("Informe e-mail/usuário e senha.", true);
         return;
       }
       els.loginBtn.disabled = true;
       els.loginBtn.textContent = "Entrando...";
+      setAuthMessage(`Validando ${email}...`);
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        setAuthMessage("Login realizado.");
+        await withTimeout(
+          signInWithEmailAndPassword(auth, email, password),
+          20000,
+          "tempo limite no login"
+        );
+        setAuthMessage("Senha aceita. Carregando perfil e permissões...");
       } catch (error) {
         console.error(error);
         setAuthMessage(friendlyAuthError(error), true);
@@ -1955,9 +1976,13 @@ Ela poderá ser restaurada pelo administrador.")) return;
       }
       currentUser = user;
       try {
+        setAuthMessage("Login aceito. Carregando perfil do usuário...");
         currentProfile = await ensureProfileForLoggedUser(user);
         if (currentProfile.active === false) {
-          els.syncStatus.textContent = "Usuário sem acesso ativo.";
+          await signOut(auth).catch(() => {});
+          showLoggedOut();
+          setAuthMessage("Usuário encontrado, mas ainda está bloqueado/pendente. Entre como administrador e ative esse usuário em ⚙️ Usuários.", true);
+          return;
         }
         showLoggedIn();
       } catch (error) {

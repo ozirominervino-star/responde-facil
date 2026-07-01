@@ -38,3 +38,6 @@ Importante para publicar:
 
 Observação:
 A restauração recupera mensagens e perfis/permissões do Firestore. Ela não cria senhas no Firebase Authentication.
+
+
+Versão v8.1: correção de login parado, mensagens de diagnóstico e timeout no Firebase.
