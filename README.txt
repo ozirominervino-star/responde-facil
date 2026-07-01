@@ -18,3 +18,7 @@ Importante:
 
 Observação sobre senha:
 Por segurança, o Firebase não permite que um app web simples veja ou defina diretamente a senha de outro usuário. Por isso, o administrador envia um link de redefinição de senha para o usuário.
+
+
+V7 - Inclui opção de excluir usuário na área administrativa.
+Observação: a exclusão remove o perfil/permissões do Firestore; para apagar o login definitivamente, remova também em Firebase Authentication > Users.

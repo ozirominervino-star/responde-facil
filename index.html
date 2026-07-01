@@ -1190,7 +1190,8 @@
             <div class="actions-left">
               <button class="btn small save-user">Salvar permissões</button>
               <button class="btn info small reset-password">Redefinir senha</button>
-              <button class="btn danger small revoke-user" ${isRootAdmin ? "disabled" : ""}>Revogar acesso</button>
+              <button class="btn danger small revoke-user" ${(isRootAdmin || profile.id === currentUser?.uid) ? "disabled" : ""}>Revogar acesso</button>
+              <button class="btn danger small delete-user" ${(isRootAdmin || profile.id === currentUser?.uid) ? "disabled" : ""}>Excluir usuário</button>
             </div>
           </div>
         `;
@@ -1218,9 +1219,12 @@
           await sendUserPasswordReset(email || profile.email);
         });
         card.querySelector(".revoke-user").addEventListener("click", async () => {
-          if (isRootAdmin) return;
+          if (isRootAdmin || profile.id === currentUser?.uid) return;
           if (!confirm(`Revogar o acesso de ${profile.email}?`)) return;
           await saveUserProfile(profile.id, { active: false, updatedAt: serverTimestamp() });
+        });
+        card.querySelector(".delete-user").addEventListener("click", async () => {
+          await deleteUserProfile(profile);
         });
         els.usersList.appendChild(card);
       });
@@ -1268,6 +1272,37 @@
       } catch (error) {
         console.error(error);
         alert("Não foi possível enviar a redefinição de senha. Detalhe: " + friendlyAuthError(error));
+      }
+    }
+
+    async function deleteUserProfile(profile) {
+      if (!hasPermission("canManageUsers")) {
+        alert("Somente administrador pode excluir usuários.");
+        return;
+      }
+      const email = normalizeEmail(profile?.email);
+      const isRootAdmin = email === ADMIN_EMAIL;
+      if (isRootAdmin) {
+        alert("O administrador principal não pode ser excluído.");
+        return;
+      }
+      if (profile?.id === currentUser?.uid) {
+        alert("Você não pode excluir o próprio usuário enquanto está logado.");
+        return;
+      }
+      const display = email || profile?.username || profile?.id || "este usuário";
+      const ok = confirm(
+        `Excluir ${display} do Responde Fácil?\n\n` +
+        "Ele perderá o acesso ao app e desaparecerá da lista de usuários.\n\n" +
+        "Observação: por limitação de segurança do Firebase, esta ação remove o perfil e as permissões do app. O login no Firebase Authentication pode continuar existindo e, se precisar apagar definitivamente, remova também em Firebase > Authentication > Users."
+      );
+      if (!ok) return;
+      try {
+        await deleteDoc(doc(db, "users", profile.id));
+        alert("Usuário excluído do Responde Fácil.");
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível excluir o usuário. Detalhe: " + (error.code || error.message || error));
       }
     }
 
