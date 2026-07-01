@@ -132,9 +132,23 @@
     .user-controls { display: grid; gap: 8px; }
     .user-controls .form-grid { grid-template-columns: 1fr 1fr; }
 
+    .message-btn.favorite { border-color: #facc15; }
+    .message-fav { color: #d97706; font-weight: 700; }
+    .tool-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .tool-card { background: var(--soft); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
+    .tool-card h3 { margin-bottom: 6px; }
+    .tool-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .trash-list, .audit-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+    .trash-item, .audit-item { border: 1px solid var(--border); background: white; border-radius: 16px; padding: 12px; }
+    .trash-title { font-weight: 700; margin-bottom: 4px; }
+    .audit-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+    .audit-meta, .trash-meta { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .preset-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .backup-note { font-size: 12px; line-height: 1.35; color: var(--muted); margin-top: 8px; }
+
     @media (max-width: 850px) { 
       body { padding: 10px; } 
-      .grid, .form-grid, .admin-grid, .permission-grid { grid-template-columns: 1fr; } 
+      .grid, .form-grid, .admin-grid, .permission-grid, .tool-grid { grid-template-columns: 1fr; } 
       h1 { font-size: 26px; } 
       header, .card { border-radius: 22px; } 
       .header-right { align-items: flex-start; }
@@ -251,7 +265,7 @@
               <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
               <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
             </div>
-            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar Backup</button>
+            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup completo de segurança">💾 Backup</button>
           </div>
         </section>
       </div>
@@ -288,6 +302,16 @@
               <option value="admin">Administrador</option>
             </select>
           </div>
+          <div class="preset-row">
+            <label>Perfil pronto</label>
+            <select id="newUserPreset">
+              <option value="atendimento">Atendimento — ver e copiar</option>
+              <option value="supervisor">Supervisor — ver, cadastrar e editar</option>
+              <option value="marketing">Marketing — ver, cadastrar, editar e exportar</option>
+              <option value="admin">Administrador — acesso total</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
           <div>
             <label>Permissões</label>
             <div class="permission-grid" id="newUserPerms"></div>
@@ -300,13 +324,41 @@
           <div class="users-list" id="usersList"></div>
         </div>
       </div>
+      <div class="tool-grid">
+        <div class="tool-card space">
+          <div>
+            <h3>Backup e restauração</h3>
+            <p class="hint">Exporte tudo antes de grandes alterações. A restauração importa mensagens e perfis de usuários salvos no backup.</p>
+          </div>
+          <div class="tool-actions">
+            <button class="btn secondary small" id="adminExportBackupBtn">💾 Exportar backup completo</button>
+            <button class="btn info small" id="restoreBackupBtn">⤴️ Restaurar backup</button>
+            <input id="restoreBackupFile" type="file" accept="application/json" style="display:none;" />
+          </div>
+          <div class="backup-note">A restauração não cria senhas no Firebase Authentication; ela recupera mensagens e permissões já salvas.</div>
+        </div>
+        <div class="tool-card space">
+          <div>
+            <h3>Lixeira de mensagens</h3>
+            <p class="hint">Mensagens excluídas ficam aqui para restauração pelo administrador.</p>
+          </div>
+          <div class="trash-list" id="trashList"></div>
+        </div>
+        <div class="tool-card space">
+          <div>
+            <h3>Histórico de alterações</h3>
+            <p class="hint">Registro dos principais eventos: criação, edição, exclusão, restauração e usuários.</p>
+          </div>
+          <div class="audit-list" id="auditList"></div>
+        </div>
+      </div>
     </section>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, deleteField, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, deleteField, getDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const ADMIN_EMAIL = "oziro@winnerhorse.com.br";
     const DEFAULT_LOGIN_DOMAIN = "winnerhorse.com.br";
@@ -328,6 +380,7 @@
     const db = getFirestore(app);
     const messagesCollection = collection(db, "messages");
     const usersCollection = collection(db, "users");
+    const auditLogsCollection = collection(db, "auditLogs");
 
     const PERMISSION_LABELS = {
       canView: "Ver respostas",
@@ -356,9 +409,38 @@
       canManageUsers: true
     };
 
+    const PERMISSION_PRESETS = {
+      atendimento: {
+        label: "Atendimento",
+        role: "user",
+        permissions: { ...BASIC_PERMISSIONS, canView: true }
+      },
+      supervisor: {
+        label: "Supervisor",
+        role: "user",
+        permissions: { ...BASIC_PERMISSIONS, canView: true, canCreate: true, canEdit: true, canExport: true }
+      },
+      marketing: {
+        label: "Marketing",
+        role: "user",
+        permissions: { ...BASIC_PERMISSIONS, canView: true, canCreate: true, canEdit: true, canExport: true }
+      },
+      admin: {
+        label: "Administrador",
+        role: "admin",
+        permissions: FULL_PERMISSIONS
+      },
+      custom: {
+        label: "Personalizado",
+        role: "user",
+        permissions: BASIC_PERMISSIONS
+      }
+    };
+
     let messages = [];
     let filteredMessagesCache = []; 
     let users = [];
+    let auditLogs = [];
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
@@ -373,6 +455,7 @@
     let currentProfile = null;
     let unsubscribeMessages = null;
     let unsubscribeUsers = null;
+    let unsubscribeAuditLogs = null;
 
     const els = {
       authScreen: document.getElementById("authScreen"),
@@ -417,9 +500,15 @@
       newUserEmail: document.getElementById("newUserEmail"),
       newUserPassword: document.getElementById("newUserPassword"),
       newUserRole: document.getElementById("newUserRole"),
+      newUserPreset: document.getElementById("newUserPreset"),
       newUserPerms: document.getElementById("newUserPerms"),
       createUserBtn: document.getElementById("createUserBtn"),
-      usersList: document.getElementById("usersList")
+      usersList: document.getElementById("usersList"),
+      adminExportBackupBtn: document.getElementById("adminExportBackupBtn"),
+      restoreBackupBtn: document.getElementById("restoreBackupBtn"),
+      restoreBackupFile: document.getElementById("restoreBackupFile"),
+      trashList: document.getElementById("trashList"),
+      auditList: document.getElementById("auditList")
     };
 
     function normalizeEmail(email) {
@@ -543,6 +632,93 @@
       if (bytes < 1024) return `${bytes} B`;
       if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
       return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    }
+
+
+
+    function isDeletedMessage(message) {
+      return Boolean(message && (message.deleted === true || message.deletedAt));
+    }
+
+    function activeMessages() {
+      return messages.filter((message) => !isDeletedMessage(message));
+    }
+
+    function deletedMessages() {
+      return messages.filter((message) => isDeletedMessage(message));
+    }
+
+    function firebaseDateValue(value) {
+      if (!value) return 0;
+      if (typeof value.toMillis === "function") return value.toMillis();
+      if (typeof value.seconds === "number") return value.seconds * 1000;
+      if (typeof value === "string") return Date.parse(value) || 0;
+      if (value instanceof Date) return value.getTime();
+      return 0;
+    }
+
+    function formatDateTime(value) {
+      const millis = firebaseDateValue(value);
+      if (!millis) return "data não registrada";
+      return new Date(millis).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+    }
+
+    function safeMessageForLog(message) {
+      if (!message) return null;
+      return {
+        id: message.id || "",
+        title: message.title || "",
+        category: message.category || "Geral",
+        text: message.text || "",
+        favorite: Boolean(message.favorite),
+        useCount: message.useCount || 0,
+        fileName: message.fileName || "",
+        fileType: message.fileType || "",
+        hasAttachment: hasAttachment(message),
+        deleted: Boolean(message.deleted)
+      };
+    }
+
+    async function addAuditLog(action, entityType, entityId, details = {}) {
+      if (!currentUser) return;
+      try {
+        await addDoc(auditLogsCollection, {
+          action,
+          entityType,
+          entityId: entityId || "",
+          actorEmail: currentUser.email || "",
+          actorUid: currentUser.uid || "",
+          details,
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        console.warn("Falha ao gravar histórico", error);
+      }
+    }
+
+    function downloadJson(filename, data) {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const link = document.createElement("a");
+      link.href = dataStr;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    function cleanForBackup(item) {
+      const clone = { ...item };
+      delete clone.createdAt;
+      delete clone.updatedAt;
+      delete clone.deletedAt;
+      delete clone.lastUsedAt;
+      return clone;
+    }
+
+    function cleanForRestore(item) {
+      const clone = { ...item };
+      delete clone.id;
+      return clone;
     }
 
     function dataUrlApproxBytes(dataUrl) {
@@ -797,6 +973,10 @@
         unsubscribeUsers();
         unsubscribeUsers = null;
       }
+      if (unsubscribeAuditLogs) {
+        unsubscribeAuditLogs();
+        unsubscribeAuditLogs = null;
+      }
     }
 
     function showLoggedOut() {
@@ -805,6 +985,7 @@
       currentProfile = null;
       messages = [];
       users = [];
+      auditLogs = [];
       selectedId = null;
       firebaseReady = false;
       els.authScreen.classList.remove("hidden");
@@ -825,7 +1006,10 @@
       els.exportBtn.style.display = hasPermission("canExport") ? "inline-flex" : "none";
       render();
       if (hasPermission("canView")) startRealtimeSync();
-      if (hasPermission("canManageUsers")) startUsersSync();
+      if (hasPermission("canManageUsers")) {
+        startUsersSync();
+        startAuditSync();
+      }
     }
 
     function startRealtimeSync() {
@@ -841,11 +1025,13 @@
           const titleB = (b.title || "").toLowerCase();
           return titleA.localeCompare(titleB);
         });
-        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
+        const active = activeMessages();
+        if ((!selectedId || !active.some((m) => m.id === selectedId)) && active.length > 0) selectedId = active[0].id;
         firebaseReady = true;
-        els.syncStatus.textContent = `Sincronizado na nuvem • ${messages.length} respostas`;
+        els.syncStatus.textContent = `Sincronizado na nuvem • ${active.length} respostas • ${deletedMessages().length} na lixeira`;
         renderCategories();
         render();
+        renderTrash();
       }, (error) => {
         console.error(error);
         els.syncStatus.textContent = "Erro ao conectar no Firebase: " + (error.code || error.message || "ver console");
@@ -866,12 +1052,30 @@
       });
     }
 
+
+
+    function startAuditSync() {
+      if (unsubscribeAuditLogs) return;
+      unsubscribeAuditLogs = onSnapshot(auditLogsCollection, (snapshot) => {
+        auditLogs = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
+        auditLogs.sort((a, b) => firebaseDateValue(b.createdAt) - firebaseDateValue(a.createdAt));
+        renderAuditLogs();
+      }, (error) => {
+        console.error(error);
+        if (els.auditList) els.auditList.innerHTML = `<div class="hint">Erro ao carregar histórico: ${error.code || error.message}</div>`;
+      });
+    }
+
     function renderCategories() {
       const categories = new Set();
       let hasUsage = false;
-      messages.forEach(m => { 
+      let hasFavorites = false;
+      let hasRecent = false;
+      activeMessages().forEach(m => { 
         if(m.category) categories.add(m.category.trim());
         if(m.useCount && m.useCount > 0) hasUsage = true;
+        if(m.favorite) hasFavorites = true;
+        if(m.lastUsedAt) hasRecent = true;
       });
       els.categoryFilter.innerHTML = "";
       const optAll = document.createElement("option");
@@ -880,12 +1084,25 @@
       if(currentSelectedCategory === "all") optAll.selected = true;
       els.categoryFilter.appendChild(optAll);
 
+      const optFav = document.createElement("option");
+      optFav.value = "favorites";
+      optFav.textContent = "⭐ Favoritas";
+      if(currentSelectedCategory === "favorites") optFav.selected = true;
+      els.categoryFilter.appendChild(optFav);
+
       if (hasUsage) {
         const optTop = document.createElement("option");
         optTop.value = "top_used";
-        optTop.textContent = "⭐ Mais Usadas";
+        optTop.textContent = "🔥 Mais usadas";
         if(currentSelectedCategory === "top_used") optTop.selected = true;
         els.categoryFilter.appendChild(optTop);
+      }
+      if (hasRecent) {
+        const optRecent = document.createElement("option");
+        optRecent.value = "recent_used";
+        optRecent.textContent = "🕘 Últimas usadas";
+        if(currentSelectedCategory === "recent_used") optRecent.selected = true;
+        els.categoryFilter.appendChild(optRecent);
       }
       Array.from(categories).sort().forEach(cat => {
         const opt = document.createElement("option");
@@ -897,20 +1114,27 @@
     }
 
     function selectedMessage() {
-      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
+      const active = activeMessages();
+      return active.find((message) => message.id === selectedId) || filteredMessagesCache[0] || active[0];
     }
 
     function render() {
       const greeting = getGreeting();
       els.greetingLabel.textContent = greeting;
       const term = els.search.value.toLowerCase().trim();
-      let filtered = messages.filter((message) => {
+      let filtered = activeMessages().filter((message) => {
         const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
-        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
+        let matchesCategory = true;
+        if (currentSelectedCategory === "favorites") matchesCategory = Boolean(message.favorite);
+        else if (currentSelectedCategory === "top_used" || currentSelectedCategory === "recent_used" || currentSelectedCategory === "all") matchesCategory = true;
+        else matchesCategory = (message.category || "").trim() === currentSelectedCategory;
         return matchesSearch && matchesCategory;
       });
       if (currentSelectedCategory === "top_used") {
         filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
+      }
+      if (currentSelectedCategory === "recent_used") {
+        filtered.sort((a, b) => firebaseDateValue(b.lastUsedAt) - firebaseDateValue(a.lastUsedAt));
       }
       filteredMessagesCache = filtered; 
       els.messageList.innerHTML = "";
@@ -932,17 +1156,20 @@
       } else {
         filtered.forEach((message) => {
           const btn = document.createElement("button");
-          btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
+          btn.className = `message-btn ${message.id === selectedId ? "active" : ""} ${message.favorite ? "favorite" : ""}`;
           btn.setAttribute("id", `msg-card-${message.id}`);
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
           const hasAttachmentBadge = hasAttachment(message) ? `<span class="message-attachment-badge">${isImageData(message.fileType, message.fileData || message.fileUrl) ? "🖼️ Imagem" : "📎 Anexo"}</span>` : "";
+          const favIcon = hasPermission("canView") ? `<span class="icon favorite-toggle ${message.favorite ? "message-fav" : ""}" title="Favoritar">${message.favorite ? "★" : "☆"}</span>` : "";
           const editIcon = hasPermission("canEdit") ? `<span class="icon edit" title="Editar">✏️</span>` : "";
-          const deleteIcon = hasPermission("canDelete") ? `<span class="icon delete" title="Excluir">🗑️</span>` : "";
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachmentBadge}<span class="message-count"></span></div></div><div class="icons">${editIcon}${deleteIcon}</div></div>`;
+          const deleteIcon = hasPermission("canDelete") ? `<span class="icon delete" title="Mover para lixeira">🗑️</span>` : "";
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachmentBadge}<span class="message-count"></span></div></div><div class="icons">${favIcon}${editIcon}${deleteIcon}</div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
           btn.addEventListener("click", () => { selectedId = message.id; render(); });
+          const favEl = btn.querySelector(".favorite-toggle");
+          if (favEl) favEl.addEventListener("click", (event) => { event.stopPropagation(); toggleFavorite(message); });
           const editEl = btn.querySelector(".edit");
           if (editEl) editEl.addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
           const deleteEl = btn.querySelector(".delete");
@@ -1023,6 +1250,7 @@
 
       try {
         if (editingId !== null) {
+          const previousMessage = messages.find((message) => message.id === editingId);
           if (currentBase64File) {
             payload.fileUrl = deleteField();
           } else if (removeExistingFile) {
@@ -1034,12 +1262,18 @@
             payload.fileStorageMode = deleteField();
           }
           await updateDoc(doc(db, "messages", editingId), payload);
+          await addAuditLog("edit_message", "message", editingId, {
+            title,
+            before: safeMessageForLog(previousMessage),
+            after: safeMessageForLog({ id: editingId, ...previousMessage, ...payload, title, category, text })
+          });
           selectedId = editingId;
         } else {
           payload.useCount = 0;
           payload.createdAt = serverTimestamp();
           payload.createdBy = currentUser?.email || "";
           const docRef = await addDoc(messagesCollection, payload);
+          await addAuditLog("create_message", "message", docRef.id, { title, category });
           selectedId = docRef.id;
         }
         clearForm();
@@ -1081,18 +1315,46 @@
       render();
     }
 
+
+
+    async function toggleFavorite(message) {
+      if (!message || !message.id || !hasPermission("canView")) return;
+      try {
+        const nextValue = !message.favorite;
+        await updateDoc(doc(db, "messages", message.id), {
+          favorite: nextValue,
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser?.email || ""
+        });
+        await addAuditLog(nextValue ? "favorite_message" : "unfavorite_message", "message", message.id, { title: message.title || "" });
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível favoritar a mensagem. Detalhe: " + (error.code || error.message || error));
+      }
+    }
+
     async function deleteMessageById(id) {
       if (!hasPermission("canDelete")) {
         alert("Seu usuário não tem permissão para excluir respostas.");
         return;
       }
-      if (!confirm("Deseja apagar esta mensagem?")) return;
+      const message = messages.find((m) => m.id === id);
+      if (!confirm("Mover esta mensagem para a lixeira?
+
+Ela poderá ser restaurada pelo administrador.")) return;
       try {
-        await deleteDoc(doc(db, "messages", id));
+        await updateDoc(doc(db, "messages", id), {
+          deleted: true,
+          deletedAt: serverTimestamp(),
+          deletedBy: currentUser?.email || "",
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser?.email || ""
+        });
+        await addAuditLog("trash_message", "message", id, { title: message?.title || "", before: safeMessageForLog(message) });
         if (selectedId === id) selectedId = null;
       } catch (error) {
         console.error(error);
-        alert("Não foi possível apagar no Firebase.");
+        alert("Não foi possível mover para a lixeira no Firebase.");
       }
     }
 
@@ -1125,7 +1387,7 @@
       }, 1400);
       if (currentMsg && currentMsg.id) {
         try {
-          await updateDoc(doc(db, "messages", currentMsg.id), { useCount: increment(1), updatedAt: serverTimestamp() });
+          await updateDoc(doc(db, "messages", currentMsg.id), { useCount: increment(1), lastUsedAt: serverTimestamp(), lastUsedBy: currentUser?.email || "", updatedAt: serverTimestamp() });
         } catch(e) {
           console.error(e);
         }
@@ -1137,17 +1399,175 @@
         alert("Seu usuário não tem permissão para exportar backup.");
         return;
       }
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
+      const backup = {
+        app: "Responde Fácil",
+        version: "v8-backup-lixeira-historico",
+        exportedAt: new Date().toISOString(),
+        exportedBy: currentUser?.email || "",
+        messages: messages.map((item) => ({ ...item })),
+        users: hasPermission("canManageUsers") ? users.map((item) => ({ ...item })) : [],
+        auditLogs: hasPermission("canManageUsers") ? auditLogs.slice(0, 500).map((item) => ({ ...item })) : []
+      };
+      const date = new Date().toISOString().slice(0, 10);
+      downloadJson(`responde_facil_backup_completo_${date}.json`, backup);
+    }
+
+    async function restoreBackupFromFile(file) {
+      if (!hasPermission("canManageUsers")) {
+        alert("Somente administrador pode restaurar backup.");
         return;
       }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const backup = JSON.parse(text);
+        const backupMessages = Array.isArray(backup.messages) ? backup.messages : (Array.isArray(backup) ? backup : []);
+        const backupUsers = Array.isArray(backup.users) ? backup.users : [];
+        if (backupMessages.length === 0 && backupUsers.length === 0) {
+          alert("Este arquivo não parece ser um backup válido do Responde Fácil.");
+          return;
+        }
+        const ok = confirm(
+          `Restaurar backup?\n\nMensagens encontradas: ${backupMessages.length}\nUsuários/perfis encontrados: ${backupUsers.length}\n\nA restauração mescla os dados pelo ID e não apaga automaticamente registros atuais.`
+        );
+        if (!ok) return;
+        els.restoreBackupBtn.disabled = true;
+        els.restoreBackupBtn.textContent = "Restaurando...";
+        let restoredMessages = 0;
+        let restoredUsers = 0;
+        for (const item of backupMessages) {
+          const data = cleanForRestore(item);
+          data.restoredAt = serverTimestamp();
+          data.restoredBy = currentUser?.email || "";
+          if (item.id) await setDoc(doc(db, "messages", item.id), data, { merge: true });
+          else await addDoc(messagesCollection, data);
+          restoredMessages++;
+        }
+        for (const item of backupUsers) {
+          if (!item.id) continue;
+          const data = cleanForRestore(item);
+          data.updatedAt = serverTimestamp();
+          data.updatedBy = currentUser?.email || "";
+          await setDoc(doc(db, "users", item.id), data, { merge: true });
+          restoredUsers++;
+        }
+        await addAuditLog("restore_backup", "backup", "", { restoredMessages, restoredUsers, fileName: file.name || "backup.json" });
+        alert(`Backup restaurado.\n\nMensagens: ${restoredMessages}\nUsuários/perfis: ${restoredUsers}`);
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível restaurar o backup. Detalhe: " + (error.message || error));
+      } finally {
+        els.restoreBackupBtn.disabled = false;
+        els.restoreBackupBtn.textContent = "⤴️ Restaurar backup";
+        els.restoreBackupFile.value = "";
+      }
+    }
+
+    async function restoreMessageFromTrash(message) {
+      if (!hasPermission("canDelete")) {
+        alert("Seu usuário não tem permissão para restaurar mensagens.");
+        return;
+      }
+      if (!message || !message.id) return;
+      try {
+        await updateDoc(doc(db, "messages", message.id), {
+          deleted: false,
+          deletedAt: deleteField(),
+          deletedBy: deleteField(),
+          restoredAt: serverTimestamp(),
+          restoredBy: currentUser?.email || "",
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser?.email || ""
+        });
+        await addAuditLog("restore_message", "message", message.id, { title: message.title || "" });
+        selectedId = message.id;
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível restaurar a mensagem. Detalhe: " + (error.code || error.message || error));
+      }
+    }
+
+    async function permanentlyDeleteMessage(message) {
+      if (!hasPermission("canDelete")) {
+        alert("Seu usuário não tem permissão para excluir definitivamente.");
+        return;
+      }
+      if (!message || !message.id) return;
+      const ok = confirm(
+        `Excluir definitivamente "${message.title || "mensagem"}"?\n\nEssa ação não pode ser desfeita pelo app. Faça backup antes se tiver dúvida.`
+      );
+      if (!ok) return;
+      try {
+        await addAuditLog("permanent_delete_message", "message", message.id, { title: message.title || "", before: safeMessageForLog(message) });
+        await deleteDoc(doc(db, "messages", message.id));
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível excluir definitivamente. Detalhe: " + (error.code || error.message || error));
+      }
+    }
+
+    function renderTrash() {
+      if (!els.trashList || !hasPermission("canManageUsers")) return;
+      const trash = deletedMessages().sort((a, b) => firebaseDateValue(b.deletedAt) - firebaseDateValue(a.deletedAt));
+      els.trashList.innerHTML = "";
+      if (trash.length === 0) {
+        els.trashList.innerHTML = '<div class="hint">Lixeira vazia.</div>';
+        return;
+      }
+      trash.forEach((message) => {
+        const item = document.createElement("div");
+        item.className = "trash-item";
+        item.innerHTML = `
+          <div class="trash-title"></div>
+          <div class="trash-meta"></div>
+          <div class="tool-actions">
+            <button class="btn small restore-message">Restaurar</button>
+            <button class="btn danger small delete-forever">Excluir definitivo</button>
+          </div>
+        `;
+        item.querySelector(".trash-title").textContent = message.title || "Mensagem sem título";
+        item.querySelector(".trash-meta").textContent = `${message.category || "Geral"} • apagada por ${message.deletedBy || "não registrado"} • ${formatDateTime(message.deletedAt)}`;
+        item.querySelector(".restore-message").addEventListener("click", () => restoreMessageFromTrash(message));
+        item.querySelector(".delete-forever").addEventListener("click", () => permanentlyDeleteMessage(message));
+        els.trashList.appendChild(item);
+      });
+    }
+
+    function auditActionLabel(action) {
+      const labels = {
+        create_message: "Mensagem criada",
+        edit_message: "Mensagem editada",
+        trash_message: "Mensagem movida para lixeira",
+        restore_message: "Mensagem restaurada",
+        permanent_delete_message: "Mensagem excluída definitivamente",
+        favorite_message: "Mensagem favoritada",
+        unfavorite_message: "Mensagem desfavoritada",
+        create_user: "Usuário criado",
+        update_user: "Usuário atualizado",
+        delete_user: "Usuário excluído",
+        restore_backup: "Backup restaurado"
+      };
+      return labels[action] || action || "Evento";
+    }
+
+    function renderAuditLogs() {
+      if (!els.auditList || !hasPermission("canManageUsers")) return;
+      els.auditList.innerHTML = "";
+      const latest = auditLogs.slice(0, 80);
+      if (latest.length === 0) {
+        els.auditList.innerHTML = '<div class="hint">Ainda não há histórico registrado.</div>';
+        return;
+      }
+      latest.forEach((log) => {
+        const item = document.createElement("div");
+        item.className = "audit-item";
+        const title = auditActionLabel(log.action);
+        const detailTitle = log.details?.title ? ` • ${log.details.title}` : "";
+        item.innerHTML = '<div class="audit-title"></div><div class="audit-meta"></div>';
+        item.querySelector(".audit-title").textContent = `${title}${detailTitle}`;
+        item.querySelector(".audit-meta").textContent = `${log.actorEmail || "usuário"} • ${formatDateTime(log.createdAt)}`;
+        els.auditList.appendChild(item);
+      });
     }
 
     function renderUsers() {
@@ -1248,6 +1668,7 @@
           payload.permissions = FULL_PERMISSIONS;
         }
         await setDoc(doc(db, "users", uid), payload, { merge: true });
+        await addAuditLog("update_user", "user", uid, { email: payload.email || "", displayName: payload.displayName || "" });
         alert("Usuário atualizado.");
       } catch (error) {
         console.error(error);
@@ -1298,6 +1719,7 @@
       );
       if (!ok) return;
       try {
+        await addAuditLog("delete_user", "user", profile.id, { email: profile.email || "", displayName: profile.displayName || "" });
         await deleteDoc(doc(db, "users", profile.id));
         alert("Usuário excluído do Responde Fácil.");
       } catch (error) {
@@ -1343,7 +1765,9 @@
       const username = usernameFromLogin(rawLogin);
       const password = els.newUserPassword.value;
       const displayName = els.newUserName.value.trim();
-      const role = els.newUserRole.value === "admin" ? "admin" : "user";
+      const presetKey = els.newUserPreset.value || "custom";
+      const preset = PERMISSION_PRESETS[presetKey] || PERMISSION_PRESETS.custom;
+      const role = els.newUserRole.value === "admin" ? "admin" : (preset.role || "user");
       const permissions = role === "admin" ? FULL_PERMISSIONS : getPermsFromContainer(els.newUserPerms);
       if (!email || !password) {
         alert("Informe usuário/e-mail e senha inicial.");
@@ -1367,15 +1791,18 @@
           role,
           active: true,
           permissions,
+          permissionPreset: presetKey,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           createdBy: currentUser?.email || ""
         }, { merge: true });
+        await addAuditLog("create_user", "user", createdUid, { email, displayName: displayName || username || email, role, preset: presetKey });
         els.newUserName.value = "";
         els.newUserEmail.value = "";
         els.newUserPassword.value = "";
         els.newUserRole.value = "user";
-        renderPermissionCheckboxes(els.newUserPerms, BASIC_PERMISSIONS);
+        els.newUserPreset.value = "atendimento";
+        applyNewUserPreset();
         alert("Usuário criado com sucesso.");
       } catch (error) {
         console.error(error);
@@ -1385,6 +1812,16 @@
         els.createUserBtn.disabled = false;
         els.createUserBtn.textContent = "＋ Criar usuário";
       }
+    }
+
+
+
+    function applyNewUserPreset() {
+      const presetKey = els.newUserPreset.value || "custom";
+      const preset = PERMISSION_PRESETS[presetKey] || PERMISSION_PRESETS.custom;
+      if (presetKey !== "custom") els.newUserRole.value = preset.role || "user";
+      const isNewAdmin = els.newUserRole.value === "admin";
+      renderPermissionCheckboxes(els.newUserPerms, isNewAdmin ? FULL_PERMISSIONS : (preset.permissions || BASIC_PERMISSIONS), isNewAdmin);
     }
 
     els.newFile.addEventListener("change", async (e) => {
@@ -1501,10 +1938,14 @@
     els.cancelBtn.addEventListener("click", clearForm);
     els.exportBtn.addEventListener("click", exportBackup);
     els.createUserBtn.addEventListener("click", createManagedUser);
+    els.newUserPreset.addEventListener("change", applyNewUserPreset);
     els.newUserRole.addEventListener("change", () => {
-      const isNewAdmin = els.newUserRole.value === "admin";
-      renderPermissionCheckboxes(els.newUserPerms, isNewAdmin ? FULL_PERMISSIONS : BASIC_PERMISSIONS, isNewAdmin);
+      els.newUserPreset.value = els.newUserRole.value === "admin" ? "admin" : "custom";
+      applyNewUserPreset();
     });
+    els.adminExportBackupBtn.addEventListener("click", exportBackup);
+    els.restoreBackupBtn.addEventListener("click", () => els.restoreBackupFile.click());
+    els.restoreBackupFile.addEventListener("change", (event) => restoreBackupFromFile(event.target.files[0]));
 
     onAuthStateChanged(auth, async (user) => {
       stopRealtimeListeners();
@@ -1527,7 +1968,7 @@
       }
     });
 
-    renderPermissionCheckboxes(els.newUserPerms, BASIC_PERMISSIONS);
+    applyNewUserPreset();
     render();
 
     if ("serviceWorker" in navigator) {

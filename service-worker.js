@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-v7-excluir-usuario";
+const CACHE_NAME = "responde-facil-v8-backup-lixeira-historico";
 const FILES = [
   "./",
   "./index.html",

@@ -38,13 +38,22 @@ service cloud.firestore {
         && request.resource.data.active == false;
     }
 
+    function safeUsageOrFavoriteUpdate() {
+      return can("canView") &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "useCount",
+          "lastUsedAt",
+          "lastUsedBy",
+          "favorite",
+          "updatedAt",
+          "updatedBy"
+        ]);
+    }
+
     match /messages/{messageId} {
       allow read: if can("canView");
       allow create: if can("canCreate");
-      allow update: if can("canEdit") || (
-        can("canView") &&
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["useCount", "updatedAt"])
-      );
+      allow update: if can("canEdit") || can("canDelete") || safeUsageOrFavoriteUpdate();
       allow delete: if can("canDelete");
     }
 
@@ -54,6 +63,12 @@ service cloud.firestore {
         || (isRootAdmin() && request.auth.uid == userId)
         || isSafeSelfBlockedProfile(userId);
       allow update, delete: if isAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isActive();
+      allow update, delete: if false;
     }
   }
 }
