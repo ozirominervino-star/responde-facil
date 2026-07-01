@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-v8-1-login-corrigido";
+const CACHE_NAME = "responde-facil-v7-excluir-usuario";
 const FILES = [
   "./",
   "./index.html",

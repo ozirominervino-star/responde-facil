@@ -1,43 +1,24 @@
-# Responde Fácil v8 — Backup, lixeira, histórico, perfis e favoritos
+# Responde Fácil v6 — Login, usuários e senha
 
-Esta versão mantém login, usuários e permissões da v7 e acrescenta as melhorias 1 a 6 solicitadas:
+Esta versão mantém as mensagens no Firebase Firestore e inclui:
 
-1. Backup completo
-- Botão Backup exporta mensagens, usuários/permissões e histórico.
-- Administrador também tem botão de restauração de backup na área Usuários.
+- Login com usuário ou e-mail.
+  - Exemplo: digitar `oziro.teste` equivale a `oziro.teste@winnerhorse.com.br`.
+- Administrador principal: oziro@winnerhorse.com.br.
+- Cadastro de usuários e permissões pelo administrador.
+- Alteração da própria senha pelo botão "Minha senha".
+- Redefinição de senha de usuários pelo administrador, via e-mail do Firebase.
+- Usuários que existem no Firebase Auth, mas ainda não têm perfil no Firestore, passam a aparecer como bloqueados/pendentes após tentarem entrar uma vez. O administrador pode ativar e definir permissões.
 
-2. Histórico de alterações
-- Cria registros em auditLogs para criação, edição, lixeira, restauração, exclusão definitiva, usuários e restauração de backup.
+Importante:
+1. Ative Authentication > Sign-in method > Email/Password no Firebase.
+2. Publique as regras do arquivo firestore-rules.txt no Firestore Database > Rules.
+3. Faça deploy de todos os arquivos e da pasta icons.
+4. Após publicar no Vercel, abra com ?v=senha6 para limpar cache.
 
-3. Lixeira
-- Excluir mensagem agora move para a lixeira.
-- Administrador pode restaurar ou excluir definitivamente.
-
-4. Anexos/imagens
-- Mantém compactação automática de imagens no Firestore.
-- Mostra prévia antes de salvar.
-- Permite substituir ou remover imagem/anexo existente.
-- PDF continua limitado para evitar travamento.
-
-5. Perfis prontos
-- Atendimento: ver e copiar.
-- Supervisor: ver, cadastrar, editar e exportar.
-- Marketing: ver, cadastrar, editar e exportar.
-- Administrador: acesso total.
-- Personalizado: permissões manuais.
-
-6. Favoritos e mais usadas
-- Botão estrela nas mensagens.
-- Filtros: Favoritas, Mais usadas e Últimas usadas.
-
-Importante para publicar:
-1. Suba todos os arquivos e a pasta icons no Vercel/GitHub.
-2. No Firebase > Firestore Database > Rules, publique o conteúdo de firestore-rules.txt.
-3. Abra o app com ?v=v8 para limpar cache, por exemplo:
-   https://responde-facil.vercel.app/?v=v8
-
-Observação:
-A restauração recupera mensagens e perfis/permissões do Firestore. Ela não cria senhas no Firebase Authentication.
+Observação sobre senha:
+Por segurança, o Firebase não permite que um app web simples veja ou defina diretamente a senha de outro usuário. Por isso, o administrador envia um link de redefinição de senha para o usuário.
 
 
-Versão v8.1: correção de login parado, mensagens de diagnóstico e timeout no Firebase.
+V7 - Inclui opção de excluir usuário na área administrativa.
+Observação: a exclusão remove o perfil/permissões do Firestore; para apagar o login definitivamente, remova também em Firebase Authentication > Users.
