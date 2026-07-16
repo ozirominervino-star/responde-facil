@@ -97,3 +97,12 @@ VERSÃO 1.6.2 — EDIÇÃO CORRIGIDA
 - A mensagem selecionada é carregada automaticamente no formulário.
 - A aba Mensagens é aberta automaticamente.
 - Após salvar, a alteração continua sincronizada no Firebase.
+
+
+VERSÃO 1.6.3 — ASSUNTOS EDITÁVEIS POR CLIENTE
+- Seleção visual dos assuntos de cada cliente.
+- Possibilidade de marcar e desmarcar assuntos.
+- Inclusão de assuntos personalizados.
+- Alteração posterior pelo botão Editar do cliente.
+- A tela guiada mostra somente os assuntos salvos para o cliente.
+- Clientes sem assuntos definidos continuam recebendo os assuntos padrão.
