@@ -539,7 +539,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.6</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.6.2</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -675,6 +675,7 @@
               </div>
               <div class="preview-actions">
                 <button class="btn info" id="downloadFileBtn" style="display:none;">📎 Baixar anexo</button>
+                <button class="btn secondary" id="editSelectedMessageBtn" disabled>✏️ Editar resposta</button>
                 <button class="btn" id="copyBtn">📋 Copiar</button>
               </div>
             </div>
@@ -821,6 +822,14 @@
       </div>
     </div>
 
+
+    <!-- Controles ocultos de compatibilidade para tratamento inteligente -->
+    <div id="treatmentBox" style="display:none;">
+      <button type="button" id="maleTreatmentBtn">Meu amigo</button>
+      <button type="button" id="femaleTreatmentBtn">Minha amiga</button>
+      <span id="treatmentHint"></span>
+    </div>
+
     <!-- Campos internos mantidos para compatibilidade -->
     <input id="clientName" type="hidden" />
     <input id="search" type="hidden" />
@@ -835,7 +844,7 @@
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 1.6</h2>
+      <h2>Versão 1.6.2</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
@@ -848,6 +857,7 @@
         <li>Temas vinculados ao cliente</li>
         <li>Fluxo guiado Cliente → Assunto → Resposta → Copiar</li>
         <li>Ferramentas avançadas recolhidas</li>
+        <li>Edição direta da resposta selecionada</li>
         <li>Tratamento “meu amigo / minha amiga”</li>
         <li>Login e Firebase preservados</li>
       </ul>
@@ -867,7 +877,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "1.6";
+    const APP_VERSION = "1.6.2";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -910,6 +920,7 @@
       previewTitle: document.getElementById("previewTitle"),
       previewText: document.getElementById("previewText"),
       copyBtn: document.getElementById("copyBtn"),
+      editSelectedMessageBtn: document.getElementById("editSelectedMessageBtn"),
       downloadFileBtn: document.getElementById("downloadFileBtn"),
       formMode: document.getElementById("formMode"),
       formTitle: document.getElementById("formTitle"),
@@ -1344,6 +1355,7 @@
 
         button.addEventListener("click", () => {
           selectedId = message.id;
+          els.editSelectedMessageBtn.disabled = false;
           els.stepCopy.classList.remove("disabled");
           els.copyStepStatus.textContent = `Resposta selecionada: ${message.title}`;
           renderGuidedMessages();
@@ -1406,6 +1418,7 @@
       els.stepCopy.classList.add("disabled");
       els.guidedTopicStatus.textContent = "Selecione um cliente primeiro.";
       els.copyStepStatus.textContent = "Selecione uma resposta.";
+      els.editSelectedMessageBtn.disabled = true;
       els.guidedTopics.innerHTML = "";
       els.guidedMessageList.innerHTML = "";
       els.clientName.value = "";
@@ -1677,6 +1690,7 @@
       els.previewTitle.textContent = selected?.title || "Nenhuma mensagem";
       els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
       els.copyBtn.disabled = !finalText;
+      els.editSelectedMessageBtn.disabled = !selected || !selected.id;
 
       // Exibe ou esconde o botão de baixar anexo na área de prévia
       if (selected && selected.fileData) {
@@ -2227,6 +2241,26 @@
     els.clientName.addEventListener("input", () => { updateTreatmentUI(); render(); });
     els.search.addEventListener("input", render);
     els.copyBtn.addEventListener("click", copyText);
+
+    els.editSelectedMessageBtn.addEventListener("click", () => {
+      const message = selectedMessage();
+
+      if (!message || !message.id) {
+        alert("Selecione uma resposta antes de editar.");
+        return;
+      }
+
+      startEditing(message);
+      openAdminPanel("messages");
+
+      setTimeout(() => {
+        els.newTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+        els.newTitle.focus();
+      }, 100);
+    });
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
     els.guidedClientSearch.addEventListener("input", renderGuidedClientResults);

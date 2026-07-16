@@ -84,3 +84,16 @@ VERSÃO 1.6 — FLUXO GUIADO
 - Assuntos do cliente exibidos primeiro.
 - Respostas filtradas pelo assunto.
 - Login, Firebase, mensagens antigas, favoritos e backups preservados.
+
+
+VERSÃO 1.6.1 — CORREÇÃO DE LOGIN
+- Corrigido travamento na tela de usuário.
+- Restaurados controles ocultos exigidos pelo tratamento inteligente.
+- Login, Firebase, mensagens, clientes e fluxo guiado preservados.
+
+
+VERSÃO 1.6.2 — EDIÇÃO CORRIGIDA
+- Novo botão "Editar resposta" na área de prévia.
+- A mensagem selecionada é carregada automaticamente no formulário.
+- A aba Mensagens é aberta automaticamente.
+- Após salvar, a alteração continua sincronizada no Firebase.

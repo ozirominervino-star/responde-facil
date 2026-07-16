@@ -1,4 +1,4 @@
-const CACHE_NAME = "responde-facil-v1-6-fluxo-guiado";
+const CACHE_NAME = "responde-facil-v1-6-2-edicao-corrigida";
 const FILES = ["./", "./index.html", "./manifest.json", "./version.json", "./favicon.ico", "./icons/icon-32.png", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
