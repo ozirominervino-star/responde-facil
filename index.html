@@ -78,6 +78,22 @@
     /* Tag de anexo na lista */
     .message-attachment-badge { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 2px; }
 
+
+    .favorite-icon {
+      font-size: 18px;
+      cursor: pointer;
+      opacity: .45;
+      transition: transform .15s ease, opacity .15s ease;
+      user-select: none;
+    }
+    .favorite-icon:hover {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+    .favorite-icon.active {
+      opacity: 1;
+    }
+
     .icons { display: flex; gap: 4px; flex-shrink: 0; }
     .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
     .icon:hover { background: rgba(0,0,0,0.08); }
@@ -219,6 +235,7 @@
           <div class="filter-container">
             <select class="category-select" id="categoryFilter">
               <option value="all">📁 Filtrar por Categoria: Todas</option>
+              <option value="favorites">⭐ Somente favoritas</option>
             </select>
           </div>
         </div>
@@ -472,6 +489,9 @@
         });
 
         messages.sort((a, b) => {
+          const favoriteDiff = Number(Boolean(b.favorite)) - Number(Boolean(a.favorite));
+          if (favoriteDiff !== 0) return favoriteDiff;
+
           const titleA = (a.title || "").toLowerCase();
           const titleB = (b.title || "").toLowerCase();
           return titleA.localeCompare(titleB);
@@ -507,6 +527,12 @@
       if(currentSelectedCategory === "all") optAll.selected = true;
       els.categoryFilter.appendChild(optAll);
 
+      const optFavorites = document.createElement("option");
+      optFavorites.value = "favorites";
+      optFavorites.textContent = "⭐ Somente favoritas";
+      if(currentSelectedCategory === "favorites") optFavorites.selected = true;
+      els.categoryFilter.appendChild(optFavorites);
+
       if (hasUsage) {
         const optTop = document.createElement("option");
         optTop.value = "top_used";
@@ -541,7 +567,13 @@
       
       let filtered = messages.filter((message) => {
         const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
-        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
+        const matchesCategory =
+          currentSelectedCategory === "all" || currentSelectedCategory === "top_used"
+            ? true
+            : currentSelectedCategory === "favorites"
+              ? message.favorite === true
+              : (message.category || "").trim() === currentSelectedCategory;
+
         return matchesSearch && matchesCategory;
       });
 
@@ -568,12 +600,26 @@
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
           const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
           
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
           
           btn.addEventListener("click", () => { selectedId = message.id; render(); });
+
+          btn.querySelector(".favorite-icon").addEventListener("click", async (event) => {
+            event.stopPropagation();
+            try {
+              await updateDoc(doc(db, "messages", message.id), {
+                favorite: !Boolean(message.favorite),
+                updatedAt: serverTimestamp()
+              });
+            } catch (error) {
+              console.error("Erro ao atualizar favorito:", error);
+              alert("Não foi possível atualizar o favorito.\n\nDetalhe: " + (error.code || error.message || error));
+            }
+          });
+
           btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
           btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
           els.messageList.appendChild(btn);
@@ -638,11 +684,11 @@
       const originalSaveText = els.saveBtn.textContent;
       els.saveBtn.textContent = "Salvando...";
 
-      const payload = { 
-        title, 
-        category, 
-        text, 
-        updatedAt: serverTimestamp() 
+      const payload = {
+        title,
+        category,
+        text,
+        updatedAt: serverTimestamp()
       };
 
       // Inclui os dados do arquivo se houver um novo carregado

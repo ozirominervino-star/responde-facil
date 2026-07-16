@@ -28,3 +28,11 @@ VERSÃO 15.1
 - {tratamento} agora gera "meu amigo" ou "minha amiga".
 - Mantém a coleção messages, autenticação e mensagens antigas.
 - Mantém compatibilidade com tratamentos já memorizados como amigo/amiga.
+
+
+VERSÃO 1.2 — ETAPA 1: FAVORITOS
+- Estrela em cada mensagem.
+- Favoritas aparecem no topo.
+- Filtro "Somente favoritas".
+- Favorito salvo no Firebase e sincronizado entre dispositivos.
+- Login, mensagens antigas e regras existentes preservados.
