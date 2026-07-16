@@ -7,715 +7,119 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
-  <title>Responde Fácil</title>
-  <style>
-    :root { 
-      --bg: #f5f5f4; 
-      --card: #ffffff; 
-      --text: #1c1917; 
-      --muted: #78716c; 
-      --dark: #111111; 
-      --soft: #f5f5f5; 
-      --border: #e7e5e4; 
-      --primary: #10b981; 
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
-    .app { max-width: 1100px; margin: 0 auto; }
-    
-    header { background: var(--dark); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
-    header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
-    h1 { margin: 0; font-size: 32px; }
-    h2 { margin: 0; font-size: 22px; }
-    .badge { background: rgba(255,255,255,.12); border-radius: 999px; padding: 10px 14px; font-size: 14px; }
-    .status { font-size: 12px; color: #57534e; background: #eee; padding: 8px 12px; border-radius: 999px; display: inline-block; }
-    
-    .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
-    .card { background: var(--card); border-radius: 28px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); min-width: 0; }
-    .space > * + * { margin-top: 16px; }
-    
-    label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 18px; padding: 13px 15px; font-size: 15px; outline: none; background: white; color: var(--text); }
-    textarea { resize: vertical; min-height: 120px; }
-    input:focus, textarea:focus, select:focus { border-color: #111; }
-    
-    /* Estilização para o campo de arquivo */
-    input[type="file"] { padding: 10px; font-size: 13px; background: var(--soft); cursor: pointer; }
-
-    .searchbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 18px; padding: 0 12px; background: white; }
-    .searchbox input { border: 0; padding-left: 0; height: 46px; }
-    
-    .filter-container { margin-top: 12px; }
-    select.category-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; appearance: none; cursor: pointer; font-weight: 600; }
-
-    .list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 4px; margin-top: 8px; }
-    
-    .message-btn { width: 100%; border: 1px solid transparent; border-radius: 18px; padding: 16px; text-align: left; background: var(--soft); cursor: pointer; color: var(--text); transition: all 0.2s; }
-    .message-btn:hover { background: #e7e5e4; }
-    
-    .message-btn.active { background: var(--dark); color: white; }
-    .message-btn.active .message-title { color: white; }
-    .message-btn.active .message-cat { color: #d6d3d1; background: rgba(255,255,255,0.15); }
-    .message-btn.active .message-count { color: #a8a29e; }
-    .message-btn.active .message-attachment-badge { background: rgba(255,255,255,0.25); color: white; }
-    .message-btn.active .icon { color: white; opacity: 0.8; }
-    .message-btn.active .icon:hover { background: rgba(255,255,255,0.2); opacity: 1; }
-
-    @keyframes copyFlash {
-      0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.6); border-color: var(--primary); }
-      100% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-    }
-    .message-btn.copied-effect { animation: copyFlash 0.5s ease-out; }
-
-    .message-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .message-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; word-break: break-word; }
-    .message-info-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .message-cat { color: var(--muted); font-size: 12px; background: #e7e5e4; padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .message-count { font-size: 11px; color: var(--muted); }
-    
-    /* Tag de anexo na lista */
-    .message-attachment-badge { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 2px; }
-
-    .icons { display: flex; gap: 4px; flex-shrink: 0; }
-    .icon { border: 0; background: transparent; cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; color: var(--text); transition: all 0.2s; }
-    .icon:hover { background: rgba(0,0,0,0.08); }
-    
-    .preview { min-height: 160px; white-space: pre-wrap; background: var(--soft); border-radius: 24px; padding: 20px; line-height: 1.5; font-size: 15px; border: 1px solid var(--border); word-break: break-word; }
-    .topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .muted { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
-    .hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
-    
-    .preview-actions { display: flex; gap: 8px; align-items: center; }
-
-    .btn { border: 0; background: var(--dark); color: white; padding: 13px 18px; border-radius: 18px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-    .btn:hover { opacity: 0.9; }
-    .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn.secondary { background: #eee; color: var(--text); }
-    .btn.success { background: var(--primary); color: white; }
-    .btn.info { background: #2563eb; color: white; }
-    
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { border: 0; background: #eee; color: var(--text); padding: 9px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
-    .chip:hover { background: #e7e5e4; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
-    .actions-left { display: flex; gap: 8px; }
-    
-    .file-status-info { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-    @media (max-width: 850px) { 
-      body { padding: 10px; } 
-      .grid, .form-grid { grid-template-columns: 1fr; } 
-      h1 { font-size: 26px; } 
-      header, .card { border-radius: 22px; } 
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css" />
+  <title>Responde Fácil PRO</title>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div>
-        <p>App de respostas rápidas</p>
-        <h1>Responde Fácil</h1>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <p class="eyebrow">Responde Fácil PRO</p>
+      <h1>Entrar</h1>
+      <p class="muted">Use seu usuário e senha para acessar as mensagens da empresa.</p>
+      <div class="stack">
+        <label>E-mail<input id="loginEmail" type="email" autocomplete="username" /></label>
+        <label>Senha<input id="loginPassword" type="password" autocomplete="current-password" /></label>
+        <button id="loginBtn" class="btn primary full">Entrar</button>
+        <div id="loginError" class="error-box"></div>
       </div>
+    </div>
+  </section>
+
+  <div id="mainApp" class="app hidden">
+    <header class="app-header">
       <div>
-        <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
-        <div style="height:8px"></div>
-        <span class="status" id="syncStatus">Conectando ao Firebase...</span>
+        <p class="eyebrow">Respostas inteligentes. Atendimento mais humano.</p>
+        <h1>Responde Fácil PRO</h1>
+        <p class="version">Versão 1.1</p>
+      </div>
+      <div class="header-actions">
+        <span id="greetingLabel" class="badge"></span>
+        <span id="syncStatus" class="status">Aguardando autenticação...</span>
+        <span id="loggedUserEmail" class="user-email"></span>
+        <button id="logoutBtn" class="btn ghost small">Sair</button>
       </div>
     </header>
 
-    <main class="grid">
-      <section class="card space">
-        <div>
-          <label>Nome do cliente</label>
-          <input id="clientName" placeholder="Ex: Danilo" />
-          <div id="treatmentBox" style="margin-top:10px; display:none;">
-            <label style="font-size:12px; color:var(--muted);">Tratamento identificado</label>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-              <button type="button" class="chip" id="maleTreatmentBtn">Amigo</button>
-              <button type="button" class="chip" id="femaleTreatmentBtn">Amiga</button>
-              <span id="treatmentHint" class="hint"></span>
-            </div>
+    <main class="workspace">
+      <aside class="panel sidebar">
+        <label>Nome do contato
+          <input id="clientName" placeholder="Ex.: Maria Elisa" />
+        </label>
+        <div id="treatmentBox" class="treatment-box hidden">
+          <span id="treatmentHint" class="hint"></span>
+          <div class="chip-row">
+            <button id="maleTreatmentBtn" class="chip">Meu amigo</button>
+            <button id="femaleTreatmentBtn" class="chip">Minha amiga</button>
           </div>
         </div>
-        <div>
-          <label>Buscar resposta</label>
-          <div class="searchbox">
-            <span>🔎</span>
-            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
-          </div>
-          <div class="filter-container">
-            <select class="category-select" id="categoryFilter">
-              <option value="all">📁 Filtrar por Categoria: Todas</option>
-            </select>
-          </div>
-        </div>
-        <div class="list" id="messageList"></div>
-      </section>
 
-      <div class="space">
-        <section class="card space">
-          <div class="topline">
+        <label>Pesquisar
+          <div class="search-box"><span>🔎</span><input id="search" placeholder="Título, texto, categoria ou tag" /></div>
+        </label>
+        <select id="categoryFilter">
+          <option value="all">Todas as mensagens</option>
+          <option value="favorites">⭐ Favoritas</option>
+          <option value="top_used">🔥 Mais usadas</option>
+        </select>
+        <div id="messageList" class="message-list"></div>
+      </aside>
+
+      <section class="content-column">
+        <article class="panel preview-panel">
+          <div class="panel-head">
             <div>
-              <p class="muted">Prévia da resposta</p>
+              <p class="eyebrow">Prévia da resposta</p>
               <h2 id="previewTitle">Nenhuma mensagem</h2>
+              <div id="previewMeta" class="preview-meta"></div>
             </div>
-            <div class="preview-actions">
-              <button class="btn info" id="downloadFileBtn" style="display: none;">📎 Baixar Anexo</button>
-              <button class="btn" id="copyBtn">📋 Copiar</button>
+            <div class="button-row">
+              <button id="favoriteSelectedBtn" class="btn ghost">☆ Favoritar</button>
+              <button id="downloadFileBtn" class="btn info hidden">📎 Baixar anexo</button>
+              <button id="copyBtn" class="btn primary">📋 Copiar</button>
             </div>
           </div>
-          <div class="preview" id="previewText"></div>
-        </section>
+          <div id="previewText" class="preview-text"></div>
+        </article>
 
-        <section class="card space">
+        <article class="panel editor-panel">
           <div>
-            <p class="muted" id="formMode">Nova resposta</p>
+            <p id="formMode" class="eyebrow">Nova resposta</p>
             <h2 id="formTitle">Cadastrar mensagem</h2>
-            <p class="hint">Dica: use os botões abaixo para inserir os campos automáticos na mensagem.</p>
           </div>
           <div class="form-grid">
-            <input id="newTitle" placeholder="Título" />
-            <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
+            <label>Título<input id="newTitle" /></label>
+            <label>Categoria<input id="newCategory" placeholder="Ex.: Comercial" /></label>
           </div>
-          
-          <div>
-            <label>Anexar Imagem ou PDF (Opcional)</label>
-            <input type="file" id="newFile" accept="image/*, application/pdf" />
-            <div id="fileStatusInfo" class="file-status-info"></div>
+          <label>Tags
+            <input id="newTags" placeholder="pedido, revenda, crédito, boleto" />
+            <span class="hint">Separe as tags por vírgulas.</span>
+          </label>
+          <label>Anexo opcional
+            <input id="newFile" type="file" accept="image/*,application/pdf" />
+            <span id="fileStatusInfo" class="hint"></span>
+          </label>
+          <div class="chip-row">
+            <button class="chip insert-chip" data-insert="{saudacao}">Saudação</button>
+            <button class="chip insert-chip" data-insert="{nome}">Nome completo</button>
+            <button class="chip insert-chip" data-insert="{primeiro_nome}">Primeiro nome</button>
+            <button class="chip insert-chip" data-insert="{tratamento}">Tratamento</button>
+            <button class="chip insert-chip" data-insert="{saudacao}, {tratamento} {primeiro_nome}! Tudo bem?">Abertura completa</button>
           </div>
-
-          <div class="chips">
-            <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
-            <button class="chip" data-insert="{nome}">Inserir nome</button>
-            <button class="chip" data-insert="{primeiro_nome}">Inserir primeiro nome</button>
-            <button class="chip" data-insert="{tratamento}">Inserir tratamento</button>
-            <button class="chip" data-insert="{saudacao}, {tratamento} {primeiro_nome}! Tudo bem?">Inserir abertura completa</button>
-          </div>
-          <textarea id="newText" placeholder="Use {saudacao}, {nome}, {primeiro_nome} e {tratamento} onde quiser personalizar."></textarea>
-          <div class="actions">
-            <div class="actions-left">
-              <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
-              <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
+          <textarea id="newText" rows="7" placeholder="Use {saudacao}, {nome}, {primeiro_nome} e {tratamento}."></textarea>
+          <div class="editor-actions">
+            <div class="button-row">
+              <button id="saveBtn" class="btn primary">＋ Salvar mensagem</button>
+              <button id="cancelBtn" class="btn ghost hidden">Cancelar edição</button>
             </div>
-            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar Backup</button>
+            <button id="exportBtn" class="btn ghost">💾 Exportar backup</button>
           </div>
-        </section>
-      </div>
+        </article>
+      </section>
     </main>
+    <footer>Responde Fácil PRO · Versão 1.1 · © 2026</footer>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
-      authDomain: "responde-facil.firebaseapp.com",
-      projectId: "responde-facil",
-      storageBucket: "responde-facil.firebasestorage.app",
-      messagingSenderId: "210022478525",
-      appId: "1:210022478525:web:b9119b7e01259878ab7dd4",
-      measurementId: "G-SRD5TDMRFM"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const messagesCollection = collection(db, "messages");
-    const treatmentsCollection = collection(db, "nameTreatments");
-
-    let messages = [];
-    let filteredMessagesCache = []; 
-    let selectedId = null;
-    let editingId = null;
-    let firebaseReady = false;
-    let currentSelectedCategory = "all"; 
-    let currentBase64File = null;
-    let currentFileName = null;
-    let currentTreatment = "";
-    let learnedTreatments = {};
-
-    const els = {
-      greetingLabel: document.getElementById("greetingLabel"),
-      syncStatus: document.getElementById("syncStatus"),
-      clientName: document.getElementById("clientName"),
-      search: document.getElementById("search"),
-      messageList: document.getElementById("messageList"),
-      previewTitle: document.getElementById("previewTitle"),
-      previewText: document.getElementById("previewText"),
-      copyBtn: document.getElementById("copyBtn"),
-      downloadFileBtn: document.getElementById("downloadFileBtn"),
-      formMode: document.getElementById("formMode"),
-      formTitle: document.getElementById("formTitle"),
-      newTitle: document.getElementById("newTitle"),
-      newCategory: document.getElementById("newCategory"),
-      newFile: document.getElementById("newFile"),
-      fileStatusInfo: document.getElementById("fileStatusInfo"),
-      newText: document.getElementById("newText"),
-      saveBtn: document.getElementById("saveBtn"),
-      cancelBtn: document.getElementById("cancelBtn"),
-      categoryFilter: document.getElementById("categoryFilter"),
-      exportBtn: document.getElementById("exportBtn"),
-      treatmentBox: document.getElementById("treatmentBox"),
-      maleTreatmentBtn: document.getElementById("maleTreatmentBtn"),
-      femaleTreatmentBtn: document.getElementById("femaleTreatmentBtn"),
-      treatmentHint: document.getElementById("treatmentHint")
-    };
-
-    function getGreeting(date = new Date()) {
-      const hour = date.getHours();
-      if (hour < 12) return "Bom dia";
-      if (hour < 18) return "Boa tarde";
-      return "Boa noite";
-    }
-
-    function normalizeName(value) {
-      return (value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-    }
-
-    function getFirstName(fullName) {
-      return (fullName || "").trim().split(/\s+/)[0] || "";
-    }
-
-    const femaleNames = new Set(["maria","ana","julia","juliana","fernanda","patricia","paula","camila","carla","claudia","beatriz","bruna","gabriela","isabela","isabella","larissa","leticia","luana","mariana","renata","roberta","sandra","silvia","tatiana","vanessa","vitoria","aline","amanda","andrea","bianca","carolina","cristina","daniela","debora","elaine","eliana","elisa","flavia","gisele","helena","ingrid","janaina","joana","karina","katia","laura","luciana","marcia","monica","natalia","priscila","rafaela","regina","simone","solange","thais","valeria","veronica","adriana","alice","cintia","jessica","karen","livia","raquel","sabrina"]);
-    const maleNames = new Set(["joao","jose","carlos","paulo","pedro","lucas","gabriel","rafael","daniel","marcos","marcelo","fernando","roberto","ricardo","andre","bruno","eduardo","felipe","gustavo","henrique","leonardo","luiz","matheus","mauricio","rodrigo","sergio","thiago","vinicius","alexandre","antonio","arthur","caio","cristiano","diego","fabio","francisco","guilherme","igor","jean","jonathan","leandro","luciano","marcio","murilo","nicolas","renato","samuel","vagner","victor","adriano","alan","anderson","augusto","celso","denis","edson","evandro"]);
-
-    function inferTreatment(fullName) {
-      const first = normalizeName(getFirstName(fullName));
-      if (!first) return { treatment: "", source: "empty" };
-      if (learnedTreatments[first]) return { treatment: learnedTreatments[first], source: "learned" };
-      if (femaleNames.has(first)) return { treatment: "amiga", source: "automatic" };
-      if (maleNames.has(first)) return { treatment: "amigo", source: "automatic" };
-      return { treatment: "", source: "unknown" };
-    }
-
-    async function saveTreatmentChoice(fullName, treatment) {
-      const first = normalizeName(getFirstName(fullName));
-      if (!first) return;
-      learnedTreatments[first] = treatment;
-      try { await setDoc(doc(db, "nameTreatments", first), { treatment, updatedAt: serverTimestamp() }, { merge: true }); }
-      catch (error) { console.error("Erro ao memorizar tratamento:", error); }
-    }
-
-    function updateTreatmentUI() {
-      const name = els.clientName.value;
-      if (!getFirstName(name)) { currentTreatment = ""; els.treatmentBox.style.display = "none"; return; }
-      const result = inferTreatment(name);
-      currentTreatment = result.treatment;
-      els.treatmentBox.style.display = "block";
-      els.maleTreatmentBtn.style.background = currentTreatment === "amigo" ? "#111" : "#eee";
-      els.maleTreatmentBtn.style.color = currentTreatment === "amigo" ? "#fff" : "var(--text)";
-      els.femaleTreatmentBtn.style.background = currentTreatment === "amiga" ? "#111" : "#eee";
-      els.femaleTreatmentBtn.style.color = currentTreatment === "amiga" ? "#fff" : "var(--text)";
-      els.treatmentHint.textContent = result.source === "learned" ? "Memorizado pelo app" : result.source === "automatic" ? "Identificado automaticamente" : "Nome não identificado. Escolha amigo ou amiga.";
-    }
-
-    function buildFinalText(template, greeting, clientName) {
-      return (template || "")
-        .replaceAll("{saudacao}", greeting)
-        .replaceAll("{nome}", clientName.trim())
-        .replaceAll("{primeiro_nome}", getFirstName(clientName))
-        .replaceAll("{tratamento}", currentTreatment)
-        .replace(/, !/g, "!")
-        .replace(/  +/g, " ")
-        .replace(/\s+([,.!?])/g, "$1")
-        .trim();
-    }
-
-    function appendWithSmartSpacing(currentText, insertion) {
-      const text = currentText || "";
-      const needsSpace = text.length > 0 && !text.endsWith(" ") && !text.endsWith("\n");
-      return `${text}${needsSpace ? " " : ""}${insertion}`;
-    }
-
-    // Monitora a seleção de arquivos e converte para Base64
-    els.newFile.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        currentBase64File = null;
-        currentFileName = null;
-        els.fileStatusInfo.textContent = "";
-        return;
-      }
-
-      // Limite preventivo de 1.5MB para evitar estouro de tamanho do documento no Firestore
-      if (file.size > 650000) {
-        alert("O arquivo é muito grande para salvar no Firebase. Escolha uma imagem ou PDF de até 650 KB, ou salve a mensagem sem anexo.");
-        els.newFile.value = "";
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function () {
-        currentBase64File = reader.result; 
-        currentFileName = file.name;
-        els.fileStatusInfo.textContent = `📎 Arquivo pronto: ${file.name}`;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function startRealtimeSync() {
-      onSnapshot(messagesCollection, (snapshot) => {
-        messages = snapshot.docs.map((docItem) => {
-          const data = docItem.data();
-          return { 
-            id: docItem.id, 
-            useCount: 0, 
-            title: "", 
-            category: "Geral", 
-            text: "",
-            ...data 
-          };
-        });
-
-        messages.sort((a, b) => {
-          const titleA = (a.title || "").toLowerCase();
-          const titleB = (b.title || "").toLowerCase();
-          return titleA.localeCompare(titleB);
-        });
-
-        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
-        firebaseReady = true;
-        els.syncStatus.textContent = "Sincronizado na nuvem";
-        renderCategories();
-        render();
-      }, (error) => {
-        console.error(error);
-        els.syncStatus.textContent = "Erro ao conectar no Firebase";
-        firebaseReady = false;
-        render();
-      });
-    }
-
-    function renderCategories() {
-      const categories = new Set();
-      let hasUsage = false;
-      messages.forEach(m => { 
-        if(m.category) categories.add(m.category.trim());
-        if(m.useCount && m.useCount > 0) hasUsage = true;
-      });
-      
-      els.categoryFilter.innerHTML = "";
-      
-      const optAll = document.createElement("option");
-      optAll.value = "all";
-      optAll.textContent = "📁 Filtrar por Categoria: Todas";
-      if(currentSelectedCategory === "all") optAll.selected = true;
-      els.categoryFilter.appendChild(optAll);
-
-      if (hasUsage) {
-        const optTop = document.createElement("option");
-        optTop.value = "top_used";
-        optTop.textContent = "⭐ Mais Usadas";
-        if(currentSelectedCategory === "top_used") optTop.selected = true;
-        els.categoryFilter.appendChild(optTop);
-      }
-      
-      Array.from(categories).sort().forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = `📁 ${cat}`;
-        if(currentSelectedCategory === cat) opt.selected = true;
-        els.categoryFilter.appendChild(opt);
-      });
-    }
-
-    els.categoryFilter.addEventListener("change", (e) => {
-      currentSelectedCategory = e.target.value;
-      render();
-    });
-
-    function selectedMessage() {
-      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
-    }
-
-    function render() {
-      const greeting = getGreeting();
-      els.greetingLabel.textContent = greeting;
-
-      const term = els.search.value.toLowerCase().trim();
-      
-      let filtered = messages.filter((message) => {
-        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
-        const matchesCategory = (currentSelectedCategory === "all" || currentSelectedCategory === "top_used") ? true : (message.category || "").trim() === currentSelectedCategory;
-        return matchesSearch && matchesCategory;
-      });
-
-      if (currentSelectedCategory === "top_used") {
-        filtered.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
-      }
-
-      filteredMessagesCache = filtered; 
-
-      els.messageList.innerHTML = "";
-      if (filtered.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "message-btn";
-        empty.style.textAlign = "center";
-        empty.style.color = "var(--muted)";
-        empty.textContent = firebaseReady ? "Nenhuma resposta encontrada." : "Carregando mensagens...";
-        els.messageList.appendChild(empty);
-      } else {
-        filtered.forEach((message) => {
-          const btn = document.createElement("button");
-          btn.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
-          btn.setAttribute("id", `msg-card-${message.id}`);
-          
-          const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
-          const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
-          
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
-          btn.querySelector(".message-title").textContent = message.title || "";
-          btn.querySelector(".message-cat").textContent = message.category || "Geral";
-          btn.querySelector(".message-count").textContent = countText;
-          
-          btn.addEventListener("click", () => { selectedId = message.id; render(); });
-          btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
-          btn.querySelector(".delete").addEventListener("click", (event) => { event.stopPropagation(); deleteMessageById(message.id); });
-          els.messageList.appendChild(btn);
-
-          if (message.id === selectedId) {
-            btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
-        });
-      }
-
-      const selected = selectedMessage();
-      const finalText = buildFinalText(selected?.text, greeting, els.clientName.value);
-      els.previewTitle.textContent = selected?.title || "Nenhuma mensagem";
-      els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
-      els.copyBtn.disabled = !finalText;
-
-      // Exibe ou esconde o botão de baixar anexo na área de prévia
-      if (selected && selected.fileData) {
-        els.downloadFileBtn.style.display = "inline-flex";
-        els.downloadFileBtn.textContent = `📎 Baixar ${selected.fileName || 'Anexo'}`;
-      } else {
-        els.downloadFileBtn.style.display = "none";
-      }
-
-      const isEditing = editingId !== null;
-      els.formMode.textContent = isEditing ? "Editando resposta" : "Nova resposta";
-      els.formTitle.textContent = isEditing ? "Alterar mensagem" : "Cadastrar mensagem";
-      els.saveBtn.textContent = isEditing ? "💾 Salvar alterações" : "＋ Salvar mensagem";
-      els.cancelBtn.style.display = isEditing ? "inline-flex" : "none";
-    }
-
-    // Executa o download do anexo quando clicado
-    els.downloadFileBtn.addEventListener("click", () => {
-      const selected = selectedMessage();
-      if (!selected || !selected.fileData) return;
-
-      const downloadLink = document.createElement("a");
-      downloadLink.href = selected.fileData;
-      downloadLink.download = selected.fileName || "arquivo_anexo";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    });
-
-    function clearForm() {
-      editingId = null;
-      els.newTitle.value = "";
-      els.newCategory.value = "";
-      els.newFile.value = "";
-      els.fileStatusInfo.textContent = "";
-      currentBase64File = null;
-      currentFileName = null;
-      render();
-    }
-
-    async function saveForm() {
-      const title = els.newTitle.value.trim();
-      const category = els.newCategory.value.trim() || "Geral";
-      const text = els.newText.value.trim();
-      if (!title || !text) return;
-      els.saveBtn.disabled = true;
-      const originalSaveText = els.saveBtn.textContent;
-      els.saveBtn.textContent = "Salvando...";
-
-      const payload = { 
-        title, 
-        category, 
-        text, 
-        updatedAt: serverTimestamp() 
-      };
-
-      // Inclui os dados do arquivo se houver um novo carregado
-      if (currentBase64File) {
-        payload.fileData = currentBase64File;
-        payload.fileName = currentFileName;
-      }
-
-      try {
-        if (editingId !== null) {
-          // Se na edição não foi subido um arquivo novo, mantém o antigo existente no registro do Firestore
-          await updateDoc(doc(db, "messages", editingId), payload);
-          selectedId = editingId;
-        } else {
-          payload.useCount = 0;
-          payload.createdAt = serverTimestamp();
-          const docRef = await addDoc(messagesCollection, payload);
-          selectedId = docRef.id;
-        }
-        clearForm();
-      } catch (error) {
-        console.error(error);
-        alert("Não foi possível salvar no Firebase.\n\nDetalhe: " + (error.code || error.message || error));
-      } finally {
-        els.saveBtn.disabled = false;
-        els.saveBtn.textContent = originalSaveText;
-      }
-    }
-
-    function startEditing(message) {
-      editingId = message.id;
-      selectedId = message.id;
-      els.newTitle.value = message.title || "";
-      els.newCategory.value = message.category || "";
-      els.newText.value = message.text || "";
-      
-      if (message.fileData) {
-        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
-      } else {
-        els.fileStatusInfo.textContent = "";
-      }
-
-      // Não recarrega automaticamente o anexo antigo no formulário.
-      // Assim, editar só o texto não tenta reenviar arquivo grande ao Firebase.
-      currentBase64File = null;
-      currentFileName = null;
-      
-      render();
-    }
-
-    async function deleteMessageById(id) {
-      if (!confirm("Deseja apagar esta mensagem?")) return;
-      try {
-        await deleteDoc(doc(db, "messages", id));
-        if (selectedId === id) selectedId = null;
-      } catch (error) {
-        console.error(error);
-        alert("Não foi possível apagar no Firebase.");
-      }
-    }
-
-    async function copyText() {
-      const text = els.previewText.textContent;
-      if (!text) return;
-      
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
-      
-      const currentMsg = selectedMessage();
-      if (currentMsg && currentMsg.id) {
-        const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
-        if (cardEl) {
-          cardEl.classList.remove("copied-effect");
-          void cardEl.offsetWidth; 
-          cardEl.classList.add("copied-effect");
-        }
-      }
-
-      els.copyBtn.textContent = "✓ Copiado!";
-      els.copyBtn.classList.add("success");
-      setTimeout(() => { 
-        els.copyBtn.textContent = "📋 Copiar"; 
-        els.copyBtn.classList.remove("success");
-      }, 1400);
-
-      if (currentMsg && currentMsg.id) {
-        try {
-          await updateDoc(doc(db, "messages", currentMsg.id), {
-            useCount: increment(1)
-          });
-        } catch(e) {
-          console.error(e);
-        }
-      }
-    }
-
-    window.addEventListener("keydown", (event) => {
-      if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
-        if (event.key === "Enter" && document.activeElement === els.search) {
-          els.search.blur();
-          event.preventDefault();
-        }
-        return;
-      }
-
-      if (filteredMessagesCache.length === 0) return;
-      const currentIndex = filteredMessagesCache.findIndex(m => m.id === selectedId);
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        const nextIndex = currentIndex + 1 < filteredMessagesCache.length ? currentIndex + 1 : 0;
-        selectedId = filteredMessagesCache[nextIndex].id;
-        render();
-      } else if (event.key === "ArrowUp") {
-        event.preventDefault();
-        const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : filteredMessagesCache.length - 1;
-        selectedId = filteredMessagesCache[prevIndex].id;
-        render();
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        copyText();
-      }
-    });
-
-    function exportBackup() {
-      if (messages.length === 0) {
-        alert("Nenhuma mensagem para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    els.maleTreatmentBtn.addEventListener("click", async () => { currentTreatment = "amigo"; await saveTreatmentChoice(els.clientName.value, "amigo"); updateTreatmentUI(); render(); });
-    els.femaleTreatmentBtn.addEventListener("click", async () => { currentTreatment = "amiga"; await saveTreatmentChoice(els.clientName.value, "amiga"); updateTreatmentUI(); render(); });
-
-    document.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
-      });
-    });
-
-    els.clientName.addEventListener("input", () => { updateTreatmentUI(); render(); });
-    els.search.addEventListener("input", render);
-    els.copyBtn.addEventListener("click", copyText);
-    els.saveBtn.addEventListener("click", saveForm);
-    els.cancelBtn.addEventListener("click", clearForm);
-    els.exportBtn.addEventListener("click", exportBackup);
-
-    async function loadLearnedTreatments() {
-      try {
-        const snapshot = await getDocs(treatmentsCollection);
-        snapshot.forEach((docItem) => { const data = docItem.data(); if (data && data.treatment) learnedTreatments[docItem.id] = data.treatment; });
-      } catch (error) { console.error("Erro ao carregar tratamentos:", error); }
-    }
-
-    render();
-    loadLearnedTreatments().finally(() => { updateTreatmentUI(); startRealtimeSync(); });
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-    }
-  </script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
