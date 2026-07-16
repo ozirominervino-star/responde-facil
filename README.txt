@@ -70,3 +70,17 @@ VERSÃO 1.5 — CLIENTES E TEMAS
 - Usa a coleção messages já autorizada pelas regras atuais.
 - Não exige alteração nas regras do Firebase.
 - Login, mensagens, favoritos, backup e demais recursos preservados.
+
+
+VERSÃO 1.6 — FLUXO GUIADO
+- Tela principal organizada em quatro passos:
+  1. Cliente
+  2. Assunto
+  3. Resposta
+  4. Copiar
+- Ferramentas avançadas recolhidas.
+- Cadastro de mensagens, clientes, estatísticas e backup em abas secundárias.
+- Nome e tratamento preenchidos automaticamente ao selecionar o cliente.
+- Assuntos do cliente exibidos primeiro.
+- Respostas filtradas pelo assunto.
+- Login, Firebase, mensagens antigas, favoritos e backups preservados.

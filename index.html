@@ -318,6 +318,190 @@
       .client-panel-grid { grid-template-columns: 1fr; }
     }
 
+
+    .guided-flow {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .flow-step {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .flow-step.disabled {
+      opacity: .55;
+      pointer-events: none;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #10241d;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .step-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .client-search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .client-results {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    .client-result {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 11px 12px;
+      border-radius: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .client-result:hover {
+      background: var(--soft);
+    }
+    .selected-client-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #eef7f3;
+      border: 1px solid #c8dfd5;
+    }
+    .selected-client-main {
+      font-weight: 800;
+      color: #0f6b4f;
+    }
+    .selected-client-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .topic-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .topic-choice {
+      border: 1px solid #c8dfd5;
+      background: #f7fbf9;
+      color: #0f6b4f;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .topic-choice.active {
+      background: #0f6b4f;
+      color: white;
+      border-color: #0f6b4f;
+    }
+    .guided-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, .95fr) minmax(360px, 1.25fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .guided-message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .advanced-drawer {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    .advanced-toggle {
+      width: 100%;
+      border: 0;
+      background: white;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .advanced-content {
+      display: none;
+      padding: 0 18px 18px;
+    }
+    .advanced-content.open {
+      display: block;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .admin-tab {
+      border: 1px solid var(--border);
+      background: var(--soft);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .admin-tab.active {
+      background: #10241d;
+      color: white;
+      border-color: #10241d;
+    }
+    .admin-panel {
+      display: none;
+    }
+    .admin-panel.active {
+      display: block;
+    }
+    .compact-status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    @media (max-width: 850px) {
+      .guided-layout { grid-template-columns: 1fr; }
+      .client-search-row { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 850px) { 
       body { padding: 10px; } 
       .grid, .form-grid { grid-template-columns: 1fr; } 
@@ -355,7 +539,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.5</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.6</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -424,99 +608,226 @@
       <button class="quick-tab" data-quick-filter="top_used">🔥 Mais usadas</button>
     </div>
 
-    <main class="grid">
-      <section class="card space">
-        <div>
-          <label>Nome do cliente</label>
-          <input id="clientName" placeholder="Ex: Danilo" />
-          <div id="treatmentBox" style="margin-top:10px; display:none;">
-            <label style="font-size:12px; color:var(--muted);">Tratamento identificado</label>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-              <button type="button" class="chip" id="maleTreatmentBtn">Meu amigo</button>
-              <button type="button" class="chip" id="femaleTreatmentBtn">Minha amiga</button>
-              <span id="treatmentHint" class="hint"></span>
-            </div>
+    <section class="guided-flow">
+      <div class="flow-step" id="stepClient">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div>
+            <div class="step-title">Cliente</div>
+            <div class="step-subtitle">Busque um cliente existente ou cadastre um novo.</div>
           </div>
         </div>
-        <div>
-          <label>Buscar resposta</label>
-          <div class="searchbox">
-            <span>🔎</span>
-            <input id="search" placeholder="Pedido mínimo, revenda, SAC..." />
-          </div>
-          <div class="filter-container">
-            <select class="category-select" id="categoryFilter">
-              <option value="all">📁 Filtrar por Categoria: Todas</option>
-              <option value="favorites">⭐ Somente favoritas</option>
-            </select>
-          </div>
-        </div>
-        <div class="list" id="messageList"></div>
-      </section>
 
-      <div class="space">
-        <section class="card space">
-          <div class="topline">
+        <div class="client-search-row">
+          <input id="guidedClientSearch" placeholder="Digite o nome do cliente..." />
+          <button class="btn secondary" id="newClientBtn">Novo cliente</button>
+        </div>
+
+        <div id="guidedClientResults" class="client-results"></div>
+
+        <div id="guidedSelectedClient" class="selected-client-bar">
+          <div>
+            <div id="guidedSelectedClientName" class="selected-client-main"></div>
+            <div id="guidedSelectedClientMeta" class="selected-client-meta"></div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="chip" id="editSelectedClientBtn">Editar</button>
+            <button class="chip" id="changeClientBtn">Trocar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step disabled" id="stepTopic">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div>
+            <div class="step-title">Assunto</div>
+            <div class="step-subtitle">Escolha o assunto deste atendimento.</div>
+          </div>
+        </div>
+        <div id="guidedTopics" class="topic-grid"></div>
+        <div id="guidedTopicStatus" class="compact-status">Selecione um cliente primeiro.</div>
+      </div>
+
+      <div class="flow-step disabled" id="stepResponse">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div>
+            <div class="step-title">Resposta</div>
+            <div class="step-subtitle">Escolha a mensagem mais adequada.</div>
+          </div>
+        </div>
+
+        <div class="guided-layout">
+          <div>
+            <div class="searchbox" style="margin-bottom:10px;">
+              <span>🔎</span>
+              <input id="guidedMessageSearch" placeholder="Buscar dentro deste assunto..." />
+            </div>
+            <div id="guidedMessageList" class="guided-message-list"></div>
+          </div>
+
+          <section class="card space" style="margin:0;">
+            <div class="topline">
+              <div>
+                <p class="muted">Prévia da resposta</p>
+                <h2 id="previewTitle">Nenhuma mensagem</h2>
+              </div>
+              <div class="preview-actions">
+                <button class="btn info" id="downloadFileBtn" style="display:none;">📎 Baixar anexo</button>
+                <button class="btn" id="copyBtn">📋 Copiar</button>
+              </div>
+            </div>
+            <div class="preview" id="previewText"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="flow-step disabled" id="stepCopy">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <div>
+            <div class="step-title">Copiar e enviar</div>
+            <div class="step-subtitle">Revise a mensagem e copie para o WhatsApp.</div>
+          </div>
+        </div>
+        <div id="copyStepStatus" class="compact-status">Selecione uma resposta.</div>
+      </div>
+    </section>
+
+    <div class="advanced-drawer">
+      <button class="advanced-toggle" id="advancedToggle">
+        <span>Ferramentas e configurações</span>
+        <span id="advancedArrow">▾</span>
+      </button>
+
+      <div class="advanced-content" id="advancedContent">
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-admin-tab="messages">Mensagens</button>
+          <button class="admin-tab" data-admin-tab="clients">Clientes</button>
+          <button class="admin-tab" data-admin-tab="stats">Estatísticas</button>
+          <button class="admin-tab" data-admin-tab="backup">Backup</button>
+        </div>
+
+        <div class="admin-panel active" data-admin-panel="messages">
+          <section class="card space">
             <div>
-              <p class="muted">Prévia da resposta</p>
-              <h2 id="previewTitle">Nenhuma mensagem</h2>
+              <p class="muted" id="formMode">Nova resposta</p>
+              <h2 id="formTitle">Cadastrar mensagem</h2>
+              <p class="hint">Use esta área somente para criar ou editar respostas.</p>
             </div>
-            <div class="preview-actions">
-              <button class="btn info" id="downloadFileBtn" style="display: none;">📎 Baixar Anexo</button>
-              <button class="btn" id="copyBtn">📋 Copiar</button>
+
+            <div class="form-grid">
+              <input id="newTitle" placeholder="Título" />
+              <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
             </div>
-          </div>
-          <div class="preview" id="previewText"></div>
-        </section>
 
-        <section class="card space">
-          <div>
-            <p class="muted" id="formMode">Nova resposta</p>
-            <h2 id="formTitle">Cadastrar mensagem</h2>
-            <p class="hint">Dica: use os botões abaixo para inserir os campos automáticos na mensagem.</p>
-          </div>
-          <div class="form-grid">
-            <input id="newTitle" placeholder="Título" />
-            <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
-          </div>
-          <div>
-            <label>Tags (separadas por vírgula)</label>
-            <input id="newTags" placeholder="Ex: boleto, crédito, revenda" />
-          </div>
-          <div class="suggestions-box" id="tagSuggestionsBox">
-            <div class="suggestions-title">Sugestões de tags — clique para adicionar</div>
-            <div class="chips" id="tagSuggestions"></div>
-          </div>
-          
-          <div>
-            <label>Anexar Imagem ou PDF (Opcional)</label>
-            <input type="file" id="newFile" accept="image/*, application/pdf" />
-            <div id="fileStatusInfo" class="file-status-info"></div>
-          </div>
+            <div>
+              <label>Tags (separadas por vírgula)</label>
+              <input id="newTags" placeholder="Ex: boleto, crédito, revenda" />
+            </div>
 
-          <div class="chips">
-            <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
-            <button class="chip" data-insert="{nome}">Inserir nome</button>
-            <button class="chip" data-insert="{primeiro_nome}">Inserir primeiro nome</button>
-            <button class="chip" data-insert="{tratamento}">Inserir tratamento</button>
-            <button class="chip" data-insert="{saudacao}, {tratamento} {primeiro_nome}! Tudo bem?">Inserir abertura completa</button>
-          </div>
-          <textarea id="newText" placeholder="Use {saudacao}, {nome}, {primeiro_nome} e {tratamento} onde quiser personalizar."></textarea>
-          <div class="actions">
-            <div class="actions-left">
-              <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
-              <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
+            <div class="suggestions-box" id="tagSuggestionsBox">
+              <div class="suggestions-title">Sugestões de tags — clique para adicionar</div>
+              <div class="chips" id="tagSuggestions"></div>
+            </div>
+
+            <div>
+              <label>Anexar imagem ou PDF (opcional)</label>
+              <input type="file" id="newFile" accept="image/*, application/pdf" />
+              <div id="fileStatusInfo" class="file-status-info"></div>
+            </div>
+
+            <div class="chips">
+              <button class="chip" data-insert="{saudacao}">Inserir saudação</button>
+              <button class="chip" data-insert="{nome}">Inserir nome</button>
+              <button class="chip" data-insert="{primeiro_nome}">Inserir primeiro nome</button>
+              <button class="chip" data-insert="{tratamento}">Inserir tratamento</button>
+              <button class="chip" data-insert="{saudacao}, {tratamento} {primeiro_nome}! Tudo bem?">Inserir abertura completa</button>
+            </div>
+
+            <textarea id="newText" placeholder="Use {saudacao}, {nome}, {primeiro_nome} e {tratamento} para personalizar."></textarea>
+
+            <div class="actions">
+              <div class="actions-left">
+                <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
+                <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="admin-panel" data-admin-panel="clients">
+          <section class="card space">
+            <div>
+              <p class="muted">Cadastro de cliente</p>
+              <h2>Cliente e temas</h2>
+            </div>
+            <div class="form-grid">
+              <input id="clientProfileName" placeholder="Nome do cliente" />
+              <input id="clientCompany" placeholder="Empresa / Haras" />
+            </div>
+            <input id="clientTopicsInput" placeholder="Temas: pedido, orçamento, cobrança" />
+            <div id="clientStatus" class="client-status">Digite ou selecione um cliente.</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn" id="saveClientBtn">Salvar cliente</button>
+            </div>
+            <div>
+              <div class="hint">Clientes cadastrados</div>
+              <div id="clientList" class="client-list"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="admin-panel" data-admin-panel="stats">
+          <section class="dashboard">
+            <div class="metric">
+              <div class="metric-label">Mensagens cadastradas</div>
+              <div class="metric-value" id="metricMessages">0</div>
+              <div class="metric-sub" id="metricRecent">0 criadas nos últimos 30 dias</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Favoritas</div>
+              <div class="metric-value" id="metricFavorites">0</div>
+              <div class="metric-sub">Acesso rápido às principais</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Utilizações registradas</div>
+              <div class="metric-value" id="metricUses">0</div>
+              <div class="metric-sub" id="metricTopMessage">Sem uso registrado</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Categorias</div>
+              <div class="metric-value" id="metricCategories">0</div>
+              <div class="metric-sub" id="metricTopCategory">Nenhuma categoria</div>
+            </div>
+          </section>
+        </div>
+
+        <div class="admin-panel" data-admin-panel="backup">
+          <section class="card space">
+            <div>
+              <p class="muted">Segurança</p>
+              <h2>Backup e restauração</h2>
             </div>
             <div class="backup-tools">
-              <button class="btn secondary" id="exportBtn" style="font-size:12px; padding:10px 14px;" title="Baixar backup de segurança">💾 Fazer backup</button>
-              <button class="btn secondary" id="restoreBtn" style="font-size:12px; padding:10px 14px;" title="Restaurar mensagens de um backup">📂 Restaurar backup</button>
+              <button class="btn secondary" id="exportBtn">💾 Fazer backup</button>
+              <button class="btn secondary" id="restoreBtn">📂 Restaurar backup</button>
               <input class="hidden-file-input" type="file" id="restoreFile" accept="application/json,.json" />
             </div>
-          </div>
-          <div id="restoreSummary" class="restore-summary"></div>
-        </section>
+            <div id="restoreSummary" class="restore-summary"></div>
+          </section>
+        </div>
       </div>
-    </main>
+    </div>
+
+    <!-- Campos internos mantidos para compatibilidade -->
+    <input id="clientName" type="hidden" />
+    <input id="search" type="hidden" />
+    <select id="categoryFilter" style="display:none;"><option value="all">Todas</option></select>
+    <div id="messageList" style="display:none;"></div>
+    <div id="clientTopics" style="display:none;"></div>
+
   </div>
 
   <div class="toast" id="toast"></div>
@@ -524,7 +835,7 @@
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 1.5</h2>
+      <h2>Versão 1.6</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
@@ -535,6 +846,8 @@
         <li>Sugestões de tags</li>
         <li>Cadastro simples de clientes</li>
         <li>Temas vinculados ao cliente</li>
+        <li>Fluxo guiado Cliente → Assunto → Resposta → Copiar</li>
+        <li>Ferramentas avançadas recolhidas</li>
         <li>Tratamento “meu amigo / minha amiga”</li>
         <li>Login e Firebase preservados</li>
       </ul>
@@ -554,7 +867,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "1.5";
+    const APP_VERSION = "1.6";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -580,6 +893,7 @@
     let clients = [];
     let selectedClientId = null;
     let selectedClientTopic = "";
+    let pendingClientSelectionName = "";
     let unsubscribeMessages = null;
     let currentSelectedCategory = "all"; 
     let currentBase64File = null;
@@ -634,6 +948,25 @@
       metricTopMessage: document.getElementById("metricTopMessage"),
       metricTopCategory: document.getElementById("metricTopCategory"),
       toast: document.getElementById("toast"),
+      guidedClientSearch: document.getElementById("guidedClientSearch"),
+      guidedClientResults: document.getElementById("guidedClientResults"),
+      guidedSelectedClient: document.getElementById("guidedSelectedClient"),
+      guidedSelectedClientName: document.getElementById("guidedSelectedClientName"),
+      guidedSelectedClientMeta: document.getElementById("guidedSelectedClientMeta"),
+      newClientBtn: document.getElementById("newClientBtn"),
+      editSelectedClientBtn: document.getElementById("editSelectedClientBtn"),
+      changeClientBtn: document.getElementById("changeClientBtn"),
+      stepTopic: document.getElementById("stepTopic"),
+      stepResponse: document.getElementById("stepResponse"),
+      stepCopy: document.getElementById("stepCopy"),
+      guidedTopics: document.getElementById("guidedTopics"),
+      guidedTopicStatus: document.getElementById("guidedTopicStatus"),
+      guidedMessageSearch: document.getElementById("guidedMessageSearch"),
+      guidedMessageList: document.getElementById("guidedMessageList"),
+      copyStepStatus: document.getElementById("copyStepStatus"),
+      advancedToggle: document.getElementById("advancedToggle"),
+      advancedContent: document.getElementById("advancedContent"),
+      advancedArrow: document.getElementById("advancedArrow"),
       clientProfileName: document.getElementById("clientProfileName"),
       clientCompany: document.getElementById("clientCompany"),
       clientTopicsInput: document.getElementById("clientTopicsInput"),
@@ -795,6 +1128,17 @@
         els.syncStatus.textContent = "Sincronizado na nuvem";
         renderCategories();
         renderClients();
+
+        if (pendingClientSelectionName) {
+          const pendingClient = clients.find(client =>
+            normalizeClientKey(client.name) === normalizeClientKey(pendingClientSelectionName)
+          );
+          if (pendingClient) {
+            pendingClientSelectionName = "";
+            selectGuidedClient(pendingClient);
+          }
+        }
+
         render();
       }, (error) => {
         console.error("Erro do listener Firestore:", error);
@@ -860,6 +1204,227 @@
       return Number.isNaN(parsed.getTime()) ? null : parsed;
     }
 
+    const DEFAULT_TOPICS = [
+      "Orçamento",
+      "Pedido",
+      "Cobrança",
+      "Crédito",
+      "Entrega",
+      "Revenda",
+      "Consulta"
+    ];
+
+    function getGuidedTopics(client) {
+      const topics = client && Array.isArray(client.topics) ? client.topics : [];
+      return [...new Set([...topics, ...DEFAULT_TOPICS])];
+    }
+
+    function renderGuidedClientResults() {
+      const term = normalizeClientKey(els.guidedClientSearch.value);
+      els.guidedClientResults.innerHTML = "";
+
+      if (!term) {
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = clients.length
+          ? "Digite o nome ou selecione um cliente recente."
+          : "Nenhum cliente cadastrado. Clique em Novo cliente.";
+        els.guidedClientResults.appendChild(hint);
+        return;
+      }
+
+      const matches = clients
+        .filter(client =>
+          normalizeClientKey(`${client.name} ${client.company}`).includes(term)
+        )
+        .slice(0, 8);
+
+      if (matches.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.textContent = "Cliente não encontrado. Clique em Novo cliente.";
+        els.guidedClientResults.appendChild(empty);
+        return;
+      }
+
+      matches.forEach(client => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "client-result";
+        button.innerHTML = `<strong>${client.name}</strong>${client.company ? `<div class="hint">${client.company}</div>` : ""}`;
+        button.addEventListener("click", () => selectGuidedClient(client));
+        els.guidedClientResults.appendChild(button);
+      });
+    }
+
+    function renderGuidedTopics() {
+      els.guidedTopics.innerHTML = "";
+      const client = selectedClient();
+
+      if (!client) {
+        els.stepTopic.classList.add("disabled");
+        els.guidedTopicStatus.textContent = "Selecione um cliente primeiro.";
+        return;
+      }
+
+      els.stepTopic.classList.remove("disabled");
+      els.guidedTopicStatus.textContent = selectedClientTopic
+        ? `Assunto selecionado: ${selectedClientTopic}`
+        : "Escolha um assunto para filtrar as respostas.";
+
+      getGuidedTopics(client).forEach(topic => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `topic-choice ${selectedClientTopic === topic ? "active" : ""}`;
+        button.textContent = topic;
+        button.addEventListener("click", () => selectGuidedTopic(topic));
+        els.guidedTopics.appendChild(button);
+      });
+    }
+
+    function guidedFilteredMessages() {
+      const topic = normalizeClientKey(selectedClientTopic);
+      const term = normalizeClientKey(els.guidedMessageSearch.value);
+
+      return messages
+        .filter(message => {
+          const searchable = normalizeClientKey(
+            `${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`
+          );
+
+          const matchesTopic = topic ? searchable.includes(topic) : true;
+          const matchesTerm = term ? searchable.includes(term) : true;
+          return matchesTopic && matchesTerm;
+        })
+        .sort((a, b) => {
+          const favoriteDiff = Number(Boolean(b.favorite)) - Number(Boolean(a.favorite));
+          if (favoriteDiff !== 0) return favoriteDiff;
+          return Number(b.useCount || 0) - Number(a.useCount || 0);
+        });
+    }
+
+    function renderGuidedMessages() {
+      els.guidedMessageList.innerHTML = "";
+
+      if (!selectedClientId || !selectedClientTopic) {
+        els.stepResponse.classList.add("disabled");
+        els.guidedMessageList.innerHTML = '<div class="hint">Selecione o cliente e o assunto.</div>';
+        return;
+      }
+
+      els.stepResponse.classList.remove("disabled");
+      const filtered = guidedFilteredMessages();
+
+      if (filtered.length === 0) {
+        els.guidedMessageList.innerHTML = '<div class="hint">Nenhuma resposta encontrada para este assunto.</div>';
+        return;
+      }
+
+      filtered.forEach(message => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
+
+        const usage = Number(message.useCount || 0);
+        button.innerHTML = `
+          <div class="message-row">
+            <div>
+              <div class="message-title"></div>
+              <div class="message-info-row">
+                <div class="message-cat"></div>
+                <span class="message-count">${usage ? `• ${usage} uso(s)` : ""}</span>
+              </div>
+            </div>
+            <div>${message.favorite ? "⭐" : ""}</div>
+          </div>
+        `;
+
+        button.querySelector(".message-title").textContent = message.title || "";
+        button.querySelector(".message-cat").textContent = message.category || "Geral";
+
+        button.addEventListener("click", () => {
+          selectedId = message.id;
+          els.stepCopy.classList.remove("disabled");
+          els.copyStepStatus.textContent = `Resposta selecionada: ${message.title}`;
+          renderGuidedMessages();
+          render();
+        });
+
+        els.guidedMessageList.appendChild(button);
+      });
+    }
+
+    function selectGuidedClient(client) {
+      selectedClientId = client.id;
+      selectedClientTopic = "";
+      selectedId = null;
+
+      els.guidedClientSearch.value = "";
+      els.guidedClientResults.innerHTML = "";
+      els.guidedSelectedClient.style.display = "flex";
+      els.guidedSelectedClientName.textContent = client.name || "";
+      els.guidedSelectedClientMeta.textContent = [
+        client.company || "",
+        inferTreatment(client.name).treatment ? formatTreatment(inferTreatment(client.name).treatment) : ""
+      ].filter(Boolean).join(" • ");
+
+      els.clientName.value = client.name || "";
+      els.clientProfileName.value = client.name || "";
+      els.clientCompany.value = client.company || "";
+      els.clientTopicsInput.value = (client.topics || []).join(", ");
+
+      els.stepResponse.classList.add("disabled");
+      els.stepCopy.classList.add("disabled");
+      els.copyStepStatus.textContent = "Selecione uma resposta.";
+
+      updateTreatmentUI();
+      renderGuidedTopics();
+      renderGuidedMessages();
+      render();
+    }
+
+    function selectGuidedTopic(topic) {
+      selectedClientTopic = topic;
+      selectedId = null;
+      els.guidedMessageSearch.value = "";
+      els.stepCopy.classList.add("disabled");
+      els.copyStepStatus.textContent = "Selecione uma resposta.";
+      renderGuidedTopics();
+      renderGuidedMessages();
+      render();
+    }
+
+    function resetGuidedFlow() {
+      selectedClientId = null;
+      selectedClientTopic = "";
+      selectedId = null;
+      els.guidedSelectedClient.style.display = "none";
+      els.guidedClientSearch.value = "";
+      els.guidedMessageSearch.value = "";
+      els.stepTopic.classList.add("disabled");
+      els.stepResponse.classList.add("disabled");
+      els.stepCopy.classList.add("disabled");
+      els.guidedTopicStatus.textContent = "Selecione um cliente primeiro.";
+      els.copyStepStatus.textContent = "Selecione uma resposta.";
+      els.guidedTopics.innerHTML = "";
+      els.guidedMessageList.innerHTML = "";
+      els.clientName.value = "";
+      updateTreatmentUI();
+      renderGuidedClientResults();
+      render();
+    }
+
+    function openAdminPanel(name) {
+      els.advancedContent.classList.add("open");
+      els.advancedArrow.textContent = "▴";
+      document.querySelectorAll("[data-admin-tab]").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.adminTab === name);
+      });
+      document.querySelectorAll("[data-admin-panel]").forEach(panel => {
+        panel.classList.toggle("active", panel.dataset.adminPanel === name);
+      });
+    }
+
     function normalizeClientKey(value) {
       return (value || "")
         .normalize("NFD")
@@ -901,6 +1466,9 @@
       }
 
       renderClientTopics();
+      renderGuidedClientResults();
+      renderGuidedTopics();
+      renderGuidedMessages();
     }
 
     function renderClientTopics() {
@@ -966,6 +1534,8 @@
           topics,
           updatedAt: serverTimestamp()
         };
+
+        pendingClientSelectionName = name;
 
         if (existing) {
           await updateDoc(doc(db, "messages", existing.id), payload);
@@ -1256,6 +1826,7 @@
         }
       }
 
+      els.copyStepStatus.textContent = "Resposta copiada. Agora é só colar no WhatsApp.";
       els.copyBtn.textContent = "✓ Copiado!";
       els.copyBtn.classList.add("success");
       setTimeout(() => { 
@@ -1658,6 +2229,38 @@
     els.copyBtn.addEventListener("click", copyText);
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
+    els.guidedClientSearch.addEventListener("input", renderGuidedClientResults);
+    els.guidedMessageSearch.addEventListener("input", renderGuidedMessages);
+
+    els.newClientBtn.addEventListener("click", () => {
+      openAdminPanel("clients");
+      els.clientProfileName.value = els.guidedClientSearch.value.trim();
+      els.clientCompany.value = "";
+      els.clientTopicsInput.value = "";
+      els.clientProfileName.focus();
+    });
+
+    els.editSelectedClientBtn.addEventListener("click", () => {
+      openAdminPanel("clients");
+      const client = selectedClient();
+      if (client) {
+        els.clientProfileName.value = client.name || "";
+        els.clientCompany.value = client.company || "";
+        els.clientTopicsInput.value = (client.topics || []).join(", ");
+      }
+    });
+
+    els.changeClientBtn.addEventListener("click", resetGuidedFlow);
+
+    els.advancedToggle.addEventListener("click", () => {
+      const isOpen = els.advancedContent.classList.toggle("open");
+      els.advancedArrow.textContent = isOpen ? "▴" : "▾";
+    });
+
+    document.querySelectorAll("[data-admin-tab]").forEach(tab => {
+      tab.addEventListener("click", () => openAdminPanel(tab.dataset.adminTab));
+    });
+
     els.saveClientBtn.addEventListener("click", saveClientProfile);
 
     els.clientProfileName.addEventListener("input", () => {
@@ -1706,6 +2309,9 @@
     }
 
     // Primeiro recupera imediatamente todas as mensagens antigas da coleção "messages".
+    renderGuidedClientResults();
+    renderGuidedTopics();
+    renderGuidedMessages();
     render();
     checkForUpdate();
 
