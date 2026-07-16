@@ -184,6 +184,140 @@
     .header-mini-btn { border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.08); color:white; padding:7px 10px; border-radius:999px; cursor:pointer; font-size:12px; }
     @media (max-width:850px) { .dashboard { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 
+
+    .metric-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .backup-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .hidden-file-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .suggestions-box {
+      border: 1px dashed #b8c9c1;
+      background: #f4faf7;
+      border-radius: 16px;
+      padding: 12px;
+      display: none;
+    }
+    .suggestions-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .suggested-tag {
+      border: 1px solid #b8d8ca;
+      background: white;
+      color: var(--primary);
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .duplicate-icon {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 6px;
+      border-radius: 8px;
+      color: var(--text);
+      transition: all .2s;
+    }
+    .duplicate-icon:hover { background: rgba(0,0,0,.08); }
+    .message-btn.active .duplicate-icon { color: white; opacity: .8; }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10000;
+      background: #10241d;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      display: none;
+      font-size: 13px;
+      font-weight: 700;
+      max-width: 360px;
+    }
+    .restore-summary {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+
+    .client-panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .client-panel-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 10px;
+    }
+    .client-topics {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .client-topic {
+      border: 1px solid #c9ddd4;
+      background: #f1f8f5;
+      color: #0f6b4f;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .client-topic.active {
+      background: #0f6b4f;
+      color: white;
+      border-color: #0f6b4f;
+    }
+    .client-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .client-chip {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 7px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .client-chip:hover { background: var(--soft); }
+    .client-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width:850px) {
+      .client-panel-grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 850px) { 
       body { padding: 10px; } 
       .grid, .form-grid { grid-template-columns: 1fr; } 
@@ -221,7 +355,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.3</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.5</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -237,11 +371,52 @@
 
 
     <div id="updateBanner" class="update-banner">Existe uma versão mais recente disponível. Atualize a página.</div>
+
+    <section class="client-panel">
+      <div class="topline">
+        <div>
+          <p class="muted">Atendimento por cliente</p>
+          <h2>Cliente e temas</h2>
+        </div>
+        <button class="btn secondary" id="saveClientBtn">Salvar cliente</button>
+      </div>
+
+      <div class="client-panel-grid" style="margin-top:14px;">
+        <input id="clientProfileName" placeholder="Nome do cliente" />
+        <input id="clientCompany" placeholder="Empresa / Haras" />
+        <input id="clientTopicsInput" placeholder="Temas: pedido, orçamento, cobrança" />
+      </div>
+
+      <div id="clientStatus" class="client-status">Digite ou selecione um cliente.</div>
+      <div id="clientTopics" class="client-topics"></div>
+
+      <div style="margin-top:14px;">
+        <div class="hint">Clientes recentes</div>
+        <div id="clientList" class="client-list"></div>
+      </div>
+    </section>
+
     <section class="dashboard">
-      <div class="metric"><div class="metric-label">Mensagens cadastradas</div><div class="metric-value" id="metricMessages">0</div></div>
-      <div class="metric"><div class="metric-label">Favoritas</div><div class="metric-value" id="metricFavorites">0</div></div>
-      <div class="metric"><div class="metric-label">Utilizações registradas</div><div class="metric-value" id="metricUses">0</div></div>
-      <div class="metric"><div class="metric-label">Categorias</div><div class="metric-value" id="metricCategories">0</div></div>
+      <div class="metric">
+        <div class="metric-label">Mensagens cadastradas</div>
+        <div class="metric-value" id="metricMessages">0</div>
+        <div class="metric-sub" id="metricRecent">0 criadas nos últimos 30 dias</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Favoritas</div>
+        <div class="metric-value" id="metricFavorites">0</div>
+        <div class="metric-sub">Acesso rápido às principais</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Utilizações registradas</div>
+        <div class="metric-value" id="metricUses">0</div>
+        <div class="metric-sub" id="metricTopMessage">Sem uso registrado</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Categorias</div>
+        <div class="metric-value" id="metricCategories">0</div>
+        <div class="metric-sub" id="metricTopCategory">Nenhuma categoria</div>
+      </div>
     </section>
     <div class="quick-tabs">
       <button class="quick-tab active" data-quick-filter="all">Todas</button>
@@ -308,6 +483,10 @@
             <label>Tags (separadas por vírgula)</label>
             <input id="newTags" placeholder="Ex: boleto, crédito, revenda" />
           </div>
+          <div class="suggestions-box" id="tagSuggestionsBox">
+            <div class="suggestions-title">Sugestões de tags — clique para adicionar</div>
+            <div class="chips" id="tagSuggestions"></div>
+          </div>
           
           <div>
             <label>Anexar Imagem ou PDF (Opcional)</label>
@@ -328,22 +507,34 @@
               <button class="btn" id="saveBtn">＋ Salvar mensagem</button>
               <button class="btn secondary" id="cancelBtn" style="display:none;">Cancelar edição</button>
             </div>
-            <button class="btn secondary" id="exportBtn" style="font-size: 12px; padding: 10px 14px;" title="Baixar backup de segurança">💾 Exportar Backup</button>
+            <div class="backup-tools">
+              <button class="btn secondary" id="exportBtn" style="font-size:12px; padding:10px 14px;" title="Baixar backup de segurança">💾 Fazer backup</button>
+              <button class="btn secondary" id="restoreBtn" style="font-size:12px; padding:10px 14px;" title="Restaurar mensagens de um backup">📂 Restaurar backup</button>
+              <input class="hidden-file-input" type="file" id="restoreFile" accept="application/json,.json" />
+            </div>
           </div>
+          <div id="restoreSummary" class="restore-summary"></div>
         </section>
       </div>
     </main>
   </div>
 
+  <div class="toast" id="toast"></div>
+
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 1.3</h2>
+      <h2>Versão 1.5</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
         <li>Tags e busca ampliada</li>
-        <li>Painel resumido</li>
+        <li>Painel ampliado</li>
+        <li>Backup e restauração</li>
+        <li>Duplicar mensagem</li>
+        <li>Sugestões de tags</li>
+        <li>Cadastro simples de clientes</li>
+        <li>Temas vinculados ao cliente</li>
         <li>Tratamento “meu amigo / minha amiga”</li>
         <li>Login e Firebase preservados</li>
       </ul>
@@ -363,7 +554,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "1.3";
+    const APP_VERSION = "1.5";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -386,6 +577,9 @@
     let selectedId = null;
     let editingId = null;
     let firebaseReady = false;
+    let clients = [];
+    let selectedClientId = null;
+    let selectedClientTopic = "";
     let unsubscribeMessages = null;
     let currentSelectedCategory = "all"; 
     let currentBase64File = null;
@@ -431,6 +625,22 @@
       aboutModal: document.getElementById("aboutModal"),
       closeAboutBtn: document.getElementById("closeAboutBtn"),
       updateBanner: document.getElementById("updateBanner"),
+      restoreBtn: document.getElementById("restoreBtn"),
+      restoreFile: document.getElementById("restoreFile"),
+      restoreSummary: document.getElementById("restoreSummary"),
+      tagSuggestionsBox: document.getElementById("tagSuggestionsBox"),
+      tagSuggestions: document.getElementById("tagSuggestions"),
+      metricRecent: document.getElementById("metricRecent"),
+      metricTopMessage: document.getElementById("metricTopMessage"),
+      metricTopCategory: document.getElementById("metricTopCategory"),
+      toast: document.getElementById("toast"),
+      clientProfileName: document.getElementById("clientProfileName"),
+      clientCompany: document.getElementById("clientCompany"),
+      clientTopicsInput: document.getElementById("clientTopicsInput"),
+      saveClientBtn: document.getElementById("saveClientBtn"),
+      clientStatus: document.getElementById("clientStatus"),
+      clientTopics: document.getElementById("clientTopics"),
+      clientList: document.getElementById("clientList"),
       treatmentBox: document.getElementById("treatmentBox"),
       maleTreatmentBtn: document.getElementById("maleTreatmentBtn"),
       femaleTreatmentBtn: document.getElementById("femaleTreatmentBtn"),
@@ -544,17 +754,32 @@
       els.syncStatus.textContent = "Conectando ao Firebase...";
 
       unsubscribeMessages = onSnapshot(messagesCollection, (snapshot) => {
-        messages = snapshot.docs.map((docItem) => {
-          const data = docItem.data();
-          return {
-            id: docItem.id,
+        const allRecords = snapshot.docs.map((docItem) => ({
+          id: docItem.id,
+          ...docItem.data()
+        }));
+
+        clients = allRecords
+          .filter(item => item.recordType === "client")
+          .map(item => ({
+            id: item.id,
+            name: item.name || "",
+            company: item.company || "",
+            topics: Array.isArray(item.topics) ? item.topics : [],
+            updatedAt: item.updatedAt || null
+          }))
+          .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+        messages = allRecords
+          .filter(item => item.recordType !== "client")
+          .map(item => ({
+            id: item.id,
             useCount: 0,
             title: "",
             category: "Geral",
             text: "",
-            ...data
-          };
-        });
+            ...item
+          }));
 
         messages.sort((a, b) => {
           const favoriteDiff = Number(Boolean(b.favorite)) - Number(Boolean(a.favorite));
@@ -569,6 +794,7 @@
         firebaseReady = true;
         els.syncStatus.textContent = "Sincronizado na nuvem";
         renderCategories();
+        renderClients();
         render();
       }, (error) => {
         console.error("Erro do listener Firestore:", error);
@@ -627,12 +853,175 @@
       return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
     }
 
+    function toDateSafe(value) {
+      if (!value) return null;
+      if (typeof value.toDate === "function") return value.toDate();
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function normalizeClientKey(value) {
+      return (value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+    }
+
+    function parseTopics(value) {
+      return [...new Set(
+        (value || "")
+          .split(",")
+          .map(topic => topic.trim())
+          .filter(Boolean)
+      )];
+    }
+
+    function selectedClient() {
+      return clients.find(client => client.id === selectedClientId) || null;
+    }
+
+    function renderClients() {
+      els.clientList.innerHTML = "";
+
+      clients.slice(0, 18).forEach(client => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "client-chip";
+        button.textContent = client.company
+          ? `${client.name} — ${client.company}`
+          : client.name;
+
+        button.addEventListener("click", () => selectClient(client));
+        els.clientList.appendChild(button);
+      });
+
+      if (clients.length === 0) {
+        els.clientList.innerHTML = '<span class="hint">Nenhum cliente cadastrado ainda.</span>';
+      }
+
+      renderClientTopics();
+    }
+
+    function renderClientTopics() {
+      els.clientTopics.innerHTML = "";
+      const client = selectedClient();
+
+      if (!client || !client.topics.length) {
+        return;
+      }
+
+      client.topics.forEach(topic => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `client-topic ${selectedClientTopic === topic ? "active" : ""}`;
+        button.textContent = topic;
+
+        button.addEventListener("click", () => {
+          selectedClientTopic = selectedClientTopic === topic ? "" : topic;
+          els.search.value = selectedClientTopic;
+          renderClientTopics();
+          render();
+        });
+
+        els.clientTopics.appendChild(button);
+      });
+    }
+
+    function selectClient(client) {
+      selectedClientId = client.id;
+      selectedClientTopic = "";
+      els.clientProfileName.value = client.name || "";
+      els.clientCompany.value = client.company || "";
+      els.clientTopicsInput.value = (client.topics || []).join(", ");
+      els.clientName.value = client.name || "";
+      els.clientStatus.textContent = `Cliente selecionado: ${client.name}${client.company ? " — " + client.company : ""}`;
+      updateTreatmentUI();
+      renderClientTopics();
+      render();
+    }
+
+    async function saveClientProfile() {
+      const name = els.clientProfileName.value.trim();
+      const company = els.clientCompany.value.trim();
+      const topics = parseTopics(els.clientTopicsInput.value);
+
+      if (!name) {
+        alert("Informe o nome do cliente.");
+        return;
+      }
+
+      els.saveClientBtn.disabled = true;
+      els.saveClientBtn.textContent = "Salvando...";
+
+      try {
+        const existing = clients.find(client =>
+          normalizeClientKey(client.name) === normalizeClientKey(name)
+        );
+
+        const payload = {
+          recordType: "client",
+          name,
+          company,
+          topics,
+          updatedAt: serverTimestamp()
+        };
+
+        if (existing) {
+          await updateDoc(doc(db, "messages", existing.id), payload);
+          selectedClientId = existing.id;
+          els.clientStatus.textContent = "Cliente atualizado com sucesso.";
+        } else {
+          payload.createdAt = serverTimestamp();
+          const docRef = await addDoc(messagesCollection, payload);
+          selectedClientId = docRef.id;
+          els.clientStatus.textContent = "Cliente cadastrado com sucesso.";
+        }
+
+        els.clientName.value = name;
+        updateTreatmentUI();
+        showToast("Cliente salvo.");
+      } catch (error) {
+        console.error("Erro ao salvar cliente:", error);
+        alert("Não foi possível salvar o cliente.\n\nDetalhe: " + (error.code || error.message || error));
+      } finally {
+        els.saveClientBtn.disabled = false;
+        els.saveClientBtn.textContent = "Salvar cliente";
+      }
+    }
+
     function updateDashboard() {
       const categories = new Set(messages.map(m => (m.category || "Geral").trim()).filter(Boolean));
+      const totalUses = messages.reduce((sum, m) => sum + Number(m.useCount || 0), 0);
+      const favoriteCount = messages.filter(m => m.favorite === true).length;
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 30);
+
+      const recentCount = messages.filter(m => {
+        const created = toDateSafe(m.createdAt);
+        return created && created >= cutoff;
+      }).length;
+
+      const mostUsed = [...messages].sort((a, b) => Number(b.useCount || 0) - Number(a.useCount || 0))[0];
+
+      const categoryCounts = {};
+      messages.forEach(m => {
+        const category = (m.category || "Geral").trim() || "Geral";
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+      });
+      const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0];
+
       els.metricMessages.textContent = messages.length;
-      els.metricFavorites.textContent = messages.filter(m => m.favorite === true).length;
-      els.metricUses.textContent = messages.reduce((sum, m) => sum + Number(m.useCount || 0), 0);
+      els.metricFavorites.textContent = favoriteCount;
+      els.metricUses.textContent = totalUses;
       els.metricCategories.textContent = categories.size;
+      els.metricRecent.textContent = `${recentCount} criadas nos últimos 30 dias`;
+      els.metricTopMessage.textContent = mostUsed && Number(mostUsed.useCount || 0) > 0
+        ? `${mostUsed.title}: ${mostUsed.useCount} uso(s)`
+        : "Sem uso registrado";
+      els.metricTopCategory.textContent = topCategory
+        ? `${topCategory[0]}: ${topCategory[1]} mensagem(ns)`
+        : "Nenhuma categoria";
     }
 
     function render() {
@@ -678,7 +1067,7 @@
           const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
           const tagsHtml = (message.tags || []).slice(0, 4).map(tag => `<span class="tag-badge">#${tag}</span>`).join("");
           
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div><div class="tag-list">${tagsHtml}</div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div><div class="tag-list">${tagsHtml}</div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="duplicate-icon" title="Duplicar mensagem">📄</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
@@ -696,6 +1085,11 @@
               console.error("Erro ao atualizar favorito:", error);
               alert("Não foi possível atualizar o favorito.\n\nDetalhe: " + (error.code || error.message || error));
             }
+          });
+
+          btn.querySelector(".duplicate-icon").addEventListener("click", async (event) => {
+            event.stopPropagation();
+            await duplicateMessage(message);
           });
 
           btn.querySelector(".edit").addEventListener("click", (event) => { event.stopPropagation(); startEditing(message); });
@@ -751,6 +1145,8 @@
       els.fileStatusInfo.textContent = "";
       currentBase64File = null;
       currentFileName = null;
+      els.tagSuggestions.innerHTML = "";
+      els.tagSuggestionsBox.style.display = "none";
       render();
     }
 
@@ -809,6 +1205,7 @@
       els.newCategory.value = message.category || "";
       els.newText.value = message.text || "";
       els.newTags.value = (message.tags || []).join(", ");
+      suggestTags();
       
       if (message.fileData) {
         els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
@@ -905,18 +1302,241 @@
       }
     });
 
+    function showToast(message, duration = 2600) {
+      els.toast.textContent = message;
+      els.toast.style.display = "block";
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        els.toast.style.display = "none";
+      }, duration);
+    }
+
+    function sanitizeBackupMessage(item) {
+      if (!item || typeof item !== "object") return null;
+
+      const title = String(item.title || "").trim();
+      const text = String(item.text || "").trim();
+      if (!title || !text) return null;
+
+      return {
+        title,
+        category: String(item.category || "Geral").trim() || "Geral",
+        text,
+        tags: Array.isArray(item.tags)
+          ? item.tags.map(tag => String(tag).trim().replace(/^#/, "")).filter(Boolean)
+          : [],
+        favorite: Boolean(item.favorite),
+        useCount: Number.isFinite(Number(item.useCount)) ? Number(item.useCount) : 0,
+        fileData: typeof item.fileData === "string" ? item.fileData : null,
+        fileName: typeof item.fileName === "string" ? item.fileName : null
+      };
+    }
+
+    async function duplicateMessage(message) {
+      if (!message || !message.id) return;
+
+      const payload = {
+        title: `${message.title || "Mensagem"} — cópia`,
+        category: message.category || "Geral",
+        text: message.text || "",
+        tags: Array.isArray(message.tags) ? [...message.tags] : [],
+        favorite: false,
+        useCount: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      if (message.fileData) {
+        payload.fileData = message.fileData;
+        payload.fileName = message.fileName || "anexo";
+      }
+
+      try {
+        const docRef = await addDoc(messagesCollection, payload);
+        selectedId = docRef.id;
+        showToast("Mensagem duplicada com sucesso.");
+      } catch (error) {
+        console.error("Erro ao duplicar:", error);
+        alert("Não foi possível duplicar a mensagem.\n\nDetalhe: " + (error.code || error.message || error));
+      }
+    }
+
+    const TAG_RULES = [
+      { tag: "crédito", words: ["credito", "crédito", "limite", "serasa", "inadimplente", "inadimplência"] },
+      { tag: "boleto", words: ["boleto", "vencimento", "cobrança", "cobranca", "pagamento"] },
+      { tag: "revenda", words: ["revenda", "revendedor", "representante", "representação", "representacao"] },
+      { tag: "pedido", words: ["pedido", "mínimo", "minimo", "compra"] },
+      { tag: "financeiro", words: ["financeiro", "pix", "transferência", "transferencia", "parcelamento"] },
+      { tag: "sac", words: ["sac", "reclamação", "reclamacao", "problema", "produto"] },
+      { tag: "logística", words: ["frete", "entrega", "transportadora", "envio", "logística", "logistica"] },
+      { tag: "cadastro", words: ["cnpj", "inscrição estadual", "inscricao estadual", "cadastro"] },
+      { tag: "whatsapp", words: ["whatsapp", "mensagem", "contato"] },
+      { tag: "urgente", words: ["urgente", "imediato", "prioridade"] }
+    ];
+
+    function normalizeForTags(value) {
+      return (value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function suggestTags() {
+      const content = normalizeForTags(
+        `${els.newTitle.value} ${els.newCategory.value} ${els.newText.value}`
+      );
+
+      const existing = new Set(
+        els.newTags.value
+          .split(",")
+          .map(tag => normalizeForTags(tag.trim().replace(/^#/, "")))
+          .filter(Boolean)
+      );
+
+      const suggestions = TAG_RULES
+        .filter(rule => rule.words.some(word => content.includes(normalizeForTags(word))))
+        .map(rule => rule.tag)
+        .filter(tag => !existing.has(normalizeForTags(tag)));
+
+      els.tagSuggestions.innerHTML = "";
+
+      if (suggestions.length === 0) {
+        els.tagSuggestionsBox.style.display = "none";
+        return;
+      }
+
+      suggestions.forEach(tag => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "suggested-tag";
+        button.textContent = `#${tag}`;
+        button.addEventListener("click", () => {
+          const currentTags = els.newTags.value
+            .split(",")
+            .map(value => value.trim())
+            .filter(Boolean);
+
+          if (!currentTags.some(value => normalizeForTags(value) === normalizeForTags(tag))) {
+            currentTags.push(tag);
+            els.newTags.value = currentTags.join(", ");
+          }
+
+          suggestTags();
+        });
+        els.tagSuggestions.appendChild(button);
+      });
+
+      els.tagSuggestionsBox.style.display = "block";
+    }
+
+    async function restoreBackupFile(file) {
+      if (!file) return;
+
+      els.restoreSummary.textContent = "Lendo backup...";
+
+      try {
+        const raw = await file.text();
+        const parsed = JSON.parse(raw);
+        const sourceItems = Array.isArray(parsed)
+          ? parsed
+          : Array.isArray(parsed.messages)
+            ? parsed.messages
+            : [];
+
+        const validItems = sourceItems
+          .map(sanitizeBackupMessage)
+          .filter(Boolean);
+
+        if (validItems.length === 0) {
+          throw new Error("O arquivo não contém mensagens válidas.");
+        }
+
+        const confirmed = confirm(
+          `Foram encontradas ${validItems.length} mensagem(ns).\n\n` +
+          "A restauração será feita por mesclagem: as mensagens atuais serão mantidas e o backup será adicionado.\n\nContinuar?"
+        );
+
+        if (!confirmed) {
+          els.restoreSummary.textContent = "Restauração cancelada.";
+          return;
+        }
+
+        els.restoreBtn.disabled = true;
+        els.restoreBtn.textContent = "Restaurando...";
+
+        let restored = 0;
+        let failed = 0;
+
+        for (const item of validItems) {
+          try {
+            const payload = {
+              title: item.title,
+              category: item.category,
+              text: item.text,
+              tags: item.tags,
+              favorite: item.favorite,
+              useCount: item.useCount,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            };
+
+            if (item.fileData) {
+              payload.fileData = item.fileData;
+              payload.fileName = item.fileName || "anexo";
+            }
+
+            await addDoc(messagesCollection, payload);
+            restored += 1;
+          } catch (error) {
+            console.error("Falha ao restaurar item:", error);
+            failed += 1;
+          }
+        }
+
+        els.restoreSummary.textContent =
+          `${restored} mensagem(ns) restaurada(s)` +
+          (failed ? `; ${failed} falha(s).` : ".");
+
+        showToast("Backup restaurado.");
+      } catch (error) {
+        console.error("Erro ao restaurar backup:", error);
+        els.restoreSummary.textContent = "Não foi possível restaurar o backup.";
+        alert("Backup inválido ou incompatível.\n\nDetalhe: " + (error.message || error));
+      } finally {
+        els.restoreBtn.disabled = false;
+        els.restoreBtn.textContent = "📂 Restaurar backup";
+        els.restoreFile.value = "";
+      }
+    }
+
     function exportBackup() {
       if (messages.length === 0) {
         alert("Nenhuma mensagem para exportar.");
         return;
       }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`);
+
+      const backup = {
+        app: "Responde Fácil PRO",
+        version: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        messageCount: messages.length,
+        messages
+      };
+
+      const blob = new Blob(
+        [JSON.stringify(backup, null, 2)],
+        { type: "application/json;charset=utf-8" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.href = url;
+      downloadAnchor.download = `responde_facil_backup_${new Date().toISOString().slice(0,10)}.json`;
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+      URL.revokeObjectURL(url);
+      showToast("Backup criado com sucesso.");
     }
 
     els.maleTreatmentBtn.addEventListener("click", async () => { currentTreatment = "amigo"; await saveTreatmentChoice(els.clientName.value, "amigo"); updateTreatmentUI(); render(); });
@@ -1038,7 +1658,45 @@
     els.copyBtn.addEventListener("click", copyText);
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
+    els.saveClientBtn.addEventListener("click", saveClientProfile);
+
+    els.clientProfileName.addEventListener("input", () => {
+      const typed = els.clientProfileName.value.trim();
+      const match = clients.find(client =>
+        normalizeClientKey(client.name) === normalizeClientKey(typed)
+      );
+
+      if (match) {
+        selectedClientId = match.id;
+        els.clientCompany.value = match.company || "";
+        els.clientTopicsInput.value = (match.topics || []).join(", ");
+        els.clientStatus.textContent = `Cliente localizado: ${match.name}`;
+        els.clientName.value = match.name;
+        updateTreatmentUI();
+        renderClientTopics();
+        render();
+      } else {
+        selectedClientId = null;
+        selectedClientTopic = "";
+        els.clientStatus.textContent = typed
+          ? "Novo cliente. Informe empresa e temas, depois clique em Salvar cliente."
+          : "Digite ou selecione um cliente.";
+        els.clientName.value = typed;
+        updateTreatmentUI();
+        renderClientTopics();
+        render();
+      }
+    });
+
     els.exportBtn.addEventListener("click", exportBackup);
+    els.restoreBtn.addEventListener("click", () => els.restoreFile.click());
+    els.restoreFile.addEventListener("change", (event) => {
+      restoreBackupFile(event.target.files[0]);
+    });
+
+    [els.newTitle, els.newCategory, els.newText, els.newTags].forEach(element => {
+      element.addEventListener("input", suggestTags);
+    });
 
     async function loadLearnedTreatments() {
       try {

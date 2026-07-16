@@ -1,16 +1,15 @@
 # Changelog — Responde Fácil PRO
 
-## v1.1 — 16/07/2026
+## 1.5
+- Cadastro de clientes sem nova coleção no Firebase.
+- Empresa/Haras por cliente.
+- Temas vinculados ao cliente.
+- Seleção rápida de clientes recentes.
+- Tema selecionado aplicado à busca de mensagens.
+- Compatibilidade total com as regras atuais.
 
-- Login por Firebase Authentication preservado.
-- Recuperação da coleção existente `messages`.
-- Tratamento inteligente: `meu amigo` e `minha amiga`.
-- Variáveis `{tratamento}` e `{primeiro_nome}`.
-- Favoritos com filtro dedicado e ordenação no topo.
-- Tags por mensagem.
-- Busca em título, categoria, texto, tags e nome do anexo.
-- Filtros por categoria, favoritas e mais usadas.
-- Contador de uso ao copiar.
-- Interface renovada e responsiva.
-- Código separado em HTML, CSS e JavaScript.
-- Cache atualizado para a versão 1.1.
+## 1.4
+- Backup/restauração.
+- Duplicação de mensagens.
+- Sugestões de tags.
+- Dashboard ampliado.

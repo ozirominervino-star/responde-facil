@@ -49,3 +49,24 @@ VERSÃO 1.3 PRO
 - Tela Sobre.
 - Verificação simples de versão.
 - Login, Firebase, favoritos e mensagens antigas preservados.
+
+
+VERSÃO 1.4 PRO
+- Backup com metadados e data de exportação.
+- Restauração de backup por mesclagem.
+- Botão para duplicar mensagens.
+- Sugestões automáticas de tags por palavras-chave.
+- Dashboard ampliado: mensagens recentes, mais usada e categoria principal.
+- Refinamentos visuais e notificações.
+- Login, Firebase, mensagens antigas, anexos e favoritos preservados.
+
+
+VERSÃO 1.5 — CLIENTES E TEMAS
+- Cadastro simples de clientes.
+- Empresa/Haras vinculado ao cliente.
+- Temas vinculados ao cliente.
+- Ao selecionar o cliente, seus temas aparecem primeiro.
+- Clicar em um tema aplica o tema na busca de mensagens.
+- Usa a coleção messages já autorizada pelas regras atuais.
+- Não exige alteração nas regras do Firebase.
+- Login, mensagens, favoritos, backup e demais recursos preservados.
