@@ -36,3 +36,5 @@ VERSÃO 1.2 — ETAPA 1: FAVORITOS
 - Filtro "Somente favoritas".
 - Favorito salvo no Firebase e sincronizado entre dispositivos.
 - Login, mensagens antigas e regras existentes preservados.
+
+- Exibição da versão 1.2 na tela inicial.
