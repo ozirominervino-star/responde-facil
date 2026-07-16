@@ -1,14 +1,5 @@
-const CACHE_NAME = "responde-facil-v7-excluir-usuario";
-const FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./favicon.ico",
-  "./icons/icon-32.png",
-  "./icons/icon-180.png",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
-];
+const CACHE_NAME = "responde-facil-firebase-v14-tratamento";
+const FILES = ["./", "./index.html", "./manifest.json", "./favicon.ico", "./icons/icon-32.png", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -25,12 +16,6 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-  if (url.hostname.includes("googleapis.com") || url.hostname.includes("firebase") || url.hostname.includes("gstatic.com")) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
   event.respondWith(
     fetch(event.request)
       .then((response) => {
