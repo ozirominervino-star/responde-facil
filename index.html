@@ -19,13 +19,16 @@
       --dark: #111111; 
       --soft: #f5f5f5; 
       --border: #e7e5e4; 
-      --primary: #10b981; 
+      --primary: #0f6b4f;
+      --primary-soft: #e8f3ef;
+      --gold: #d4af37;
+      --gold-soft: #f7f0d7; 
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
     .app { max-width: 1100px; margin: 0 auto; }
     
-    header { background: var(--dark); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
+    header { background: linear-gradient(135deg, #10241d, #0f6b4f); color: white; border-radius: 28px; padding: 24px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
     header p { margin: 0 0 6px; color: #d6d3d1; font-size: 14px; }
     h1 { margin: 0; font-size: 32px; }
     h2 { margin: 0; font-size: 22px; }
@@ -163,6 +166,24 @@
       color: #d6d3d1;
     }
 
+
+    .dashboard { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+    .metric { background:white; border:1px solid var(--border); border-radius:20px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
+    .metric-label { color:var(--muted); font-size:12px; }
+    .metric-value { font-size:24px; font-weight:800; margin-top:6px; color:#10241d; }
+    .quick-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .quick-tab { border:1px solid var(--border); background:white; color:var(--text); padding:9px 12px; border-radius:999px; cursor:pointer; font-size:13px; font-weight:700; }
+    .quick-tab.active { background:#10241d; color:white; border-color:#10241d; }
+    .tag-list { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .tag-badge { display:inline-flex; align-items:center; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+    .message-btn.active .tag-badge { background:rgba(255,255,255,.16); color:white; }
+    .about-modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:9998; padding:20px; }
+    .about-card { width:min(560px,100%); background:white; border-radius:24px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .about-list { margin:16px 0; padding-left:20px; line-height:1.8; }
+    .update-banner { display:none; margin-bottom:16px; padding:12px 16px; border-radius:16px; background:var(--gold-soft); color:#6b5700; border:1px solid #eadb9d; font-size:13px; font-weight:700; }
+    .header-mini-btn { border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.08); color:white; padding:7px 10px; border-radius:999px; cursor:pointer; font-size:12px; }
+    @media (max-width:850px) { .dashboard { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
     @media (max-width: 850px) { 
       body { padding: 10px; } 
       .grid, .form-grid { grid-template-columns: 1fr; } 
@@ -199,8 +220,8 @@
     <header>
       <div>
         <p>App de respostas rápidas</p>
-        <h1>Responde Fácil</h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.2</p>
+        <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.3</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -208,10 +229,25 @@
         <span class="status" id="syncStatus">Aguardando autenticação...</span>
         <div class="user-bar">
           <span class="user-email" id="loggedUserEmail"></span>
+          <button type="button" class="header-mini-btn" id="aboutBtn">Sobre</button>
           <button type="button" class="chip" id="logoutBtn" style="padding:6px 10px;">Sair</button>
         </div>
       </div>
     </header>
+
+
+    <div id="updateBanner" class="update-banner">Existe uma versão mais recente disponível. Atualize a página.</div>
+    <section class="dashboard">
+      <div class="metric"><div class="metric-label">Mensagens cadastradas</div><div class="metric-value" id="metricMessages">0</div></div>
+      <div class="metric"><div class="metric-label">Favoritas</div><div class="metric-value" id="metricFavorites">0</div></div>
+      <div class="metric"><div class="metric-label">Utilizações registradas</div><div class="metric-value" id="metricUses">0</div></div>
+      <div class="metric"><div class="metric-label">Categorias</div><div class="metric-value" id="metricCategories">0</div></div>
+    </section>
+    <div class="quick-tabs">
+      <button class="quick-tab active" data-quick-filter="all">Todas</button>
+      <button class="quick-tab" data-quick-filter="favorites">⭐ Favoritas</button>
+      <button class="quick-tab" data-quick-filter="top_used">🔥 Mais usadas</button>
+    </div>
 
     <main class="grid">
       <section class="card space">
@@ -268,6 +304,10 @@
             <input id="newTitle" placeholder="Título" />
             <input id="newCategory" placeholder="Categoria (Ex: Vendas, SAC)" />
           </div>
+          <div>
+            <label>Tags (separadas por vírgula)</label>
+            <input id="newTags" placeholder="Ex: boleto, crédito, revenda" />
+          </div>
           
           <div>
             <label>Anexar Imagem ou PDF (Opcional)</label>
@@ -295,6 +335,22 @@
     </main>
   </div>
 
+  <div class="about-modal" id="aboutModal">
+    <div class="about-card">
+      <p class="muted">Responde Fácil PRO</p>
+      <h2>Versão 1.3</h2>
+      <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
+      <ul class="about-list">
+        <li>Favoritos sincronizados</li>
+        <li>Tags e busca ampliada</li>
+        <li>Painel resumido</li>
+        <li>Tratamento “meu amigo / minha amiga”</li>
+        <li>Login e Firebase preservados</li>
+      </ul>
+      <button class="btn" id="closeAboutBtn">Fechar</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import {
@@ -306,6 +362,8 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const APP_VERSION = "1.3";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -364,6 +422,15 @@
       loginError: document.getElementById("loginError"),
       logoutBtn: document.getElementById("logoutBtn"),
       loggedUserEmail: document.getElementById("loggedUserEmail"),
+      newTags: document.getElementById("newTags"),
+      metricMessages: document.getElementById("metricMessages"),
+      metricFavorites: document.getElementById("metricFavorites"),
+      metricUses: document.getElementById("metricUses"),
+      metricCategories: document.getElementById("metricCategories"),
+      aboutBtn: document.getElementById("aboutBtn"),
+      aboutModal: document.getElementById("aboutModal"),
+      closeAboutBtn: document.getElementById("closeAboutBtn"),
+      updateBanner: document.getElementById("updateBanner"),
       treatmentBox: document.getElementById("treatmentBox"),
       maleTreatmentBtn: document.getElementById("maleTreatmentBtn"),
       femaleTreatmentBtn: document.getElementById("femaleTreatmentBtn"),
@@ -560,14 +627,23 @@
       return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
     }
 
+    function updateDashboard() {
+      const categories = new Set(messages.map(m => (m.category || "Geral").trim()).filter(Boolean));
+      els.metricMessages.textContent = messages.length;
+      els.metricFavorites.textContent = messages.filter(m => m.favorite === true).length;
+      els.metricUses.textContent = messages.reduce((sum, m) => sum + Number(m.useCount || 0), 0);
+      els.metricCategories.textContent = categories.size;
+    }
+
     function render() {
+      updateDashboard();
       const greeting = getGreeting();
       els.greetingLabel.textContent = greeting;
 
       const term = els.search.value.toLowerCase().trim();
       
       let filtered = messages.filter((message) => {
-        const matchesSearch = term ? `${message.title} ${message.category} ${message.text}`.toLowerCase().includes(term) : true;
+        const matchesSearch = term ? `${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")} ${message.fileName || ""}`.toLowerCase().includes(term) : true;
         const matchesCategory =
           currentSelectedCategory === "all" || currentSelectedCategory === "top_used"
             ? true
@@ -600,8 +676,9 @@
           
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
           const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
+          const tagsHtml = (message.tags || []).slice(0, 4).map(tag => `<span class="tag-badge">#${tag}</span>`).join("");
           
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div><div class="tag-list">${tagsHtml}</div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
@@ -669,6 +746,7 @@
       editingId = null;
       els.newTitle.value = "";
       els.newCategory.value = "";
+      els.newTags.value = "";
       els.newFile.value = "";
       els.fileStatusInfo.textContent = "";
       currentBase64File = null;
@@ -680,6 +758,10 @@
       const title = els.newTitle.value.trim();
       const category = els.newCategory.value.trim() || "Geral";
       const text = els.newText.value.trim();
+      const tags = els.newTags.value
+        .split(",")
+        .map(tag => tag.trim().replace(/^#/, ""))
+        .filter(Boolean);
       if (!title || !text) return;
       els.saveBtn.disabled = true;
       const originalSaveText = els.saveBtn.textContent;
@@ -689,6 +771,7 @@
         title,
         category,
         text,
+        tags,
         updatedAt: serverTimestamp()
       };
 
@@ -725,6 +808,7 @@
       els.newTitle.value = message.title || "";
       els.newCategory.value = message.category || "";
       els.newText.value = message.text || "";
+      els.newTags.value = (message.tags || []).join(", ");
       
       if (message.fileData) {
         els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
@@ -916,6 +1000,33 @@
     });
     els.logoutBtn.addEventListener("click", doLogout);
 
+    document.querySelectorAll("[data-quick-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        currentSelectedCategory = button.dataset.quickFilter;
+        document.querySelectorAll("[data-quick-filter]").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        renderCategories();
+        render();
+      });
+    });
+
+    els.aboutBtn.addEventListener("click", () => els.aboutModal.style.display = "flex");
+    els.closeAboutBtn.addEventListener("click", () => els.aboutModal.style.display = "none");
+    els.aboutModal.addEventListener("click", (event) => {
+      if (event.target === els.aboutModal) els.aboutModal.style.display = "none";
+    });
+
+    async function checkForUpdate() {
+      try {
+        const response = await fetch("./version.json?ts=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data.version && data.version !== APP_VERSION) {
+          els.updateBanner.style.display = "block";
+        }
+      } catch {}
+    }
+
     document.querySelectorAll("[data-insert]").forEach((btn) => {
       btn.addEventListener("click", () => {
         els.newText.value = appendWithSmartSpacing(els.newText.value, btn.dataset.insert);
@@ -938,6 +1049,7 @@
 
     // Primeiro recupera imediatamente todas as mensagens antigas da coleção "messages".
     render();
+    checkForUpdate();
 
     onAuthStateChanged(auth, (user) => {
       if (user) {

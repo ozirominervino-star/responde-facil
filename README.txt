@@ -38,3 +38,14 @@ VERSÃO 1.2 — ETAPA 1: FAVORITOS
 - Login, mensagens antigas e regras existentes preservados.
 
 - Exibição da versão 1.2 na tela inicial.
+
+
+VERSÃO 1.3 PRO
+- Identidade visual verde, grafite e dourado.
+- Dashboard com mensagens, favoritas, utilizações e categorias.
+- Tags por mensagem.
+- Busca em título, categoria, texto, tags e nome do anexo.
+- Atalhos Todas, Favoritas e Mais usadas.
+- Tela Sobre.
+- Verificação simples de versão.
+- Login, Firebase, favoritos e mensagens antigas preservados.
