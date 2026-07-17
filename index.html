@@ -653,7 +653,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 2.0.0</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 2.0.1</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -891,7 +891,7 @@
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 2.0.0</h2>
+      <h2>Versão 2.0.1</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
@@ -928,7 +928,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "2.0.0";
+    const APP_VERSION = "2.0.1";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -1190,7 +1190,7 @@
           return titleA.localeCompare(titleB);
         });
 
-        if (!selectedId && messages.length > 0) selectedId = messages[0].id;
+        if (selectedId && !messages.some(message => message.id === selectedId)) selectedId = null;
         firebaseReady = true;
         els.syncStatus.textContent = "Sincronizado na nuvem";
         renderCategories();
@@ -1261,7 +1261,7 @@
     });
 
     function selectedMessage() {
-      return messages.find((message) => message.id === selectedId) || filteredMessagesCache[0] || messages[0];
+      return selectedId ? messages.find((message) => message.id === selectedId) || null : null;
     }
 
     function toDateSafe(value) {
@@ -1341,8 +1341,13 @@
       const term = normalizeClientKey(els.guidedMessageSearch.value);
       const sorted = messages
         .filter(message => {
-          if (!term) return true;
-          return normalizeClientKey(`${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`).includes(term);
+          const searchable = normalizeClientKey(`${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`);
+          const allowedTopics = getGuidedTopics(client).map(topic => normalizeClientKey(topic));
+          const matchesClientTopic = !allowedTopics.length || allowedTopics.some(topic =>
+            normalizeClientKey(message.category || "") === topic || searchable.includes(topic)
+          );
+          const matchesTerm = term ? searchable.includes(term) : true;
+          return matchesClientTopic && matchesTerm;
         })
         .sort((a, b) => {
           const favoriteDiff = Number(Boolean(b.favorite)) - Number(Boolean(a.favorite));
@@ -1886,12 +1891,16 @@
         .split(",")
         .map(tag => tag.trim().replace(/^#/, ""))
         .filter(Boolean);
-      if (!title || !text) return;
+      if (!title || !text) {
+        alert("Informe o título e o texto da mensagem antes de salvar.");
+        return;
+      }
       els.saveBtn.disabled = true;
       const originalSaveText = els.saveBtn.textContent;
       els.saveBtn.textContent = "Salvando...";
 
       const payload = {
+        recordType: "message",
         title,
         category,
         text,
@@ -1961,6 +1970,12 @@
     }
 
     async function copyText() {
+      const currentMsg = selectedMessage();
+      if (!currentMsg || !currentMsg.id) {
+        alert("Selecione uma mensagem antes de copiar.");
+        return;
+      }
+
       const text = els.previewText.textContent;
       if (!text) return;
       
@@ -1973,8 +1988,6 @@
         document.execCommand("copy");
         document.body.removeChild(textArea);
       }
-      
-      const currentMsg = selectedMessage();
       if (currentMsg && currentMsg.id) {
         const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
         if (cardEl) {

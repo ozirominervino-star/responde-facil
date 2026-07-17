@@ -1,9 +1,9 @@
 {
-  "name": "Responde Fácil PRO",
-  "short_name": "Responde Fácil",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f3f5f4",
-  "theme_color": "#0f6b4f",
-  "description": "Respostas rápidas para atendimento comercial"
+    "name":  "Responde Fácil PRO",
+    "short_name":  "Responde Fácil",
+    "start_url":  "./",
+    "display":  "standalone",
+    "background_color":  "#f3f5f4",
+    "theme_color":  "#0f6b4f",
+    "description":  "Respostas rápidas para atendimento comercial"
 }
