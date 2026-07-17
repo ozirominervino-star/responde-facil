@@ -622,6 +622,432 @@
       body{padding:10px}.rf-workspace{grid-template-columns:1fr}.rf-sidebar{position:static}.rf-preview-panel{min-height:auto;padding:18px}.rf-preview-panel .preview{min-height:220px}.rf-actions .btn{flex:1;justify-content:center}.rf-client-row{grid-template-columns:1fr auto}
     }
 
+    /* Interface operacional refinada */
+    :root {
+      --bg: #f4f6f5;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #667085;
+      --dark: #173229;
+      --soft: #f7f9f8;
+      --border: #d9e1dd;
+      --primary: #0b6b4d;
+      --primary-dark: #084f3a;
+      --primary-soft: #e8f4ef;
+      --danger-soft: #fee4e2;
+      --focus: rgba(11,107,77,.14);
+      --shadow-sm: 0 1px 2px rgba(16,24,40,.05);
+      --shadow-md: 0 12px 34px rgba(16,24,40,.08);
+    }
+
+    body {
+      background:
+        linear-gradient(180deg, #eef3f1 0, #f8faf9 300px),
+        var(--bg);
+      color: var(--text);
+      padding: 18px;
+      letter-spacing: 0;
+    }
+
+    .app { max-width: 1240px; }
+
+    header,
+    .card,
+    .auth-card,
+    .about-card,
+    .advanced-drawer,
+    .rf-sidebar,
+    .rf-preview-panel,
+    .metric,
+    .topic-editor,
+    .preview,
+    .toast,
+    input,
+    textarea,
+    select,
+    .btn,
+    .chip,
+    .status,
+    .badge,
+    .rf-search,
+    .topic-choice,
+    .selected-client-bar,
+    .client-result,
+    .update-banner,
+    .auth-error {
+      border-radius: 8px;
+    }
+
+    header {
+      background: #173229;
+      border: 1px solid rgba(255,255,255,.09);
+      box-shadow: var(--shadow-md);
+      padding: 16px 18px;
+    }
+
+    header h1,
+    .rf-heading,
+    .rf-preview-panel h2 {
+      letter-spacing: 0;
+    }
+
+    header h1 {
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .badge {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #f5fbf8;
+    }
+
+    .status {
+      background: #eef6f2;
+      color: #0b4d39;
+      border: 1px solid #cfe3da;
+      font-weight: 700;
+    }
+
+    .user-email { color: #d7e6df; }
+    .header-mini-btn,
+    header .chip {
+      border-radius: 8px;
+      min-height: 32px;
+    }
+
+    .rf-workspace {
+      grid-template-columns: minmax(320px, .78fr) minmax(520px, 1.35fr);
+      gap: 16px;
+    }
+
+    .rf-sidebar,
+    .rf-preview-panel,
+    .advanced-drawer,
+    .card,
+    .metric {
+      border-color: var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rf-sidebar {
+      padding: 18px;
+      top: 18px;
+    }
+
+    .rf-preview-panel {
+      min-height: 560px;
+      padding: 22px;
+    }
+
+    .rf-eyebrow {
+      color: #087055;
+      letter-spacing: 0;
+      font-size: 12px;
+    }
+
+    .rf-heading {
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .rf-help {
+      max-width: 46rem;
+      color: #667085;
+    }
+
+    .rf-field { margin-top: 18px; }
+    .rf-field-label { color: #344054; }
+
+    .rf-field.disabled,
+    .rf-preview-panel.disabled {
+      opacity: .64;
+    }
+
+    .rf-search {
+      background: #fff;
+      min-height: 48px;
+      border-color: var(--border);
+    }
+
+    .rf-search:focus-within,
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--focus);
+    }
+
+    .rf-search input,
+    input,
+    textarea,
+    select {
+      color: var(--text);
+    }
+
+    .rf-client-results,
+    .rf-message-results,
+    .list {
+      scrollbar-width: thin;
+      scrollbar-color: #b7c7c0 transparent;
+    }
+
+    .rf-message-results {
+      max-height: 392px;
+      gap: 6px;
+    }
+
+    .topic-choice {
+      border: 1px solid transparent;
+      background: #fff;
+      padding: 12px;
+      box-shadow: inset 0 0 0 1px #edf1ef;
+    }
+
+    .topic-choice:hover {
+      background: #f8fbfa;
+      border-color: #cbdad3;
+    }
+
+    .topic-choice.active {
+      background: var(--primary-soft);
+      border-color: #9fcbbb;
+      color: var(--primary-dark);
+      box-shadow: inset 4px 0 0 var(--primary);
+    }
+
+    .rf-message-meta {
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .selected-client-bar {
+      background: #f0f8f5;
+      border-color: #b8d8ca;
+    }
+
+    .selected-client-main {
+      color: var(--primary-dark);
+    }
+
+    .rf-preview-top {
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rf-preview-panel h2 {
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .rf-preview-panel .preview {
+      background: #fbfcfb;
+      border: 1px solid #e4ebe8;
+      min-height: 330px;
+      font-size: 16px;
+      line-height: 1.7;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .rf-empty-note {
+      color: #7b8794;
+      display: flex;
+      align-items: center;
+    }
+
+    .rf-actions {
+      position: sticky;
+      bottom: 12px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      padding: 10px;
+      justify-content: flex-end;
+      box-shadow: 0 10px 30px rgba(16,24,40,.08);
+    }
+
+    .btn {
+      min-height: 42px;
+      background: var(--dark);
+      box-shadow: none;
+    }
+
+    .btn:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(16,24,40,.10);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn.secondary,
+    .chip,
+    .admin-tab {
+      background: #f2f4f3;
+      border: 1px solid var(--border);
+      color: #344054;
+    }
+
+    .rf-actions #copyBtn,
+    .btn.success {
+      background: var(--primary);
+    }
+
+    .rf-actions #copyBtn:hover,
+    .btn.success:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.info {
+      background: #155eef;
+    }
+
+    .advanced-drawer {
+      background: #fff;
+      overflow: clip;
+    }
+
+    .advanced-toggle {
+      background: #fff;
+      border-bottom: 1px solid transparent;
+    }
+
+    .advanced-content.open {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .admin-tabs {
+      gap: 6px;
+    }
+
+    .admin-tab {
+      border-radius: 8px;
+      min-height: 36px;
+    }
+
+    .admin-tab.active {
+      background: var(--dark);
+      border-color: var(--dark);
+    }
+
+    .dashboard {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .metric {
+      background: linear-gradient(180deg, #fff 0, #fbfdfc 100%);
+      padding: 16px;
+    }
+
+    .metric-value {
+      color: var(--primary-dark);
+      font-size: 26px;
+    }
+
+    .auth-screen {
+      background:
+        radial-gradient(circle at top left, rgba(11,107,77,.12), transparent 36rem),
+        #f4f6f5;
+    }
+
+    .auth-card {
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 70px rgba(16,24,40,.14);
+    }
+
+    .auth-card h2 {
+      font-size: 26px;
+    }
+
+    .toast {
+      right: 20px;
+      bottom: 20px;
+      background: #173229;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .about-modal {
+      backdrop-filter: blur(4px);
+    }
+
+    .about-card {
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 980px) {
+      .rf-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .rf-sidebar {
+        position: static;
+      }
+
+      .rf-preview-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 10px; }
+
+      header {
+        align-items: stretch;
+      }
+
+      header > div:last-child {
+        width: 100%;
+      }
+
+      .badge,
+      .status,
+      .user-bar {
+        width: 100%;
+      }
+
+      .user-bar {
+        justify-content: flex-start;
+      }
+
+      .rf-client-row,
+      .custom-topic-row,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rf-new-btn {
+        width: 100%;
+      }
+
+      .rf-preview-top {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .rf-actions {
+        position: static;
+      }
+
+      .rf-actions .btn,
+      .backup-tools .btn,
+      .actions-left,
+      .actions-left .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .actions-left {
+        flex-direction: column;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -801,6 +1227,17 @@
             <div class="form-grid">
               <input id="clientProfileName" placeholder="Nome do cliente" />
               <input id="clientCompany" placeholder="Empresa / Haras" />
+            </div>
+            <div>
+              <label for="clientTreatment">Tratamento do cliente</label>
+              <select id="clientTreatment">
+                <option value="">Identificar automaticamente</option>
+                <option value="blank">Em branco</option>
+                <option value="com_voce">Com você</option>
+                <option value="amigo">Meu amigo</option>
+                <option value="amiga">Minha amiga</option>
+              </select>
+              <p class="hint">Este valor será usado em todas as mensagens com {tratamento} para este cliente.</p>
             </div>
             <div class="topic-editor">
               <label>Assuntos disponíveis para este cliente</label>
@@ -1032,6 +1469,7 @@
       advancedArrow: document.getElementById("advancedArrow"),
       clientProfileName: document.getElementById("clientProfileName"),
       clientCompany: document.getElementById("clientCompany"),
+      clientTreatment: document.getElementById("clientTreatment"),
       clientTopicsInput: document.getElementById("clientTopicsInput"),
       clientTopicOptions: document.getElementById("clientTopicOptions"),
       customClientTopic: document.getElementById("customClientTopic"),
@@ -1074,31 +1512,73 @@
       return { treatment: "", source: "unknown" };
     }
 
+    function normalizeTreatment(value) {
+      if (value === "amigo" || value === "meu amigo") return "amigo";
+      if (value === "amiga" || value === "minha amiga") return "amiga";
+      if (value === "blank" || value === "em branco") return "blank";
+      if (value === "com_voce" || value === "com você" || value === "com voce") return "com_voce";
+      return "";
+    }
+
+    function clientTreatmentSource(client, name) {
+      const savedTreatment = normalizeTreatment(client && client.treatment);
+      if (savedTreatment) return { treatment: savedTreatment, source: "client" };
+      return inferTreatment(name || (client && client.name) || "");
+    }
+
     async function saveTreatmentChoice(fullName, treatment) {
+      const normalizedTreatment = normalizeTreatment(treatment);
+      if (!normalizedTreatment) return;
+
+      const client = selectedClient();
+      if (client && client.id) {
+        currentTreatment = normalizedTreatment;
+        client.treatment = normalizedTreatment;
+        els.clientTreatment.value = normalizedTreatment;
+        try {
+          await updateDoc(doc(db, "messages", client.id), {
+            treatment: normalizedTreatment,
+            updatedAt: serverTimestamp()
+          });
+        } catch (error) {
+          console.error("Erro ao salvar tratamento do cliente:", error);
+          showToast("Não foi possível salvar o tratamento do cliente.");
+        }
+        return;
+      }
+
       const first = normalizeName(getFirstName(fullName));
       if (!first) return;
-      learnedTreatments[first] = treatment;
-      try { await setDoc(doc(db, "nameTreatments", first), { treatment, updatedAt: serverTimestamp() }, { merge: true }); }
+      learnedTreatments[first] = normalizedTreatment;
+      try { await setDoc(doc(db, "nameTreatments", first), { treatment: normalizedTreatment, updatedAt: serverTimestamp() }, { merge: true }); }
       catch (error) { console.error("Erro ao memorizar tratamento:", error); }
     }
 
     function updateTreatmentUI() {
       const name = els.clientName.value;
+      const client = selectedClient();
       if (!getFirstName(name)) { currentTreatment = ""; els.treatmentBox.style.display = "none"; return; }
-      const result = inferTreatment(name);
+      const result = clientTreatmentSource(client, name);
       currentTreatment = result.treatment;
       els.treatmentBox.style.display = "block";
       els.maleTreatmentBtn.style.background = currentTreatment === "amigo" ? "#111" : "#eee";
       els.maleTreatmentBtn.style.color = currentTreatment === "amigo" ? "#fff" : "var(--text)";
       els.femaleTreatmentBtn.style.background = currentTreatment === "amiga" ? "#111" : "#eee";
       els.femaleTreatmentBtn.style.color = currentTreatment === "amiga" ? "#fff" : "var(--text)";
-      els.treatmentHint.textContent = result.source === "learned" ? "Memorizado pelo app" : result.source === "automatic" ? "Identificado automaticamente" : "Nome não identificado. Escolha meu amigo ou minha amiga.";
+      els.treatmentHint.textContent = result.source === "client" ? "Definido no cadastro do cliente" : result.source === "learned" ? "Memorizado pelo app" : result.source === "automatic" ? "Identificado automaticamente. Salve o cliente para fixar este tratamento." : "Nome não identificado. Escolha meu amigo ou minha amiga no cadastro do cliente.";
     }
 
     function formatTreatment(value) {
       if (value === "amigo" || value === "meu amigo") return "meu amigo";
       if (value === "amiga" || value === "minha amiga") return "minha amiga";
+      if (value === "com_voce" || value === "com você" || value === "com voce") return "com você";
       return "";
+    }
+
+    function activeClientTreatment(clientName) {
+      const selectedInForm = normalizeTreatment(els.clientTreatment.value);
+      if (selectedInForm) return selectedInForm;
+      return clientTreatmentSource(selectedClient(), clientName).treatment || currentTreatment;
     }
 
     function buildFinalText(template, greeting, clientName) {
@@ -1106,7 +1586,7 @@
         .replaceAll("{saudacao}", greeting)
         .replaceAll("{nome}", clientName.trim())
         .replaceAll("{primeiro_nome}", getFirstName(clientName))
-        .replaceAll("{tratamento}", formatTreatment(currentTreatment))
+        .replaceAll("{tratamento}", formatTreatment(activeClientTreatment(clientName)))
         .replace(/, !/g, "!")
         .replace(/  +/g, " ")
         .replace(/\s+([,.!?])/g, "$1")
@@ -1165,6 +1645,7 @@
             id: item.id,
             name: item.name || "",
             company: item.company || "",
+            treatment: normalizeTreatment(item.treatment),
             topics: Array.isArray(item.topics) ? item.topics : [],
             updatedAt: item.updatedAt || null
           }))
@@ -1341,12 +1822,12 @@
       const term = normalizeClientKey(els.guidedMessageSearch.value);
       const sorted = messages
         .filter(message => {
-          const searchable = normalizeClientKey(`${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`);
+          const searchable = messageSearchText(message);
           const allowedTopics = getGuidedTopics(client).map(topic => normalizeClientKey(topic));
-          const matchesClientTopic = !allowedTopics.length || allowedTopics.some(topic =>
+          const matchesClientTopic = term ? true : !allowedTopics.length || allowedTopics.some(topic =>
             normalizeClientKey(message.category || "") === topic || searchable.includes(topic)
           );
-          const matchesTerm = term ? searchable.includes(term) : true;
+          const matchesTerm = matchesMessageSearch(message, term);
           return matchesClientTopic && matchesTerm;
         })
         .sort((a, b) => {
@@ -1398,12 +1879,10 @@
 
       return messages
         .filter(message => {
-          const searchable = normalizeClientKey(
-            `${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`
-          );
+          const searchable = messageSearchText(message);
 
-          const matchesTopic = topic ? searchable.includes(topic) : true;
-          const matchesTerm = term ? searchable.includes(term) : true;
+          const matchesTopic = term ? true : topic ? searchable.includes(topic) : true;
+          const matchesTerm = matchesMessageSearch(message, term);
           return matchesTopic && matchesTerm;
         })
         .sort((a, b) => {
@@ -1435,12 +1914,13 @@
       els.guidedSelectedClientName.textContent = client.name || "";
       els.guidedSelectedClientMeta.textContent = [
         client.company || "",
-        inferTreatment(client.name).treatment ? formatTreatment(inferTreatment(client.name).treatment) : ""
+        clientTreatmentSource(client, client.name).treatment ? formatTreatment(clientTreatmentSource(client, client.name).treatment) : ""
       ].filter(Boolean).join(" • ");
 
       els.clientName.value = client.name || "";
       els.clientProfileName.value = client.name || "";
       els.clientCompany.value = client.company || "";
+      els.clientTreatment.value = normalizeTreatment(client.treatment);
       renderClientTopicEditor(client.topics || []);
 
       els.stepResponse.classList.add("disabled");
@@ -1503,6 +1983,33 @@
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim();
+    }
+
+    function messageSearchText(message) {
+      const text = message && message.text ? String(message.text) : "";
+      const aliases = [];
+
+      if (text.includes("{saudacao}")) aliases.push("saudacao saudação bom dia boa tarde boa noite");
+      if (text.includes("{tratamento}")) aliases.push("tratamento meu amigo minha amiga amigo amiga");
+      if (text.includes("{nome}")) aliases.push("nome cliente");
+      if (text.includes("{primeiro_nome}")) aliases.push("primeiro nome primeiro_nome cliente");
+
+      return normalizeClientKey([
+        message?.title,
+        message?.category,
+        text,
+        Array.isArray(message?.tags) ? message.tags.join(" ") : "",
+        message?.fileName,
+        aliases.join(" ")
+      ].filter(Boolean).join(" "));
+    }
+
+    function matchesMessageSearch(message, term) {
+      const words = normalizeClientKey(term).split(/\s+/).filter(Boolean);
+      if (!words.length) return true;
+
+      const searchable = messageSearchText(message);
+      return words.every(word => searchable.includes(word));
     }
 
     function normalizeTopicLabel(value) {
@@ -1663,6 +2170,7 @@
       selectedClientTopic = "";
       els.clientProfileName.value = client.name || "";
       els.clientCompany.value = client.company || "";
+      els.clientTreatment.value = normalizeTreatment(client.treatment);
       els.clientTopicsInput.value = (client.topics || []).join(", ");
       els.clientName.value = client.name || "";
       els.clientStatus.textContent = `Cliente selecionado: ${client.name}${client.company ? " — " + client.company : ""}`;
@@ -1675,6 +2183,7 @@
       const name = els.clientProfileName.value.trim();
       const company = els.clientCompany.value.trim();
       const topics = parseTopics(els.clientTopicsInput.value);
+      const treatment = normalizeTreatment(els.clientTreatment.value) || inferTreatment(name).treatment;
 
       if (!name) {
         alert("Informe o nome do cliente.");
@@ -1693,6 +2202,7 @@
           recordType: "client",
           name,
           company,
+          treatment,
           topics,
           updatedAt: serverTimestamp()
         };
@@ -1702,15 +2212,18 @@
         if (existing) {
           await updateDoc(doc(db, "messages", existing.id), payload);
           selectedClientId = existing.id;
+          Object.assign(existing, { name, company, treatment, topics });
           els.clientStatus.textContent = "Cliente atualizado com sucesso.";
         } else {
           payload.createdAt = serverTimestamp();
           const docRef = await addDoc(messagesCollection, payload);
           selectedClientId = docRef.id;
+          clients.push({ id: docRef.id, name, company, treatment, topics });
           els.clientStatus.textContent = "Cliente cadastrado com sucesso.";
         }
 
         els.clientName.value = name;
+        currentTreatment = treatment;
         updateTreatmentUI();
         showToast("Cliente salvo.");
       } catch (error) {
@@ -1761,10 +2274,10 @@
       const greeting = getGreeting();
       els.greetingLabel.textContent = greeting;
 
-      const term = els.search.value.toLowerCase().trim();
+      const term = normalizeClientKey(els.search.value);
       
       let filtered = messages.filter((message) => {
-        const matchesSearch = term ? `${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")} ${message.fileName || ""}`.toLowerCase().includes(term) : true;
+        const matchesSearch = matchesMessageSearch(message, term);
         const matchesCategory =
           currentSelectedCategory === "all" || currentSelectedCategory === "top_used"
             ? true
@@ -2430,6 +2943,7 @@
       openAdminPanel("clients");
       els.clientProfileName.value = els.guidedClientSearch.value.trim();
       els.clientCompany.value = "";
+      els.clientTreatment.value = "";
       renderClientTopicEditor([]);
       els.clientProfileName.focus();
     });
@@ -2440,6 +2954,7 @@
       if (client) {
         els.clientProfileName.value = client.name || "";
         els.clientCompany.value = client.company || "";
+        els.clientTreatment.value = normalizeTreatment(client.treatment);
         renderClientTopicEditor(client.topics || []);
       }
     });
@@ -2465,6 +2980,12 @@
 
     els.saveClientBtn.addEventListener("click", saveClientProfile);
 
+    els.clientTreatment.addEventListener("change", () => {
+      const typed = els.clientProfileName.value.trim() || els.clientName.value;
+      currentTreatment = normalizeTreatment(els.clientTreatment.value) || inferTreatment(typed).treatment;
+      render();
+    });
+
     els.clientProfileName.addEventListener("input", () => {
       const typed = els.clientProfileName.value.trim();
       const match = clients.find(client =>
@@ -2474,6 +2995,7 @@
       if (match) {
         selectedClientId = match.id;
         els.clientCompany.value = match.company || "";
+        els.clientTreatment.value = normalizeTreatment(match.treatment);
         renderClientTopicEditor(match.topics || []);
         els.clientStatus.textContent = `Cliente localizado: ${match.name}`;
         els.clientName.value = match.name;
@@ -2483,6 +3005,7 @@
       } else {
         selectedClientId = null;
         selectedClientTopic = "";
+        els.clientTreatment.value = "";
         renderClientTopicEditor([]);
         els.clientStatus.textContent = typed
           ? "Novo cliente. Informe empresa e temas, depois clique em Salvar cliente."
