@@ -565,6 +565,63 @@
       h1 { font-size: 26px; } 
       header, .card { border-radius: 22px; } 
     }
+  
+
+    /* Responde Fácil PRO 2.0 — área de atendimento limpa */
+    body { background:#f3f5f4; padding:20px; font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .app { max-width:1180px; }
+    header { border-radius:20px; padding:18px 22px; margin-bottom:18px; box-shadow:0 8px 28px rgba(15,38,30,.10); }
+    header h1 { font-size:25px; letter-spacing:-.5px; }
+    header > div:first-child > p:first-child { display:none; }
+    .badge { padding:8px 11px; }
+
+    .rf-workspace { display:grid; grid-template-columns:minmax(300px, .8fr) minmax(440px, 1.35fr); gap:18px; align-items:start; }
+    .rf-sidebar, .rf-preview-panel { background:#fff; border:1px solid #e6e9e7; border-radius:22px; box-shadow:0 8px 30px rgba(20,35,29,.055); }
+    .rf-sidebar { padding:20px; position:sticky; top:16px; }
+    .rf-preview-panel { padding:24px; min-height:520px; }
+    .rf-eyebrow { color:var(--primary); font-size:11px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; margin-bottom:5px; }
+    .rf-heading { font-size:22px; font-weight:850; letter-spacing:-.45px; margin:0; }
+    .rf-help { color:var(--muted); font-size:13px; line-height:1.45; margin:6px 0 0; }
+    .rf-field { margin-top:22px; }
+    .rf-field-label { font-size:12px; font-weight:800; color:#44403c; margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; }
+    .rf-search { display:flex; align-items:center; gap:9px; border:1px solid #dfe4e1; border-radius:14px; padding:0 12px; background:#fafbfa; transition:.18s ease; }
+    .rf-search:focus-within { border-color:#7cae9c; background:white; box-shadow:0 0 0 3px rgba(15,107,79,.09); }
+    .rf-search input { border:0; background:transparent; border-radius:0; padding:12px 0; height:46px; }
+    .rf-search-icon { opacity:.5; font-size:15px; }
+    .rf-client-row { display:grid; grid-template-columns:1fr auto; gap:8px; }
+    .rf-client-results { max-height:180px; overflow:auto; margin-top:7px; display:flex; flex-direction:column; gap:5px; }
+    .client-result { border:0; border-radius:11px; padding:10px 11px; background:#f6f7f6; }
+    .selected-client-bar { border-radius:13px; padding:11px 12px; background:#eef7f3; margin-top:8px; }
+    .selected-client-main { font-size:14px; }
+    .selected-client-meta { font-size:11px; }
+    .selected-client-bar .chip { padding:6px 9px; font-size:11px; }
+    .rf-new-btn { width:46px; padding:0; justify-content:center; border-radius:14px; font-size:20px; }
+
+    .rf-message-results { display:flex; flex-direction:column; gap:5px; margin-top:8px; max-height:330px; overflow:auto; padding-right:3px; }
+    .topic-choice { width:100%; border:0; border-radius:12px; background:transparent; color:var(--text); padding:11px 12px; text-align:left; font-size:13px; font-weight:750; display:flex; flex-direction:column; gap:3px; }
+    .topic-choice:hover { background:#f4f6f5; }
+    .topic-choice.active { background:#eaf4f0; color:#0d5d45; box-shadow:inset 3px 0 0 #0f6b4f; }
+    .rf-message-meta { color:#8a8580; font-size:10px; font-weight:600; }
+    .topic-choice.active .rf-message-meta { color:#50816f; }
+    .compact-status { margin-top:8px; font-size:11px; }
+
+    .rf-preview-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px; }
+    .rf-preview-panel h2 { font-size:23px; letter-spacing:-.4px; }
+    .rf-preview-panel .preview { min-height:290px; border:0; background:#f7f8f7; border-radius:17px; padding:22px; line-height:1.65; font-size:15px; }
+    .rf-empty-note { color:#9a958f; }
+    .rf-actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; margin-top:16px; }
+    .rf-actions .btn { border-radius:13px; padding:12px 16px; }
+    .rf-actions #copyBtn { min-width:142px; justify-content:center; background:#0f6b4f; }
+    .rf-actions #editSelectedMessageBtn { background:#f0f1f0; }
+    .rf-hidden-state { display:none !important; }
+
+    .advanced-drawer { margin-top:18px; border-radius:16px; box-shadow:none; }
+    .advanced-toggle { color:#57534e; font-size:13px; padding:13px 16px; }
+
+    @media(max-width:850px){
+      body{padding:10px}.rf-workspace{grid-template-columns:1fr}.rf-sidebar{position:static}.rf-preview-panel{min-height:auto;padding:18px}.rf-preview-panel .preview{min-height:220px}.rf-actions .btn{flex:1;justify-content:center}.rf-client-row{grid-template-columns:1fr auto}
+    }
+
   </style>
 </head>
 <body>
@@ -596,7 +653,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 1.6.3</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 2.0.0</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -613,145 +670,65 @@
 
     <div id="updateBanner" class="update-banner">Existe uma versão mais recente disponível. Atualize a página.</div>
 
-    <section class="client-panel">
-      <div class="topline">
-        <div>
-          <p class="muted">Atendimento por cliente</p>
-          <h2>Cliente e temas</h2>
-        </div>
-        <button class="btn secondary" id="saveClientBtn">Salvar cliente</button>
-      </div>
+    <main class="rf-workspace">
+      <section class="rf-sidebar">
+        <div class="rf-eyebrow">Atendimento</div>
+        <h2 class="rf-heading">Encontre e use uma resposta</h2>
+        <p class="rf-help">Selecione o cliente e pesquise apenas quando precisar. As principais mensagens aparecem primeiro.</p>
 
-      <div class="client-panel-grid" style="margin-top:14px;">
-        <input id="clientProfileName" placeholder="Nome do cliente" />
-        <input id="clientCompany" placeholder="Empresa / Haras" />
-        <input id="clientTopicsInput" placeholder="Temas: pedido, orçamento, cobrança" />
-      </div>
-
-      <div id="clientStatus" class="client-status">Digite ou selecione um cliente.</div>
-      <div id="clientTopics" class="client-topics"></div>
-
-      <div style="margin-top:14px;">
-        <div class="hint">Clientes recentes</div>
-        <div id="clientList" class="client-list"></div>
-      </div>
-    </section>
-
-    <section class="dashboard">
-      <div class="metric">
-        <div class="metric-label">Mensagens cadastradas</div>
-        <div class="metric-value" id="metricMessages">0</div>
-        <div class="metric-sub" id="metricRecent">0 criadas nos últimos 30 dias</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Favoritas</div>
-        <div class="metric-value" id="metricFavorites">0</div>
-        <div class="metric-sub">Acesso rápido às principais</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Utilizações registradas</div>
-        <div class="metric-value" id="metricUses">0</div>
-        <div class="metric-sub" id="metricTopMessage">Sem uso registrado</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Categorias</div>
-        <div class="metric-value" id="metricCategories">0</div>
-        <div class="metric-sub" id="metricTopCategory">Nenhuma categoria</div>
-      </div>
-    </section>
-    <div class="quick-tabs">
-      <button class="quick-tab active" data-quick-filter="all">Todas</button>
-      <button class="quick-tab" data-quick-filter="favorites">⭐ Favoritas</button>
-      <button class="quick-tab" data-quick-filter="top_used">🔥 Mais usadas</button>
-    </div>
-
-    <section class="guided-flow">
-      <div class="flow-step" id="stepClient">
-        <div class="step-header">
-          <div class="step-number">1</div>
-          <div>
-            <div class="step-title">Cliente</div>
-            <div class="step-subtitle">Busque um cliente existente ou cadastre um novo.</div>
-          </div>
-        </div>
-
-        <div class="client-search-row">
-          <input id="guidedClientSearch" placeholder="Digite o nome do cliente..." />
-          <button class="btn secondary" id="newClientBtn">Novo cliente</button>
-        </div>
-
-        <div id="guidedClientResults" class="client-results"></div>
-
-        <div id="guidedSelectedClient" class="selected-client-bar">
-          <div>
-            <div id="guidedSelectedClientName" class="selected-client-main"></div>
-            <div id="guidedSelectedClientMeta" class="selected-client-meta"></div>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="chip" id="editSelectedClientBtn">Editar</button>
-            <button class="chip" id="changeClientBtn">Trocar</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="flow-step disabled" id="stepTopic">
-        <div class="step-header">
-          <div class="step-number">2</div>
-          <div>
-            <div class="step-title">Assunto</div>
-            <div class="step-subtitle">Escolha o assunto deste atendimento.</div>
-          </div>
-        </div>
-        <div id="guidedTopics" class="topic-grid"></div>
-        <div id="guidedTopicStatus" class="compact-status">Selecione um cliente primeiro.</div>
-      </div>
-
-      <div class="flow-step disabled" id="stepResponse">
-        <div class="step-header">
-          <div class="step-number">3</div>
-          <div>
-            <div class="step-title">Resposta</div>
-            <div class="step-subtitle">Escolha a mensagem mais adequada.</div>
-          </div>
-        </div>
-
-        <div class="guided-layout">
-          <div>
-            <div class="searchbox" style="margin-bottom:10px;">
-              <span>🔎</span>
-              <input id="guidedMessageSearch" placeholder="Buscar dentro deste assunto..." />
+        <div class="rf-field" id="stepClient">
+          <div class="rf-field-label"><span>Cliente</span></div>
+          <div class="rf-client-row">
+            <div class="rf-search">
+              <span class="rf-search-icon">⌕</span>
+              <input id="guidedClientSearch" placeholder="Digite o nome do cliente" autocomplete="off" />
             </div>
-            <div id="guidedMessageList" class="guided-message-list"></div>
+            <button class="btn secondary rf-new-btn" id="newClientBtn" title="Cadastrar novo cliente">＋</button>
           </div>
-
-          <section class="card space" style="margin:0;">
-            <div class="topline">
-              <div>
-                <p class="muted">Prévia da resposta</p>
-                <h2 id="previewTitle">Nenhuma mensagem</h2>
-              </div>
-              <div class="preview-actions">
-                <button class="btn info" id="downloadFileBtn" style="display:none;">📎 Baixar anexo</button>
-                <button class="btn secondary" id="editSelectedMessageBtn" disabled>✏️ Editar resposta</button>
-                <button class="btn" id="copyBtn">📋 Copiar</button>
-              </div>
+          <div id="guidedClientResults" class="rf-client-results"></div>
+          <div id="guidedSelectedClient" class="selected-client-bar">
+            <div>
+              <div id="guidedSelectedClientName" class="selected-client-main"></div>
+              <div id="guidedSelectedClientMeta" class="selected-client-meta"></div>
             </div>
-            <div class="preview" id="previewText"></div>
-          </section>
-        </div>
-      </div>
-
-      <div class="flow-step disabled" id="stepCopy">
-        <div class="step-header">
-          <div class="step-number">4</div>
-          <div>
-            <div class="step-title">Copiar e enviar</div>
-            <div class="step-subtitle">Revise a mensagem e copie para o WhatsApp.</div>
+            <div style="display:flex;gap:5px;">
+              <button class="chip" id="editSelectedClientBtn">Editar</button>
+              <button class="chip" id="changeClientBtn">Trocar</button>
+            </div>
           </div>
         </div>
-        <div id="copyStepStatus" class="compact-status">Selecione uma resposta.</div>
+
+        <div class="rf-field disabled" id="stepTopic">
+          <div class="rf-field-label"><span>Mensagem</span><span style="font-weight:500;color:var(--muted)">título, categoria ou texto</span></div>
+          <div class="rf-search">
+            <span class="rf-search-icon">⌕</span>
+            <input id="guidedMessageSearch" placeholder="Pesquisar mensagem" autocomplete="off" />
+          </div>
+          <div id="guidedTopics" class="rf-message-results"></div>
+          <div id="guidedTopicStatus" class="compact-status">Selecione um cliente primeiro.</div>
+          <div id="guidedMessageList" class="rf-hidden-state"></div>
+        </div>
+      </section>
+
+      <section class="rf-preview-panel disabled" id="stepResponse">
+        <div class="rf-preview-top">
+          <div>
+            <div class="rf-eyebrow">Prévia</div>
+            <h2 id="previewTitle">Nenhuma mensagem selecionada</h2>
+          </div>
+          <button class="btn info" id="downloadFileBtn" style="display:none;">📎 Anexo</button>
+        </div>
+        <div class="preview rf-empty-note" id="previewText">Selecione uma mensagem ao lado para visualizar o conteúdo.</div>
+        <div class="rf-actions">
+          <button class="btn secondary" id="editSelectedMessageBtn" disabled>✏️ Editar</button>
+          <button class="btn" id="copyBtn">📋 Copiar resposta</button>
+        </div>
+      </section>
+
+      <div class="rf-hidden-state" id="stepCopy">
+        <div id="copyStepStatus">Selecione uma resposta.</div>
       </div>
-    </section>
+    </main>
 
     <div class="advanced-drawer">
       <button class="advanced-toggle" id="advancedToggle">
@@ -914,7 +891,7 @@
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 1.6.3</h2>
+      <h2>Versão 2.0.0</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
@@ -925,10 +902,13 @@
         <li>Sugestões de tags</li>
         <li>Cadastro simples de clientes</li>
         <li>Temas vinculados ao cliente</li>
-        <li>Fluxo guiado Cliente → Assunto → Resposta → Copiar</li>
+        <li>Interface limpa Cliente → Mensagem → Copiar</li>
         <li>Ferramentas avançadas recolhidas</li>
         <li>Edição direta da resposta selecionada</li>
         <li>Assuntos editáveis por cliente</li>
+        <li>Pesquisa instantânea de mensagens</li>
+        <li>Acesso rápido às favoritas e mais usadas</li>
+        <li>Nova interface de atendimento sem listas extensas</li>
         <li>Tratamento “meu amigo / minha amiga”</li>
         <li>Login e Firebase preservados</li>
       </ul>
@@ -948,7 +928,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "1.6.3";
+    const APP_VERSION = "2.0.0";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -1349,8 +1329,8 @@
 
     function renderGuidedTopics() {
       els.guidedTopics.innerHTML = "";
-      const client = selectedClient();
 
+      const client = selectedClient();
       if (!client) {
         els.stepTopic.classList.add("disabled");
         els.guidedTopicStatus.textContent = "Selecione um cliente primeiro.";
@@ -1358,16 +1338,51 @@
       }
 
       els.stepTopic.classList.remove("disabled");
-      els.guidedTopicStatus.textContent = selectedClientTopic
-        ? `Assunto selecionado: ${selectedClientTopic}`
-        : "Escolha um assunto para filtrar as respostas.";
+      const term = normalizeClientKey(els.guidedMessageSearch.value);
+      const sorted = messages
+        .filter(message => {
+          if (!term) return true;
+          return normalizeClientKey(`${message.title} ${message.category} ${message.text} ${(message.tags || []).join(" ")}`).includes(term);
+        })
+        .sort((a, b) => {
+          const favoriteDiff = Number(Boolean(b.favorite)) - Number(Boolean(a.favorite));
+          if (favoriteDiff !== 0) return favoriteDiff;
+          const usageDiff = Number(b.useCount || 0) - Number(a.useCount || 0);
+          if (usageDiff !== 0) return usageDiff;
+          return (a.title || "").localeCompare(b.title || "", "pt-BR");
+        });
 
-      getGuidedTopics(client).forEach(topic => {
+      const visibleMessages = term ? sorted.slice(0, 20) : sorted.slice(0, 7);
+
+      if (!visibleMessages.length) {
+        els.guidedTopics.innerHTML = '<div class="hint" style="padding:10px 2px;">Nenhuma mensagem encontrada.</div>';
+        els.guidedTopicStatus.textContent = term ? "Tente pesquisar por outra palavra." : "Nenhuma mensagem cadastrada.";
+        return;
+      }
+
+      els.guidedTopicStatus.textContent = term
+        ? `${sorted.length} resultado(s)`
+        : `Acesso rápido • mostrando ${visibleMessages.length} de ${messages.length}`;
+
+      visibleMessages.forEach(message => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `topic-choice ${selectedClientTopic === topic ? "active" : ""}`;
-        button.textContent = topic;
-        button.addEventListener("click", () => selectGuidedTopic(topic));
+        button.className = `topic-choice ${message.id === selectedId ? "active" : ""}`;
+        const favorite = message.favorite ? "⭐ " : "";
+        const meta = [message.category || "Sem categoria", message.useCount ? `${message.useCount} uso(s)` : ""].filter(Boolean).join(" • ");
+        button.innerHTML = `<span>${favorite}${message.title || "Mensagem sem título"}</span><span class="rf-message-meta">${meta}</span>`;
+
+        button.addEventListener("click", () => {
+          selectedId = message.id;
+          selectedClientTopic = message.title || "";
+          els.editSelectedMessageBtn.disabled = false;
+          els.stepResponse.classList.remove("disabled");
+          els.stepCopy.classList.remove("disabled");
+          els.copyStepStatus.textContent = `Mensagem selecionada: ${message.title || ""}`;
+          renderGuidedTopics();
+          renderGuidedMessages();
+          render();
+        });
         els.guidedTopics.appendChild(button);
       });
     }
@@ -1396,53 +1411,12 @@
     function renderGuidedMessages() {
       els.guidedMessageList.innerHTML = "";
 
-      if (!selectedClientId || !selectedClientTopic) {
+      if (!selectedClientId || !selectedId) {
         els.stepResponse.classList.add("disabled");
-        els.guidedMessageList.innerHTML = '<div class="hint">Selecione o cliente e o assunto.</div>';
         return;
       }
 
       els.stepResponse.classList.remove("disabled");
-      const filtered = guidedFilteredMessages();
-
-      if (filtered.length === 0) {
-        els.guidedMessageList.innerHTML = '<div class="hint">Nenhuma resposta encontrada para este assunto.</div>';
-        return;
-      }
-
-      filtered.forEach(message => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `message-btn ${message.id === selectedId ? "active" : ""}`;
-
-        const usage = Number(message.useCount || 0);
-        button.innerHTML = `
-          <div class="message-row">
-            <div>
-              <div class="message-title"></div>
-              <div class="message-info-row">
-                <div class="message-cat"></div>
-                <span class="message-count">${usage ? `• ${usage} uso(s)` : ""}</span>
-              </div>
-            </div>
-            <div>${message.favorite ? "⭐" : ""}</div>
-          </div>
-        `;
-
-        button.querySelector(".message-title").textContent = message.title || "";
-        button.querySelector(".message-cat").textContent = message.category || "Geral";
-
-        button.addEventListener("click", () => {
-          selectedId = message.id;
-          els.editSelectedMessageBtn.disabled = false;
-          els.stepCopy.classList.remove("disabled");
-          els.copyStepStatus.textContent = `Resposta selecionada: ${message.title}`;
-          renderGuidedMessages();
-          render();
-        });
-
-        els.guidedMessageList.appendChild(button);
-      });
     }
 
     function selectGuidedClient(client) {
@@ -1469,6 +1443,7 @@
       els.copyStepStatus.textContent = "Selecione uma resposta.";
 
       updateTreatmentUI();
+      setTimeout(() => els.guidedMessageSearch.focus(), 50);
       renderGuidedTopics();
       renderGuidedMessages();
       render();
@@ -2433,7 +2408,10 @@
     els.saveBtn.addEventListener("click", saveForm);
     els.cancelBtn.addEventListener("click", clearForm);
     els.guidedClientSearch.addEventListener("input", renderGuidedClientResults);
-    els.guidedMessageSearch.addEventListener("input", renderGuidedMessages);
+    els.guidedMessageSearch.addEventListener("input", () => {
+      renderGuidedTopics();
+      renderGuidedMessages();
+    });
 
     els.newClientBtn.addEventListener("click", () => {
       openAdminPanel("clients");
