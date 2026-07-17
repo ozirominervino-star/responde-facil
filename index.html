@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -857,6 +857,60 @@
       align-items: center;
     }
 
+    .attachment-preview {
+      display: none;
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .attachment-preview.open {
+      display: block;
+    }
+
+    .attachment-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: #344054;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .attachment-preview-body {
+      padding: 12px;
+      background: #f8faf9;
+    }
+
+    .attachment-preview-body img {
+      display: block;
+      max-width: 100%;
+      max-height: 420px;
+      margin: 0 auto;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .attachment-preview-body iframe,
+    .attachment-preview-body object {
+      width: 100%;
+      min-height: 420px;
+      border: 0;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .attachment-copy-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     .rf-actions {
       position: sticky;
       bottom: 12px;
@@ -1079,7 +1133,7 @@
       <div>
         <p>App de respostas rápidas</p>
         <h1>Responde Fácil <span style="color:#d4af37;">PRO</span></h1>
-        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 2.0.1</p>
+        <p style="margin-top:6px; color:#a8a29e; font-size:12px;">Versão 2.0.4</p>
       </div>
       <div>
         <div class="badge">💬 Saudação atual: <span id="greetingLabel"></span></div>
@@ -1145,8 +1199,15 @@
           <button class="btn info" id="downloadFileBtn" style="display:none;">📎 Anexo</button>
         </div>
         <div class="preview rf-empty-note" id="previewText">Selecione uma mensagem ao lado para visualizar o conteúdo.</div>
+        <div class="attachment-preview" id="attachmentPreview">
+          <div class="attachment-preview-header">
+            <span id="attachmentPreviewTitle">Anexo</span>
+            <span id="attachmentPreviewType"></span>
+          </div>
+          <div class="attachment-preview-body" id="attachmentPreviewBody"></div>
+        </div>
         <div class="rf-actions">
-          <button class="btn secondary" id="editSelectedMessageBtn" disabled>✏️ Editar</button>
+          <button class="btn secondary" id="editSelectedMessageBtn" disabled>Editar</button>
           <button class="btn" id="copyBtn">📋 Copiar resposta</button>
         </div>
       </section>
@@ -1194,8 +1255,8 @@
             </div>
 
             <div>
-              <label>Anexar imagem ou PDF (opcional)</label>
-              <input type="file" id="newFile" accept="image/*, application/pdf" />
+              <label>Anexar imagem (opcional)</label>
+              <input type="file" id="newFile" accept="image/*" />
               <div id="fileStatusInfo" class="file-status-info"></div>
             </div>
 
@@ -1274,7 +1335,7 @@
             <div class="metric">
               <div class="metric-label">Favoritas</div>
               <div class="metric-value" id="metricFavorites">0</div>
-              <div class="metric-sub">Acesso rápido às principais</div>
+              <div class="metric-sub">Acesso r?pido ?s principais</div>
             </div>
             <div class="metric">
               <div class="metric-label">Utilizações registradas</div>
@@ -1328,7 +1389,7 @@
   <div class="about-modal" id="aboutModal">
     <div class="about-card">
       <p class="muted">Responde Fácil PRO</p>
-      <h2>Versão 2.0.1</h2>
+      <h2>Versão 2.0.4</h2>
       <p>Desenvolvido para agilizar o atendimento e preservar o conhecimento comercial.</p>
       <ul class="about-list">
         <li>Favoritos sincronizados</li>
@@ -1343,10 +1404,10 @@
         <li>Ferramentas avançadas recolhidas</li>
         <li>Edição direta da resposta selecionada</li>
         <li>Assuntos editáveis por cliente</li>
-        <li>Pesquisa instantânea de mensagens</li>
-        <li>Acesso rápido às favoritas e mais usadas</li>
+        <li>Pesquisa instant?nea de mensagens</li>
+        <li>Acesso r?pido ?s favoritas e mais usadas</li>
         <li>Nova interface de atendimento sem listas extensas</li>
-        <li>Tratamento “meu amigo / minha amiga”</li>
+        <li>Tratamento ?meu amigo / minha amiga?</li>
         <li>Login e Firebase preservados</li>
       </ul>
       <button class="btn" id="closeAboutBtn">Fechar</button>
@@ -1365,7 +1426,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, increment, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const APP_VERSION = "2.0.1";
+    const APP_VERSION = "2.0.4";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFnYw48YKLWSEFAiuTXWRY3Ki83AeGU88",
@@ -1408,6 +1469,10 @@
       messageList: document.getElementById("messageList"),
       previewTitle: document.getElementById("previewTitle"),
       previewText: document.getElementById("previewText"),
+      attachmentPreview: document.getElementById("attachmentPreview"),
+      attachmentPreviewTitle: document.getElementById("attachmentPreviewTitle"),
+      attachmentPreviewType: document.getElementById("attachmentPreviewType"),
+      attachmentPreviewBody: document.getElementById("attachmentPreviewBody"),
       copyBtn: document.getElementById("copyBtn"),
       editSelectedMessageBtn: document.getElementById("editSelectedMessageBtn"),
       downloadFileBtn: document.getElementById("downloadFileBtn"),
@@ -1599,7 +1664,244 @@
       return `${text}${needsSpace ? " " : ""}${insertion}`;
     }
 
-    // Monitora a seleção de arquivos e converte para Base64
+    function formatFileSize(bytes) {
+      const value = Number(bytes) || 0;
+      if (value < 1024) return `${value} B`;
+      if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+      return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function attachmentBlob(message) {
+      if (!message || !message.fileData || typeof message.fileData !== "string") return null;
+      const parts = message.fileData.match(/^data:([^;]+);base64,(.*)$/);
+      if (!parts) return null;
+
+      const mimeType = parts[1] || "application/octet-stream";
+      const binary = atob(parts[2]);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+
+      return new Blob([bytes], { type: mimeType });
+    }
+
+    function attachmentMimeType(message) {
+      if (message && message.fileType) return message.fileType;
+      if (!message || !message.fileData || typeof message.fileData !== "string") return "";
+      const parts = message.fileData.match(/^data:([^;]+);base64,/);
+      return parts ? parts[1] : "";
+    }
+
+    function attachmentFileName(message) {
+      return message?.fileName || "arquivo_anexo";
+    }
+
+    function attachmentSource(message) {
+      return message?.fileUrl || message?.fileData || "";
+    }
+
+    function renderAttachmentPreview(message) {
+      els.attachmentPreviewBody.innerHTML = "";
+
+      const source = attachmentSource(message);
+      if (!message || !source) {
+        els.attachmentPreview.classList.remove("open");
+        return;
+      }
+
+      const mimeType = attachmentMimeType(message);
+      const fileName = attachmentFileName(message);
+      els.attachmentPreview.classList.add("open");
+      els.attachmentPreviewTitle.textContent = fileName;
+      els.attachmentPreviewType.textContent = mimeType.startsWith("image/")
+        ? "Imagem"
+        : mimeType === "application/pdf"
+          ? "PDF"
+          : "Arquivo";
+
+      if (mimeType.startsWith("image/")) {
+        const image = document.createElement("img");
+        image.src = source;
+        image.alt = fileName;
+        els.attachmentPreviewBody.appendChild(image);
+
+        const note = document.createElement("p");
+        note.className = "attachment-copy-note";
+        note.textContent = "Ao copiar, o app tenta enviar uma imagem única com a resposta e esta visualização.";
+        els.attachmentPreviewBody.appendChild(note);
+        return;
+      }
+
+      if (mimeType === "application/pdf") {
+        const frame = document.createElement("iframe");
+        frame.src = source;
+        frame.title = fileName;
+        els.attachmentPreviewBody.appendChild(frame);
+
+        const note = document.createElement("p");
+        note.className = "attachment-copy-note";
+        note.textContent = "PDFs são visualizados aqui, mas precisam ser baixados para envio como anexo.";
+        els.attachmentPreviewBody.appendChild(note);
+        return;
+      }
+
+      const empty = document.createElement("div");
+      empty.className = "attachment-copy-note";
+      empty.textContent = "Anexo disponível para baixar.";
+      els.attachmentPreviewBody.appendChild(empty);
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = src;
+      });
+    }
+
+    function wrapCanvasText(context, text, x, y, maxWidth, lineHeight) {
+      const paragraphs = String(text || "").split("\n");
+      paragraphs.forEach((paragraph, paragraphIndex) => {
+        const words = paragraph.split(/\s+/).filter(Boolean);
+        let line = "";
+
+        if (!words.length) {
+          y += lineHeight;
+          return;
+        }
+
+        words.forEach((word) => {
+          const testLine = line ? `${line} ${word}` : word;
+          if (context.measureText(testLine).width > maxWidth && line) {
+            context.fillText(line, x, y);
+            line = word;
+            y += lineHeight;
+          } else {
+            line = testLine;
+          }
+        });
+
+        if (line) {
+          context.fillText(line, x, y);
+          y += lineHeight;
+        }
+
+        if (paragraphIndex < paragraphs.length - 1) y += Math.round(lineHeight * 0.35);
+      });
+
+      return y;
+    }
+
+    async function createVisualClipboardBlob(text, message) {
+      const source = attachmentSource(message);
+      if (!message || !source || !attachmentMimeType(message).startsWith("image/")) return null;
+
+      const image = await loadImage(source);
+      const width = 900;
+      const padding = 36;
+      const textLineHeight = 30;
+      const maxImageHeight = 620;
+      const imageRatio = image.width && image.height ? image.width / image.height : 1;
+      const maxDrawWidth = width - padding * 2;
+      let drawWidth = maxDrawWidth;
+      let drawHeight = Math.round(drawWidth / imageRatio);
+      if (drawHeight > maxImageHeight) {
+        drawHeight = maxImageHeight;
+        drawWidth = Math.round(drawHeight * imageRatio);
+      }
+      const imageX = Math.round((width - drawWidth) / 2);
+      const measureCanvas = document.createElement("canvas");
+      const measureContext = measureCanvas.getContext("2d");
+      measureContext.font = "22px Arial, sans-serif";
+
+      let measuredY = padding + 6;
+      measuredY = wrapCanvasText(measureContext, text, padding, measuredY, maxDrawWidth, textLineHeight);
+      const height = measuredY + 28 + drawHeight + padding;
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, width, height);
+      context.fillStyle = "#1f2933";
+      context.font = "22px Arial, sans-serif";
+      context.textBaseline = "top";
+
+      let y = padding;
+      y = wrapCanvasText(context, text, padding, y, maxDrawWidth, textLineHeight);
+      y += 24;
+
+      context.fillStyle = "#f4f6f5";
+      context.fillRect(imageX - 1, y - 1, drawWidth + 2, drawHeight + 2);
+      context.drawImage(image, imageX, y, drawWidth, drawHeight);
+
+      return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    }
+
+    async function copyVisualPreview(text, message) {
+      if (!window.ClipboardItem || !navigator.clipboard?.write) return false;
+      const blob = await createVisualClipboardBlob(text, message);
+      if (!blob) return false;
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "image/png": blob
+        })
+      ]);
+      return true;
+    }
+
+    function downloadAttachment(message) {
+      const source = attachmentSource(message);
+      if (!message || !source) return false;
+      const downloadLink = document.createElement("a");
+      downloadLink.href = source;
+      downloadLink.download = attachmentFileName(message);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      return true;
+    }
+
+    async function copyResponseWithAttachment(text, message) {
+      let copiedVisual = false;
+      let downloadedAttachment = false;
+
+      if (message && attachmentSource(message) && attachmentMimeType(message).startsWith("image/")) {
+        try {
+          copiedVisual = await copyVisualPreview(text, message);
+        } catch (error) {
+          console.warn("Não foi possível copiar a visualização do anexo:", error);
+        }
+      }
+
+      if (message && attachmentSource(message) && !copiedVisual) {
+        downloadedAttachment = downloadAttachment(message);
+      }
+
+      if (!copiedVisual) {
+        try { await navigator.clipboard.writeText(text); }
+        catch {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+        }
+      }
+
+      return {
+        copiedText: !copiedVisual,
+        copiedVisual,
+        downloadedAttachment
+      };
+    }
+
+    // Monitora a seleção de imagens para salvar junto com a mensagem no Firestore.
     els.newFile.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) {
@@ -1609,18 +1911,36 @@
         return;
       }
 
-      // Limite preventivo de 1.5MB para evitar estouro de tamanho do documento no Firestore
-      if (file.size > 650000) {
-        alert("O arquivo é muito grande para salvar no Firebase. Escolha uma imagem ou PDF de até 650 KB, ou salve a mensagem sem anexo.");
+      if (!file.type.startsWith("image/")) {
+        alert("No plano Spark, use apenas imagem como anexo. PDF exigiria Firebase Storage/Blaze.");
         els.newFile.value = "";
+        currentBase64File = null;
+        currentFileName = null;
+        els.fileStatusInfo.textContent = "";
+        return;
+      }
+
+      const maxInlineFileSize = 650 * 1024;
+      if (file.size > maxInlineFileSize) {
+        alert("A imagem é muito grande. Use uma imagem de até 650 KB para salvar no plano Spark.");
+        els.newFile.value = "";
+        currentBase64File = null;
+        currentFileName = null;
+        els.fileStatusInfo.textContent = "";
         return;
       }
 
       const reader = new FileReader();
-      reader.onload = function () {
-        currentBase64File = reader.result; 
+      reader.onload = (event) => {
+        currentBase64File = event.target.result;
         currentFileName = file.name;
-        els.fileStatusInfo.textContent = `📎 Arquivo pronto: ${file.name}`;
+        els.fileStatusInfo.textContent = `Imagem pronta: ${file.name} (${formatFileSize(file.size)}).`;
+      };
+      reader.onerror = () => {
+        currentBase64File = null;
+        currentFileName = null;
+        els.fileStatusInfo.textContent = "";
+        alert("Não foi possível carregar a imagem.");
       };
       reader.readAsDataURL(file);
     });
@@ -1709,7 +2029,7 @@
       
       const optAll = document.createElement("option");
       optAll.value = "all";
-      optAll.textContent = "📁 Filtrar por Categoria: Todas";
+      optAll.textContent = "Filtrar por categoria: todas";
       if(currentSelectedCategory === "all") optAll.selected = true;
       els.categoryFilter.appendChild(optAll);
 
@@ -1730,7 +2050,7 @@
       Array.from(categories).sort().forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat;
-        opt.textContent = `📁 ${cat}`;
+        opt.textContent = `${cat}`;
         if(currentSelectedCategory === cat) opt.selected = true;
         els.categoryFilter.appendChild(opt);
       });
@@ -2309,10 +2629,10 @@
           btn.setAttribute("id", `msg-card-${message.id}`);
           
           const countText = message.useCount ? ` • ⏱️ ${message.useCount}x` : "";
-          const hasAttachment = message.fileData ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
+          const hasAttachment = attachmentSource(message) ? `<span class="message-attachment-badge">📎 Anexo</span>` : "";
           const tagsHtml = (message.tags || []).slice(0, 4).map(tag => `<span class="tag-badge">#${tag}</span>`).join("");
           
-          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div><div class="tag-list">${tagsHtml}</div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "⭐" : "☆"}</span><span class="duplicate-icon" title="Duplicar mensagem">📄</span><span class="icon edit" title="Editar">✏️</span><span class="icon delete" title="Excluir">🗑️</span></div></div>`;
+          btn.innerHTML = `<div class="message-row"><div><div class="message-title"></div><div class="message-info-row"><div class="message-cat"></div>${hasAttachment}<span class="message-count"></span></div><div class="tag-list">${tagsHtml}</div></div><div class="icons"><span class="favorite-icon ${message.favorite ? "active" : ""}" title="${message.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${message.favorite ? "?" : "?"}</span><span class="duplicate-icon" title="Duplicar mensagem">Duplicar</span><span class="icon edit" title="Editar">Editar</span><span class="icon delete" title="Excluir">Excluir</span></div></div>`;
           btn.querySelector(".message-title").textContent = message.title || "";
           btn.querySelector(".message-cat").textContent = message.category || "Geral";
           btn.querySelector(".message-count").textContent = countText;
@@ -2353,9 +2673,10 @@
       els.previewText.textContent = finalText || "Selecione ou cadastre uma mensagem para visualizar aqui.";
       els.copyBtn.disabled = !finalText;
       els.editSelectedMessageBtn.disabled = !selected || !selected.id;
+      renderAttachmentPreview(selected);
 
       // Exibe ou esconde o botão de baixar anexo na área de prévia
-      if (selected && selected.fileData) {
+      if (selected && attachmentSource(selected)) {
         els.downloadFileBtn.style.display = "inline-flex";
         els.downloadFileBtn.textContent = `📎 Baixar ${selected.fileName || 'Anexo'}`;
       } else {
@@ -2372,14 +2693,8 @@
     // Executa o download do anexo quando clicado
     els.downloadFileBtn.addEventListener("click", () => {
       const selected = selectedMessage();
-      if (!selected || !selected.fileData) return;
-
-      const downloadLink = document.createElement("a");
-      downloadLink.href = selected.fileData;
-      downloadLink.download = selected.fileName || "arquivo_anexo";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+      if (!selected || !attachmentSource(selected)) return;
+      downloadAttachment(selected);
     });
 
     function clearForm() {
@@ -2421,7 +2736,6 @@
         updatedAt: serverTimestamp()
       };
 
-      // Inclui os dados do arquivo se houver um novo carregado
       if (currentBase64File) {
         payload.fileData = currentBase64File;
         payload.fileName = currentFileName;
@@ -2457,8 +2771,8 @@
       els.newTags.value = (message.tags || []).join(", ");
       suggestTags();
       
-      if (message.fileData) {
-        els.fileStatusInfo.textContent = `⚠️ Já possui anexo: ${message.fileName || 'Sim'}. Suba outro arquivo somente se quiser substituir.`;
+      if (attachmentSource(message)) {
+        els.fileStatusInfo.textContent = `Já possui anexo: ${message.fileName || "Sim"}. Suba outro arquivo somente se quiser substituir.`;
       } else {
         els.fileStatusInfo.textContent = "";
       }
@@ -2492,15 +2806,7 @@
       const text = els.previewText.textContent;
       if (!text) return;
       
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
+      const copyResult = await copyResponseWithAttachment(text, currentMsg);
       if (currentMsg && currentMsg.id) {
         const cardEl = document.getElementById(`msg-card-${currentMsg.id}`);
         if (cardEl) {
@@ -2510,11 +2816,28 @@
         }
       }
 
-      els.copyStepStatus.textContent = "Resposta copiada. Agora é só colar no WhatsApp.";
-      els.copyBtn.textContent = "✓ Copiado!";
+      const currentAttachmentSource = attachmentSource(currentMsg);
+      if (currentAttachmentSource && copyResult.copiedVisual) {
+        els.copyStepStatus.textContent = "Visual da resposta copiado como imagem. Cole no WhatsApp para enviar resposta + anexo.";
+        showToast("Visual com resposta e anexo copiado.");
+      } else if (currentAttachmentSource && copyResult.downloadedAttachment) {
+        els.copyStepStatus.textContent = "Resposta copiada. O anexo foi baixado para você enviar junto.";
+        showToast("Anexo baixado. Envie o arquivo junto com a resposta.");
+      } else if (currentAttachmentSource) {
+        els.copyStepStatus.textContent = "Resposta copiada. Use o botão Anexo para baixar e enviar o arquivo junto.";
+        showToast("O navegador não permitiu anexar o arquivo automaticamente.");
+      } else {
+        els.copyStepStatus.textContent = "Resposta copiada. Agora é só colar no WhatsApp.";
+      }
+
+      els.copyBtn.textContent = currentAttachmentSource
+        ? copyResult.copiedVisual
+          ? "✓ Visual copiado"
+          : "✓ Texto copiado + anexo baixado"
+        : "✓ Copiado!";
       els.copyBtn.classList.add("success");
       setTimeout(() => { 
-        els.copyBtn.textContent = "📋 Copiar"; 
+        els.copyBtn.textContent = "📋 Copiar resposta"; 
         els.copyBtn.classList.remove("success");
       }, 1400);
 
@@ -2583,7 +2906,11 @@
         favorite: Boolean(item.favorite),
         useCount: Number.isFinite(Number(item.useCount)) ? Number(item.useCount) : 0,
         fileData: typeof item.fileData === "string" ? item.fileData : null,
-        fileName: typeof item.fileName === "string" ? item.fileName : null
+        fileUrl: typeof item.fileUrl === "string" ? item.fileUrl : null,
+        filePath: typeof item.filePath === "string" ? item.filePath : null,
+        fileName: typeof item.fileName === "string" ? item.fileName : null,
+        fileType: typeof item.fileType === "string" ? item.fileType : null,
+        fileSize: Number.isFinite(Number(item.fileSize)) ? Number(item.fileSize) : null
       };
     }
 
@@ -2601,9 +2928,13 @@
         updatedAt: serverTimestamp()
       };
 
-      if (message.fileData) {
-        payload.fileData = message.fileData;
+      if (attachmentSource(message)) {
+        if (message.fileData) payload.fileData = message.fileData;
+        if (message.fileUrl) payload.fileUrl = message.fileUrl;
+        if (message.filePath) payload.filePath = message.filePath;
         payload.fileName = message.fileName || "anexo";
+        if (message.fileType) payload.fileType = message.fileType;
+        if (message.fileSize) payload.fileSize = message.fileSize;
       }
 
       try {
@@ -2735,9 +3066,13 @@
               updatedAt: serverTimestamp()
             };
 
-            if (item.fileData) {
-              payload.fileData = item.fileData;
+            if (item.fileData || item.fileUrl) {
+              if (item.fileData) payload.fileData = item.fileData;
+              if (item.fileUrl) payload.fileUrl = item.fileUrl;
+              if (item.filePath) payload.filePath = item.filePath;
               payload.fileName = item.fileName || "anexo";
+              if (item.fileType) payload.fileType = item.fileType;
+              if (item.fileSize) payload.fileSize = item.fileSize;
             }
 
             await addDoc(messagesCollection, payload);
@@ -3078,3 +3413,4 @@
   </script>
 </body>
 </html>
+
