@@ -1,5 +1,14 @@
 # Changelog — Responde Fácil PRO
 
+## 2.0.5 — Favoritos e uso por cliente
+- Botão claro para favoritar ou desfavoritar a mensagem selecionada na tela principal.
+- Estrela clicável ao lado de cada resultado de mensagem.
+- Favoritas continuam aparecendo primeiro na ordenação existente.
+- Contador de uso adicionado aos clientes, salvo no próprio documento do cliente.
+- O contador do cliente aumenta ao copiar uma resposta durante o atendimento.
+- Total de usos exibido na busca, no cliente selecionado e na listagem administrativa.
+- Nenhuma nova coleção do Firestore foi criada.
+
 ## 1.6
 - Novo fluxo guiado Cliente → Assunto → Resposta → Copiar.
 - Tela principal simplificada.
